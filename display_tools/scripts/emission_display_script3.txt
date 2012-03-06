@@ -1,0 +1,991 @@
+--------------------------------------------------------
+Running SSW, Last Updated: Wed Nov 2 22:22:51 GMT 2005
+ 
+PROBLEMS? - e-mail TO: freeland@penumbra.nascom.nasa.gov
+--------------------------------------------------------
+IDL Version 6.2, Mac OS X (darwin ppc m32). (c) 2005, Research Systems, Inc.
+Installation number: 212173.
+Licensed for personal use by Henry Winter only.
+All other use is strictly prohibited.
+
+Executing SSW IDL_STARTUP for: GEN
+Executing SSW IDL_STARTUP for: SXT
+% Compiled module: STRJUSTIFY.
+% Compiled module: UNIQ.
+% Compiled module: PRSTR.
+Including Paths:
+ -----------------------------------
+| $SSW/yohkoh/gen/galileo/idl/lmsal |
+ -----------------------------------
+% SSW_PATH: Number of paths changed from 146 to 147
+% Compiled module: SET_LOGENV.
+% SET_LOGENV: setenv,SXT_DIR_UVDBASE=/Users/winter/uv_flood
+Executing SSW IDL_STARTUP for: CDS
+Executing SSW IDL_STARTUP for: EIT
+executing EIT IDL_STARTUP
+Executing SSW IDL_STARTUP for: TRACE
+Executing SSW IDL_STARTUP for: SITE
+Including Paths:
+ ---------------------------------
+| $SSW/yohkoh/ucon/idl/acton      |
+| $SSW/yohkoh/ucon/idl/bentley    |
+| $SSW/yohkoh/ucon/idl/freeland   |
+| $SSW/yohkoh/ucon/idl/hudson     |
+| $SSW/yohkoh/ucon/idl/labonte    |
+| $SSW/yohkoh/ucon/idl/lemen      |
+| $SSW/yohkoh/ucon/idl/linford    |
+| $SSW/yohkoh/ucon/idl/mcallister |
+| $SSW/yohkoh/ucon/idl/sato       |
+| $SSW/yohkoh/ucon/idl/mctiernan  |
+| $SSW/yohkoh/ucon/idl/metcalf    |
+| $SSW/yohkoh/ucon/idl/morrison   |
+| $SSW/yohkoh/ucon/idl/sakao      |
+| $SSW/yohkoh/ucon/idl/schwartz   |
+| $SSW/yohkoh/ucon/idl/slater     |
+| $SSW/yohkoh/ucon/idl/wuelser    |
+| $SSW/yohkoh/ucon/idl/zarro      |
+ ---------------------------------
+Including Paths:
+ ----------------------------
+| $SSW/trace/ssw_contributed |
+ ----------------------------
+Executing SSW IDL_STARTUP: (Personal)
+% Compiled module: SSW_PACKAGES.
+% Compiled module: BREAK_FILE.
+Including Paths:
+ -----------------------------------------------
+| $SSW/packages/chianti/idl/extra               |
+| $SSW/packages/chianti/idl/low_level/continuum |
+| $SSW/packages/chianti/idl/low_level           |
+| $SSW/packages/chianti/idl/other/DEM           |
+| $SSW/packages/chianti/idl/other/low_level     |
+| $SSW/packages/chianti/idl/other               |
+| $SSW/packages/chianti/idl/SETUP               |
+| $SSW/packages/chianti/idl                     |
+ -----------------------------------------------
+% SSW_PATH: Number of paths changed from 233 to 241
+% Compiled module: SSW_SET_CHIANTI.
+% Compiled module: RD_TFILE.
+% Compiled module: MAIN_EXECUTE.
+% Compiled module: USE_CHIANTI.
+
+---------------------------------------------------------------
+                  Welcome to  CHIANTI
+  For current information see one of the CHIANTI WWW pages
+e.g: http://www.damtp.cam.ac.uk/user/astro/chianti/chianti.html
+If you have PROBLEMS please e-mail chianti_help@halcyon.nrl.navy.mil
+% Compiled module: DIR_EXIST.
+CHIANTI system variable !xuvtop set=/usr/local/ssw/packages/chianti/dbase
+You are using the CHIANTI database VERSION 5.1
+CHIANTI system variable !ioneq_file set=/usr/local/ssw/packages/chianti/dbase/ioneq/mazzotta_etal_9.ioneq
+CHIANTI system variable !abund_file set=/usr/local/ssw/packages/chianti/dbase/abundance/sun_photospheric.abund
+% DEVICELIB: Added system variable !BCOLOR
+% DEVICELIB: Added system variable !ASPECT
+-------------------------------------------------------------------
+
+% Compiled module: $MAIN$.
+under construction by Jenna
+/Users/winter/programs/PATC//runs/2005_12_1/
+% Compiled module: REVERSE.
+% Compiled module: CIRCLE_SYM.
+Temp max is:        21475085.
+Temp min is:        0.0000000
+energy max is:    3.3007644e+26
+energy min is:       -0.0000000
+density max is:   1.81226e+13
+density min is:   1.23141e+09
+      239.990
+% Compiled module: LOADCT.
+% Compiled module: FILEPATH.
+% Compiled module: PATH_SEP.
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% Compiled module: LEGEND.
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% Compiled module: COLORBAR.
+% Compiled module: CONGRID.
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% Compiled module: X2GIF.
+% Compiled module: TRIM.
+% Compiled module: TEST_OPEN.
+% Compiled module: IS_BLANK.
+% Compiled module: IS_STRING.
+% Compiled module: GET_RID.
+% Compiled module: NINT.
+% Compiled module: IDL_RELEASE.
+% Compiled module: HAVE_WINDOWS.
+% Compiled module: SELECT_WINDOWS.
+% Compiled module: SSW_WRITE_GIF.
+% Compiled module: ALLOW_GIF.
+% Compiled module: GET_TEMP_DIR.
+% Compiled module: CURDIR.
+% Compiled module: WRITE_DIR.
+% Compiled module: MK_TEMP_FILE.
+% Compiled module: WRITE_GIF.
+% Loaded DLM: GIF.
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% Compiled module: IMAGE2MOVIE.
+% Compiled module: SSW_BIN.
+% Compiled module: IS_NUMBER2.
+% Compiled module: UT_TIME.
+% Compiled module: UT_DIFF.
+% Compiled module: ANYTIM2INTS.
+% Compiled module: TIMSTR2EX.
+% Compiled module: EX2INT.
+% Compiled module: JDCNV.
+% Compiled module: CHECK_TIME.
+% Compiled module: FMT_TIM.
+% Compiled module: GT_DAY.
+% Compiled module: INT2EX.
+% Compiled module: DAYCNV.
+% Compiled module: GT_TIME.
+% Compiled module: TIME2FILE.
+% Compiled module: ANYTIM.
+% Compiled module: CHECKVAR.
+% Compiled module: STR_LASTPOS.
+% Compiled module: STR2UTC.
+% Compiled module: DELVARX.
+% Compiled module: BOOST_ARRAY.
+% Compiled module: VALID_NUM.
+% Compiled module: UTC2INT.
+% Compiled module: DATE2MJD.
+% Compiled module: CHECK_INT_TIME.
+% Compiled module: GET_LEAP_SEC.
+% Compiled module: GET_UTC.
+% Compiled module: FIND_WITH_DEF.
+% Compiled module: FIND_ALL_DIR.
+% Compiled module: BREAK_PATH.
+% Compiled module: STRSPLIT.
+% Compiled module: INT2UTC.
+% Compiled module: MJD2DATE.
+% Compiled module: UTC2STR.
+% Compiled module: STRSPECIAL.
+% Compiled module: STRLASTCHAR.
+% Compiled module: STR_SEP.
+% Compiled module: ATIME.
+% Compiled module: FCHECK.
+% Compiled module: INT2SEC.
+% Compiled module: UTIME2STR.
+% Compiled module: F_ATIME.
+% Compiled module: INT2SECARR.
+% Compiled module: GRID_DATA.
+% Compiled module: TIMEGRID.
+% Compiled module: CONCAT_STRUCT.
+% Compiled module: MATCH_STRUCT.
+% Compiled module: MATCH.
+% Compiled module: TIM2DSET.
+read_gif,newfil(i),image,r,g,b
+% Compiled module: READ_GIF.
+ --------------------------------------------------------------
+| Writing temporary files...                                   |
+| /Users/winter/programs/PATC/display_tools/big_movie00000.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00001.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00002.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00003.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00004.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00005.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00006.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00007.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00008.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00009.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00010.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00011.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00012.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00013.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00014.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00015.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00016.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00017.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00018.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00019.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00020.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00021.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00022.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00023.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00024.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00025.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00026.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00027.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00028.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00029.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00030.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00031.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00032.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00033.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00034.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00035.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00036.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00037.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00038.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00039.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00040.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00041.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00042.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00043.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00044.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00045.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00046.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00047.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00048.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00049.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00050.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00051.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00052.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00053.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00054.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00055.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00056.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00057.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00058.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00059.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00060.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00061.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00062.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00063.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00064.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00065.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00066.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00067.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00068.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00069.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00070.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00071.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00072.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00073.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00074.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00075.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00076.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00077.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00078.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00079.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00080.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00081.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00082.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00083.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00084.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00085.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00086.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00087.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00088.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00089.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00090.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00091.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00092.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00093.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00094.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00095.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00096.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00097.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00098.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00099.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00100.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00101.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00102.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00103.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00104.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00105.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00106.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00107.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00108.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00109.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00110.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00111.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00112.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00113.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00114.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00115.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00116.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00117.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00118.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00119.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00120.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00121.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00122.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00123.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00124.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00125.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00126.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00127.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00128.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00129.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00130.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00131.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00132.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00133.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00134.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00135.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00136.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00137.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00138.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00139.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00140.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00141.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00142.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00143.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00144.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00145.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00146.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00147.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00148.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00149.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00150.gif |
+| /Users/winter/programs/PATC/display_tools/big_movie00151.gif |
+| /Users/winter/programs/PATC/display_tools/lcur_positions.gif |
+| /Users/winter/programs/PATC/display_tools/lcur_sxt_al_12.gif |
+| /Users/winter/programs/PATC/display_tools/lcur_sxt_be.gif    |
+| /Users/winter/programs/PATC/display_tools/lcur_sxt_dag.gif   |
+| /Users/winter/programs/PATC/display_tools/lcur_trace_171.gif |
+| /Users/winter/programs/PATC/display_tools/lcur_trace_195.gif |
+| /Users/winter/programs/PATC/display_tools/pa_dist_plot.gif   |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00000.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00001.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00002.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00003.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00004.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00005.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00006.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00007.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00008.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00009.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00010.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00011.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00012.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00013.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00014.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00015.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00016.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00017.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00018.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00019.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00020.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00021.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00022.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00023.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00024.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00025.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00026.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00027.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00028.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00029.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00030.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00031.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00032.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00033.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00034.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00035.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00036.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00037.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00038.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00039.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00040.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00041.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00042.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00043.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00044.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00045.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00046.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00047.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00048.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00049.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00050.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00051.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00052.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00053.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00054.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00055.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00056.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00057.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00058.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00059.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00060.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00061.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00062.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00063.gif |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00064.gif |
+ --------------------------------------------------------------
+% Compiled module: LAST_NELEM.
+% Compiled module: SSW_DELTAT.
+% Compiled module: ANYTIM2TAI.
+% Compiled module: ANYTIM2UTC.
+% Compiled module: UTC2TAI.
+% Compiled module: MKTHUMB.
+% Compiled module: WDEF.
+% Compiled module: FILM_THUMBNAIL.
+% MKTHUMB: Writing thumbnail to file: /Users/winter/programs/PATC//runs/2005_12
+           _1/gifs/emission_movie_mthumb.gif
+% MKTHUMB: Writing thumbnail to file: /Users/winter/programs/PATC//runs/2005_12
+           _1/gifs/emission_movie_micon.gif
+% Compiled module: FILE_SIZE.
+% Compiled module: FSTRING.
+ -----------------------------------------------------------------------
+| /Users/winter/programs/PATC/display_tools/big_movie00000.gif 26.99 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00001.gif 31.11 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00002.gif 36.26 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00003.gif 38.62 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00004.gif 39.75 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00005.gif 40.04 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00006.gif 40.04 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00007.gif 39.78 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00008.gif 38.45 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00009.gif 37.62 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00010.gif 37.37 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00011.gif 37.44 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00012.gif 37.37 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00013.gif 37.86 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00014.gif 38.23 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00015.gif 38.23 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00016.gif 37.92 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00017.gif 37.33 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00018.gif 36.72 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00019.gif 36.34 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00020.gif 36.83 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00021.gif 37.24 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00022.gif 37.50 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00023.gif 37.73 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00024.gif 37.78 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00025.gif 37.79 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00026.gif 37.93 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00027.gif 37.99 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00028.gif 37.99 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00029.gif 37.78 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00030.gif 37.71 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00031.gif 37.24 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00032.gif 37.24 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00033.gif 37.34 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00034.gif 37.81 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00035.gif 37.99 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00036.gif 37.78 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00037.gif 37.82 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00038.gif 37.95 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00039.gif 37.91 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00040.gif 38.01 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00041.gif 38.06 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00042.gif 37.91 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00043.gif 37.93 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00044.gif 37.71 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00045.gif 37.95 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00046.gif 38.00 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00047.gif 37.94 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00048.gif 37.82 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00049.gif 37.51 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00050.gif 37.16 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00051.gif 37.07 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00052.gif 36.85 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00053.gif 37.01 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00054.gif 37.01 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00055.gif 37.56 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00056.gif 37.41 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00057.gif 37.70 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00058.gif 37.85 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00059.gif 37.49 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00060.gif 37.54 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00061.gif 37.57 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00062.gif 37.21 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00063.gif 37.06 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00064.gif 37.00 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00065.gif 33.70 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00066.gif 34.22 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00067.gif 33.97 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00068.gif 32.88 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00069.gif 34.23 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00070.gif 32.87 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00071.gif 32.18 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00072.gif 32.67 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00073.gif 32.58 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00074.gif 32.25 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00075.gif 33.60 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00076.gif 33.91 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00077.gif 32.93 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00078.gif 33.57 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00079.gif 34.38 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00080.gif 33.88 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00081.gif 33.70 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00082.gif 33.92 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00083.gif 32.73 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00084.gif 32.96 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00085.gif 32.86 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00086.gif 32.52 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00087.gif 32.53 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00088.gif 32.42 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00089.gif 32.56 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00090.gif 32.87 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00091.gif 32.79 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00092.gif 33.22 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00093.gif 33.33 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00094.gif 33.27 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00095.gif 32.40 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00096.gif 31.51 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00097.gif 30.74 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00098.gif 32.08 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00099.gif 32.40 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00100.gif 33.22 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00101.gif 32.95 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00102.gif 32.53 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00103.gif 32.59 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00104.gif 33.11 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00105.gif 32.57 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00106.gif 32.11 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00107.gif 31.29 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00108.gif 30.63 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00109.gif 31.66 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00110.gif 32.31 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00111.gif 32.54 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00112.gif 32.40 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00113.gif 32.28 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00114.gif 32.50 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00115.gif 32.61 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00116.gif 32.40 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00117.gif 31.93 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00118.gif 30.88 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00119.gif 31.24 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00120.gif 31.18 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00121.gif 31.18 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00122.gif 31.57 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00123.gif 31.68 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00124.gif 31.61 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00125.gif 31.54 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00126.gif 31.46 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00127.gif 30.98 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00128.gif 29.56 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00129.gif 28.86 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00130.gif 28.93 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00131.gif 29.54 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00132.gif 29.42 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00133.gif 30.45 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00134.gif 31.42 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00135.gif 31.64 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00136.gif 30.08 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00137.gif 28.88 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00138.gif 29.10 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00139.gif 29.27 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00140.gif 29.21 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00141.gif 28.92 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00142.gif 28.94 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00143.gif 28.73 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00144.gif 28.93 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00145.gif 28.61 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00146.gif 28.86 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00147.gif 28.82 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00148.gif 28.62 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00149.gif 28.69 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00150.gif 28.95 KB |
+| /Users/winter/programs/PATC/display_tools/big_movie00151.gif 28.70 KB |
+| /Users/winter/programs/PATC/display_tools/lcur_positions.gif 11.18 KB |
+| /Users/winter/programs/PATC/display_tools/lcur_sxt_al_12.gif 13.11 KB |
+| /Users/winter/programs/PATC/display_tools/lcur_sxt_be.gif    13.36 KB |
+| /Users/winter/programs/PATC/display_tools/lcur_sxt_dag.gif   12.75 KB |
+| /Users/winter/programs/PATC/display_tools/lcur_trace_171.gif 12.88 KB |
+| /Users/winter/programs/PATC/display_tools/lcur_trace_195.gif 13.91 KB |
+| /Users/winter/programs/PATC/display_tools/pa_dist_plot.gif   11.10 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00000.gif 20.71 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00001.gif 20.68 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00002.gif 20.67 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00003.gif 21.15 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00004.gif 21.25 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00005.gif 21.47 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00006.gif 21.48 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00007.gif 21.44 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00008.gif 21.40 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00009.gif 11.42 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00010.gif 11.42 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00011.gif 11.44 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00012.gif 11.44 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00013.gif 11.44 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00014.gif 11.45 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00015.gif 11.47 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00016.gif 11.48 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00017.gif 11.49 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00018.gif 11.49 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00019.gif 11.50 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00020.gif 11.51 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00021.gif 11.52 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00022.gif 11.51 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00023.gif 11.53 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00024.gif 11.52 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00025.gif 11.54 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00026.gif 11.55 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00027.gif 11.52 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00028.gif 11.52 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00029.gif 11.54 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00030.gif 11.54 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00031.gif 11.52 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00032.gif 11.52 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00033.gif 11.51 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00034.gif 11.51 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00035.gif 11.48 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00036.gif 11.48 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00037.gif 11.44 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00038.gif 11.42 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00039.gif 11.41 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00040.gif 11.36 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00041.gif 11.36 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00042.gif 11.37 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00043.gif 11.36 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00044.gif 11.38 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00045.gif 11.38 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00046.gif 11.37 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00047.gif 11.38 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00048.gif 11.38 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00049.gif 11.35 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00050.gif 11.38 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00051.gif 11.38 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00052.gif 11.36 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00053.gif 11.38 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00054.gif 11.38 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00055.gif 11.35 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00056.gif 11.34 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00057.gif 11.37 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00058.gif 11.37 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00059.gif 11.35 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00060.gif 11.38 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00061.gif 11.38 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00062.gif 11.38 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00063.gif 11.35 KB |
+| /Users/winter/programs/PATC/display_tools/sxt_trace00064.gif 11.36 KB |
+ -----------------------------------------------------------------------
+% IMAGE2MOVIE: Spawning movie generation command (GIF Animation)
+ ---------------------------------------------------------------------------------------------------------
+| Movie Command                                                                                           |
+| /usr/local/ssw/soho/eit/exe/darwin_ppc/whirlgif -o /Users/winter/programs/PATC//runs/2005_12_1/gifs/... |
+ ---------------------------------------------------------------------------------------------------------
+whirlgif Rev 3.04 (c) 1997-1999 by Hans Dinsen-Hansen
+                  (c) 1995-1996 by Kevin Kadow
+                  (c) 1990-1993 by Mark Podlipec
+Processed 224 files.
+% Compiled module: HTTP_NAMES.
+ ---------------------------------------------------------------------
+| Movie written to                                                    |
+| /Users/winter/programs/PATC//runs/2005_12_1/gifs/emission_movie.gif |
+| URL:                                                                |
+| emission_movie.gif                                                  |
+ ---------------------------------------------------------------------
+% HTTP_NAMES: Need to define environmental/logicals 'top_http' and 'path_http'
+% Compiled module: SSW_STRSPLIT.
+% Compiled module: STR2HTML.
+% Compiled module: REMTAB.
+% Compiled module: STRLIST2HTML.
+% Compiled module: WHERE_TITLE.
+% Compiled module: ALPHAGEN.
+% Compiled module: STRFIND_URLS.
+% Compiled module: WHERE_TABLE.
+emission_display_script3 took        3.1640276 minutes to run

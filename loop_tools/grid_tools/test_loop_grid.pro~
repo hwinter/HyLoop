@@ -1,0 +1,98 @@
+pro test_loop_grid, folder,$
+                  GIF_DIR=GIF_DIR,EXT=EXT,$
+                  MOVIE_NAME=MOVIE_NAME,$
+                  FILE_PREFIX=FILE_PREFIX,$
+                  LOUD=LOUD, JS=JS,$
+                  FREQ_OUT=FREQ_OUT, $
+                  CS=CS, GRID_SAFETY=GRID_SAFETY
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Keywords
+if size(folder, /TYPE) le 0 then folder='./'
+if not keyword_set(FILE_PREFIX) then FILE_PREFIX='T'
+if not keyword_set(EXT) then  EXT='.loop'
+if not keyword_set(GRID_SAFETY) then GRID_SAFETY=1.
+files=file_search(folder,FILE_PREFIX+'*'+EXT, COUNT=FILE_COUNT)
+if FILE_count eq 0 then begin
+    MESSAGE, 'No files matching *'+ext+' were found', /CONTINUE
+    goto, end_jump
+endif
+window, 1
+window, 2
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Set the new colors
+tvlct, [0,255,0,0], [0,0,255,0], [0,0,0,255]
+for count=0ul, FILE_count-1ul do begin
+    restore, files[count]
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Define Characteristic length scales
+;cls=characteristic length scale
+;If you find any zeroes, make them a small number so that you don't
+;end up dividing by zero
+;Energy
+    e_cls=get_loop_e_cls(loop,/VOL_GRID,/NO_ENDS)
+;Density
+    n_e_cls=get_loop_n_e_cls(loop,/VOL_GRID,/NO_ENDS)
+;Temperature
+    T_cls=get_loop_temp_cls(loop,/VOL_GRID,/NO_ENDS) ;,/SMOOTH)
+;Yes. I know that temperature is just a function of 
+;Density and energy but I'm doing it anyway!
+;Velocity
+    v_cls=get_loop_v_cls(loop,/VOL_GRID,/SOUND,/NO_ENDS)
+;Magnetic field
+    b_cls=get_loop_b_cls(loop,/VOL_GRID,/NO_ENDS)
+    e_h_cls=get_loop_e_h_cls(loop,/VOL_GRID,/NO_ENDS)
+    n_s=n_elements(b_cls)
+    min_cls=dblarr(n_s)
+    for i=0l, n_s-1L do begin
+        min_cls[i]=min([e_cls[i],$
+                        n_e_cls[i],$
+                        v_cls[i],$
+                        b_cls[i],$
+                        t_cls[i],$
+                        e_h_cls[i]])
+;        if keyword_set(showme) then begin
+
+;        endif
+        min_cls=min_cls/grid_safety
+    endfor
+
+     ;figure out grid size
+    N = n_elements(loop.state.e)
+    ds = loop.s[1:N-2] - loop.s[0:N-3]
+    violotions_temp=where(ds gt min_cls, violations_count)
+    if size(violations_array, /TYPE) eq 0 then $
+      violations_array=Total(violations_count) else $
+      violations_array=[violations_array,Total(violations_count)]
+    
+    if size(time_array, /TYPE)  eq 0 then $
+      time_array=loop.state.time else $
+      time_array=[time_array, loop.state.time]
+    if n_elements(time_array) gt 1 then begin
+        wset,1
+        plot, time_array, violations_array, PSYM=10
+        wset,2 
+        ;plot, loop.axis[1,*],loop.axis[2,*], line=3
+        plot, loop.axis[1,*],loop.axis[2,*]+loop.rad
+        oplot, loop.axis[1,*],loop.axis[2,*]-loop.rad
+    endif
+
+    if violotions_temp[0] ne -1 then $
+      plots, loop.axis[1,violotions_temp],$
+             loop.axis[2,violotions_temp],$
+             SYMSIZE=3, COLOR=1, PSYM=5
+    
+    print, Total(violations_count), Total(violations_array)
+    
+endfor
+
+n_violations=Total(violations_array)
+print,  n_violations   
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+end_jump:
+end;OF MAIN

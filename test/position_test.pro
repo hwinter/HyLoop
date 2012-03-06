@@ -1,0 +1,66 @@
+;.r position_test
+
+;Define cell center positions
+x_s=[1.0, 2.0, 3.0, 4.0, 5.0, 10.0]
+
+n_xs=n_elements(x_s)
+n_parts=1d5
+
+;Define particle positions
+positions=max(x_s)*randomu(seed,n_parts)
+start=systime(1)
+position_index=dblarr(n_parts)
+for k=0ul, n_parts-1ul do begin    
+    position_index[k]=where(abs(positions[k]-x_s) eq $
+                                   min(abs(positions[k]-x_s)))
+        
+   ; print, positions[k],  x_s[position_index[k]]
+endfor
+end_time=systime(1)
+delta_t1= end_time-start
+
+print,delta_t1
+
+
+start=systime(1)
+position_matix=rebin(reform(positions,1,n_parts),n_xs,n_parts)
+xs_matrix=rebin(x_s, n_xs,n_parts)
+junk=min(POSITION_MATIX-xs_matrix, position_index2, dim=1,/abs)
+;Change the absolute array position to an index that relates to 
+; x_s.  "I dare you to make less sense!" -Dean Venture
+position_index2=position_index2 mod n_xs
+end_time=systime(1)
+
+delta_t2= end_time-start
+print,delta_t2
+print, ' '
+print,delta_t1/delta_t2
+
+print, max(position_index-(position_index2 ))
+
+
+;Test inline code vs a function
+start=systime(1)
+n_xs=n_elements(x_s)
+n_parts=n_elements(positions)
+
+position_matix=rebin(reform(positions,1,n_parts),n_xs,n_parts)
+xs_matrix=rebin(x_s, n_xs,n_parts)
+junk=min(POSITION_MATIX-xs_matrix, position_index2, dim=1,/abs)
+;Change the absolute array position to an index that relates to 
+; x_s.  "I dare you to make less sense!" -Dean Venture
+position_index2=position_index2 mod n_xs
+end_time=systime(1)
+
+delta_t2a= end_time-start
+
+
+start=systime(1)
+position_index2a=hdw_get_position_index(positions,x_s )
+end_time=systime(1)
+
+delta_t2b= end_time-start
+
+print, ' '
+print,delta_t2a/delta_t2b
+end

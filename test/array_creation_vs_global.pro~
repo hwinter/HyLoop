@@ -1,0 +1,31 @@
+;.r array_creation_vs_global
+
+
+t=systime(1)
+for iul=0, 1ul+6 do begin
+    logc=[1.5, 6.7,7.9,10.0,6.0,3.2,0.567]
+    logt=[3.,4.,5.,6.,7., 8., 9.]
+endfor
+
+array_time=systime(1)-t
+
+defsysv,'!test_array1',logc
+defsysv,'!test_array2',logt
+
+t=systime(1)
+for iul=0, 1ul+6 do begin
+    defsysv,'!test_array1',EXISTS=test1
+    defsysv,'!test_array2', EXISTS=test2
+    if test1 le 0 then print, 'bogus'
+    if test2 le 0 then print, 'bogus'
+endfor
+sysv_time=systime(1)-t
+
+print, 'array_time:',array_time
+print, 'sysv_time:',sysv_time
+print,  'array_time/sysv_time',array_time/sysv_time
+
+print, array_time*1d7
+print, sysv_time*1d7
+print, ((array_time*1d7)-(sysv_time*1d7))/60.
+end

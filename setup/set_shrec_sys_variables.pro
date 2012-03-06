@@ -1,0 +1,94 @@
+;Sets a bunch of commonly used constants for the HyLoop model.
+;I found that this was faster than  assigning these values 
+; each time within a program unless you use defsysv to test for 
+; their existence.  The scheme will be to test for them once in 
+; a higher order program and not in the lower order programs.
+
+;Use shrec prefix to ensure that these do not interfere with 
+; other system variables.
+pro set_shrec_sys_variables
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Constants
+;Boltzmann constant [erg/K]
+defsysv,'!shrec_kB', 1.3807d-16 
+;Boltzmann's constant in Joules/[K]
+defsysv,'!k_boltz_joules',1.3807d-23 
+;ratio of specific heats, C_P/C_V
+defsysv,'!shrec_gamma',  5.0/3d0
+;Spitzer thermal conductivity coefficient
+defsysv,'!shrec_kappa0',  1d-6 
+; converts keV to ergs
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Atomic constants
+; As in Ze, for the target plasma
+defsysv,'!shrec_charge_z',1.4
+;electron charge (statcoulombs= g^1/2 cm^3/2 /s)
+defsysv,'!shrec_qe',  4.8032d-10
+;Electron radius in cm (classical)
+defsysv,'!shrec_e_rad',2.8179d-13
+;electron mass (g)
+defsysv,'!shrec_me', 9.1094d-28 
+;proton mass (g)
+defsysv,'!shrec_mp',  1.6726d-24
+
+;Charge on an electron in Coulombs
+;e=1.6022d-19
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Solar constants
+;Solar surface gravity acceleration[cm s^-2]
+defsysv,'!shrec_g0', 2.74d4
+;Solar radius [cm]
+defsysv,'!shrec_R_Sun', 6.96d10
+;Height of the Corona above the photosphere[cm]
+defsysv,'!shrec_h_corona', 2d8
+;Chromospheric Temperature (For boundary conditions)
+defsysv,'!shrec_T0', 1.d4  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Conversion Constants
+defsysv,'!shrec_keV_2_ergs',  1.6022d-9
+;converts keV to Joules
+defsysv,'!shrec_keV_2_Joules',  1.6022d-16
+;I think you can figure these out
+defsysv,'!shrec_Mega_meter2cm',1d8
+defsysv,'!shrec_cm2Mega_meter',1d-8
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Constants for loop model
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Radiative losses power law exponent.
+;defsysv,'!rad_law_gamma', 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Corrections to thermal conductivity Kappa inferred
+;   from Fontenla, Avrett & Loeser (1990 ApJ 355:700)
+;   first tabulated point is a dummy point, in case T < 1e4.
+defsysv, '!shrec_kappa_logc',$
+          [2d, 2.00d, 1.12, 0.69, 0.22, 0.13, 0.10, 0.08, 0.00, 0.00, 0.00]
+defsysv, '!shrec_kappa_logT',$
+ [3d, 4.00d, 4.18, 4.30, 4.60, 4.78, 4.90, 5.00, 6.00, 7.00, 8.00]
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Put Bremsstrahlung information in memory
+restore, getenv('HYLOOP')+'/emission_tools/patc_brem_cross_sec.sav'
+defsysv, '!BREMS_PART_E_ARRAY', BREMS_PART_E_ARRAY
+defsysv, '!Brems_CROSS_SECTION', brems_CROSS_SECTION
+defsysv, '!ph_energies',ph_energies
+defsysv, '!n_ph_energies',n_elements(ph_energies)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Migrating commands from .idl_startup to here for runtime sav files
+
+host=strsplit(strlowcase(getenv('HOST')),'.',/EXTRACT)
+HOST=HOST[0]
+defsysv,'!COMPUTER',HOST[0],1
+!prompt = !COMPUTER+'>'
+print, getenv('SSW')
+uid=getenv('LOGNAME')
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Let the top level programs know this program was run
+defsysv,'!shrec_set',1
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+end

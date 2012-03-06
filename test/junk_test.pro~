@@ -1,0 +1,29 @@
+for i=0ul, 5 do begin
+print, i
+
+endfor
+
+for i=i, 16 do begin
+print, i
+
+endfor
+break_num=5ul
+for i=1ul, 20 do begin
+print, (i-1)*break_num, (i*break_num)-1ul
+
+endfor
+
+folder=getenv('DATA')+'/PATC/runs/flare_exp_05/alpha=0/699_25/'
+parts=strsplit(folder, '/', /EXTRACT)
+n_parts=n_elements(parts)
+EXPERIMENT_DIR='/'
+
+for bpi=0ul, n_parts-3 do begin
+    EXPERIMENT_DIR=EXPERIMENT_DIR+parts[bpi]+'/'
+endfor
+
+
+ALPHA_FOLDERS=parts[n_parts-2]+'/'
+GRID_FOLDERS=parts[n_parts-1]+'/'
+;End bad planning cleanup!
+end

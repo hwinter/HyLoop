@@ -1,0 +1,618 @@
+;+
+;NAME:
+;	msu_loop
+;PURPOSE:
+;	Iterate a dynamic loop model from time t to
+;	t + delta_t. All units are cgs.
+;CALLING SEQUENCE:
+;	msu_loop, state, g, A, s, heating, delta_t $
+;		[, T0=T0, /src, /uri, /fal, /debug, depth=depth]
+;INPUT PARAMETERS:
+;	state - a structure containing initial state
+;		information as a function of position:
+;		state.e - internal energy (N volume elements)
+;		state.n_e - electron density (N volume elements)
+;		state.v - velocity in x direction at the
+;		    interstices between the volume 
+;		    elements (N-1 elements)
+;		state.time - time of specified state.
+;	g - gravitational acceleration in x direction,
+;		as a function of x (N-1 elements)
+;	A - cross-sectional area as a function of x
+;               (N-1 elements)
+;	s - array containing position values for 
+;		the boundaries between the volume elements
+;		(s has N-1 elements). The intervals
+;		should be slowly varying so as to
+;		avoid numerical complications.
+;	heating - coronal heating rate. Either constant
+;		or an array with N-2 elements (volume
+;		element grid, missing the ends).
+;OPTIONAL KEYWORD INPUTS:
+;	T0 - boundary temperature (default = 1e4 K)
+;	debug - integer values implement various
+;		diagnostic options. Read the source.
+;	depth - optional desired chromospheric depth. If this keyword
+;		is nonzero, then corrections are applied to try to
+;		maintain a chromosphere of a desired depth (add or
+;		remove mass at the 1.1*T0 isotherm, which slides
+;		the isotherm toward desired depth). If
+;		depth <= 1, then the default depth of 1e6 cm is used.
+;		If depth is greater than 1, then the value of the
+;		keyword is the desired chromospheric depth in cm.
+;	safety - Time stepping safety factor.
+;		The time stepping interval dt is derived from
+;		the Courant condition, divided by a safety factor
+;		(5.0 by default). The purpose of the safety factor
+;		is twofold: (1) numerical stability and (2) allow
+;		conduction to be more effective than sound over
+;		short distances. At the risk of infidelity to physics
+;		and possible numerical instability, the safety
+;		factor may be reduced (2 is usually OK), bringing
+;		about a proportional increase in execution speed.
+;KEYWORD SWITCHES:
+;	SRC - if set, engages the 'shiny red chromosphere'
+;		feature: radiative loss rate at T < T0
+;		is set to zero, producing a chromosphere
+;		of uniform temperature.
+;OUTPUT:
+;	state - after execution, updated state
+;		information for time t + delta_t
+;		is returned.
+;PROCEDURE:
+;	Internal energy (e) and electron density (n_e) are modeled
+;	in N volume elements along an asymmetric, 1-dimensional
+;	coronal loop. Velocity (v) is defined
+;	on a staggered grid, occupying the N-1 interstices of the
+;	volume elements. The first and last elements of v are:
+;		v(0) = v(N-2) = 0 (zero flow).
+;	The remaining physical boundary conditions are defined
+;	in terms of the temperature and pressure in volume
+;	elements 0 and N-1:
+;		T(0) = T(N-1) = T0, a constant
+;		P(0) = P(1), P(N-1) = P(N-2)
+;	Thus, the boundary acts like a solid wall with
+;	constant temperature. Actually, there's a small
+;	gravity term that is not included in the
+;	P equations. For bookkeeping purposes, the
+;	internal energy and electron density will satisfy
+;	the boundary conditions if:
+;		e(0) = e(1), e(N-1) = e(N-2)
+;		n_e(0) = e(0) / (3 * kB * T0)
+;		n_e(N-1) = e(N-1) / (3* kB * T0)
+;	where kB is Boltzmann's constant. The first and last 
+;	volume elements exist only for the purpose of imposing 
+;	boundary conditions. Since the energy and electron density
+;	in these volume elements are outside the v=0 hard wall,
+;	and because they vary to maintain the boundary conditions,
+;	these boundary elements should not be included for purposes
+;	of checking conservation of mass or energy.
+;	   First-order differencing is employed on the staggered
+;	grid, with advected quantities (internal energy, electron 
+;	density) evaluated upstream. Because of the formulation,
+;	mass and energy are rigorously conserved under
+;	advection. Thermal conduction is done implicitly to
+;	maintain numerical stability with reasonable-sized
+;	time steps.
+;	   Time stepping is done in two phases, 0.6dt and dt,
+;	with the finite differences from the former being used
+;	to advance the initial state through the latter.
+;HISTORY:
+;	1999-Dec-6 CCK new version (loop6-->loop6) corrects
+;		for interference between the timestepping method
+;		and implicit evaluation of the conduction term;
+;		loop6 is a drop-in replacement for loop6.
+;	1999-Dec-7 CCK debugged.
+;       2007-APR-20 HDW Converted to msu_loop.pro
+;           Enforced proper (), [] syntax. (Again! That's what 
+;           happens when you revert to a previous version.  <sigh>)
+;           Made DEBUG a passable keyword, which made sense.
+;       2007-APR-24 HDW
+;
+;-
+
+
+;------ VAU radiative loss function (1979 ApJ 233:987) ------
+;KEYWORD PARAMETERS:
+;	T0 - minimum temperature threshold used with /src option.
+;KEYWORD SWITCHES:
+;	SRC - if set, engages the 'shiny red chromosphere'
+;		feature: radiative loss rate at T < T0
+;		is set to zero, producing a chromosphere
+;		of uniform temperature.
+;	FAL - Values from 1e4 K to 1e5 K based on fig. 2 of E. H. 
+;		Avrett in _Mechanisms of Chromospheric and Coronal 
+;		Heating_, P. Ulmschneider, E. R. Priest, & R. Rosner 
+;		Eds., Springer Verlag (1991), pp.97-99. This is 
+;		based on the FAL transition region model, including 
+;		corrections for optical depth and ambipolar 
+;		diffusion. [An added point at 1e3 K merely 
+;		extrapolates the radiative loss to arbitrarily
+;		low temperature.]
+;	URI - Values above 1e5 K based on recalculation of the
+;		Cook et al. (1989 ApJ 338:1176) radiative loss
+;		using the Feldman (1992 Phys Scr 46:202-220) coronal
+;		abundances.
+;	DISP - Ignore n_e and T inputs, and plot a graph of the
+;		radiative loss function. If DISP is set but not
+;		one, then OPLOT procedure is used, and minus the
+;		value of DISP is used for the psym keyword.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;----- Eulerian time stepper (result is change in state variable) -----
+function dstate, state, T, g, A, s, heating, dt, T0, $
+                 src, depth, safety, uri, fal, $
+                 DEBUG=DEBUG,$
+                 SO=SO, $
+                 NO_SAT=NO_SAT,$
+                 NOVISC=NOVISC
+
+common loopmodel, ds1, ds2, A1, is
+
+;Force proper (), [] syntax
+COMPILE_OPT STRICTARR
+if not keyword_set(DEBUG) then DEBUG=0
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;useful thermodynamic quantities (e/n_e grid)
+P = (2.0/3.0)*state.e
+;temperature interpolated to the v grid
+T2 = (T[0:is-1] + T[1:is])/2.0
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;calculate rho (mass density) on v grid
+rho = !msul_mp * (state.n_e[0:is-1] + state.n_e[1:is])/2.0
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;boundary conditions
+state=msu_bcs(state, g, T0, ds2, is)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Upwind differencing stuff
+vpos = float(state.v gt 0.0)
+vneg = not vpos
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;	
+;***** Continuity equation (n_e) *****
+;Scheme rigorously conserves mass.
+mass_flux = A * vpos * state.v * state.n_e[0:is-1] + $
+            A * vneg * state.v * state.n_e[1:is]
+dn_e = - (dt/A1)* $
+	(mass_flux[1:is-1] - mass_flux[0:is-2])/ds1
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;***** Internal energy equation (e) *****
+;Note: Advection uses a conservative form.
+;Advection and work:
+e_flux = A * vpos * state.v * state.e[0:is-1] + $
+              A * vneg * state.v * state.e[1:is]
+
+advect_work = -(dt/(A1*ds1)) * $
+      ( e_flux[1:is-1] - e_flux[0:is-2] ) $ ;advection
+   -(dt*P[1:is-1]/(A1*ds1)) * $
+      (A[1:is-1]*state.v[1:is-1] - A[0:is-2]*state.v[0:is-2]);work
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Need to change the definition of the coulomb log
+ ;coulomb log (dimensionless)
+;From Choudhuri p. 265
+;coulomb_log=alog((1.5d0)*(1d0/!msul_charge_z)*(1d0/(!msul_qe^2d0))* $
+;            ((!msul_kB^3d0)*(T^3d0)*(1d0/!dpi)*$
+;             (1d0/state.n_e))^5d-1)
+    index1=where(T le 4.2d5)
+    index2=where(T gt 4.2d5)
+    coulomb_log=dblarr(n_elements(T))
+    if index1[0] ne -1 then $
+      coulomb_log[index1]=1.24d4*(T[index1]^1.5d0)*(state.n_e[index1]^(-0.5d0))
+    
+    if index2[0] ne -1 then $
+      coulomb_log[index2]=8.0d6*(T[index2])*(state.n_e[index2]^(-0.5d0))
+    
+    coulomb_log=alog(coulomb_log)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+conduction = MSU_conduction(state, s,$
+                            SO=SO, $ ;Pass the SO for C codes if desired
+                            IS=is, $
+                            DT=dt, $
+                            DS1=ds1, $
+                            DS2=ds2, $
+                            TEMP=TEMP,$
+                            S_GRID_TEMP=S_GRID_TEMP,$
+                            SPIT=SPIT,$
+                            NO_SAT=NO_SAT,$
+                            coulomb_log=coulomb_log)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Calculate radiative losses
+radiative_loss=-msu_radloss(state.n_e[1:is-1],T[1:is-1],T0=T0,$
+        	src=src,uri=uri,fal=fal, disp=disp,SO=SO )*dt 	
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+if not keyword_set(NOVISC) then begin
+    
+;HDW 2007_OCT_15 Moved the calculation of mu, and the dissipation of ; 
+; v into dstate.  For large gradients in flow, the procedure was not 
+; conserving energy.  
+;calculate mu only once because T will not get updated
+
+;Plasma Formulary, p.38 - careful of floating point underflow here
+        
+        mu = ( sqrt((!msul_kB*T)^5. *!msul_mp) $
+               *0.96*3d )/( coulomb_log*4d*sqrt(!dpi)*!msul_qe^4. ) ;g/(cm s)
+ ;Artificial!  Do better soon!   
+;        for iii=0, 10 do mu=smooth(mu,3)
+
+;implict viscousity term in momentum equation
+        ne2=0.5d0*(state.n_e[0:is-1] +state.n_e[1:is])
+;I hate the way IDL handles math errors.  underflows
+        JUNK=where(ne2 lt 0d0)
+        if junk[0] ne -1 then ne2[junk]=abs(ne2[junk])
+        temp2 = mu[2:is-1] * dt /(ds2[1:is-2]*ds1[1:is-2]*A[1:is-2])
+        temp1 = mu[1:is-2] * dt /(ds2[1:is-2]*ds1[0:is-3]*A[1:is-2])
+;sub-diagonal elements of M
+        sub = [0.0, -temp1*A[2:is-1], 0.0]
+;main diagonal elements of M
+        main = !msul_mp*ne2 + [0.0, A[1:is-2]*(temp1 + temp2), 0.0]
+;super-diagonal elements of M
+        super = [0.0, -temp2*A[0:is-3], 0.0]
+;right-hand side of the inhomogeneous equation
+        rhs = state.v * !msul_mp * ne2
+;M v' = v
+        vprime = trisol(sub,main,super,rhs)
+        visc = vprime - state.v
+;viscous energy loss 
+    temp1 = 2.d0*(A[1:is-1ul]*state.v[1:is-1ul] $
+                  - A[0:is-2ul]*state.v[0:is-2ul]) / $
+            (ds1[0:is-2ul]*(A[1:is-1ul] + A[0:is-2ul]))
+
+;   visc0 = dt * mu[0:is] * [0d, (temp1)^2d0, 0d0] 
+;HDW 2007_OCT_15 give visc0 the correct dimensionality.
+;d^2 v heats the plasma
+    visc0 = dt * mu[1:is-1ul] * (temp1)^2d0 
+   
+endif else visc0=0d0 &    visc=0d0
+
+;Round up all terms
+de = conduction[1:is-1] $
+     + advect_work   $
+     + radiative_loss $
+     + heating*dt $
+     + visc0                    ;viscousity
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;***** Momentum equation (v) *****
+div_v = (state.v[1:is-1] - state.v[0:is-2])/ds1
+dv =    - (dt/rho) * (P[1:is] - P[0:is-1])/ds2 $ ;grad P
+	- dt * state.v * $
+	  ( vpos * [0.0, div_v] + $
+	    vneg * [div_v, 0.0] ) $ ;advection
+	+ (dt*g) $;gravity
+        + visc;Viscous term
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Maintain chromospheric depth if desired.
+if keyword_set(depth) then begin
+    s_alt = [2*s[0]-s[1],(s[0:is-2]+s[1:is-1])/2.0,2*s[is-1]-s[is-2]]
+                                ;s on the volume element grid (like e, n_e)
+    L = s[is-1] + s[0]          ;Length of coronal loop
+    
+;find location of transition region at bottom of each loop leg.
+    ss = where(T ge 1.1*T0)
+    n_ss = n_elements(ss)
+    i0 = ss[0]>1 & i1 = ss[n_ss-1]<(is-3)
+        
+        strength = (1.0/safety)*((depth - s_alt[i0])/depth)^3 $
+        	< 1.0/safety > (-1.0/safety) ;clamp density loss
+;relevant density scale
+        nscale = 0.5*min(state.n_e[0:i0]) 
+
+        dn_e[i0] = dn_e[i0] + nscale*strength
+	
+        strength = (1.0/safety)*((depth - (L - s_alt[i1]))/depth)^3 $
+        	< 1.0/safety > (-1.0/safety) ;clamp density loss
+        nscale = 0.5*min(state.n_e[i1:is]) ;relevant density scale
+
+        dn_e[i1] = dn_e[i1] + nscale*strength
+    endif
+        
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+return, {e:[0.0,de,0.0], n_e:[0.0,dn_e,0.0], v:dv}
+;This is almost a state structure, just lacks the time tag
+end
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Begin Main Program ---------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+pro msu_loop2, loop, delta_t, debug=debug, $
+              T0=T0, src=src, depth=depth, safety=safety,$
+              uri=uri,fal=fal, OUT_LOOP=OUT_LOOP, $
+              HEAT_FUNCTION=HEAT_FUNCTION,$
+              SO=SO, E_H=E_H,$
+              NT_BEAM=NT_BEAM,NT_PART_FUNC=NT_PART_FUNC,$
+              NT_BREMS=NT_BREMS,$
+              NT_DELTA_E=NT_DELTA_E,$
+              NT_DELTA_MOMENTUM=NT_DELTA_MOMENTUM,$
+              NOVISC=NOVISC ,$
+              NO_SAT=NO_SAT
+              
+
+common loopmodel, ds1, ds2, A1, is
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Check keyword switches
+
+if not keyword_set(T0) then T0 = 1e4 ;default boundary temperature
+if not keyword_set(HEAT_FUNCTION) then HEAT_FUNCTION='get_constant_heat'
+if not keyword_set(safety) then safety = 5.0
+if not keyword_set(DEBUG) then DEBUG=0
+
+if keyword_set(depth) then begin
+	if (depth le 1 and depth ne 0) then depth = 1e6
+endif
+
+delta_t = double(delta_t)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Get some loop properties that won't change during the run.
+;Only operate on the last loop element
+temp_loop=loop[n_elements(loop)-1]
+;useful temporary variable
+state0=temp_loop.state 
+;index of last volume gridpoint
+is = n_elements(temp_loop.state.e)-1l 
+;Get the volumes of each grid element
+volumes=get_loop_vol(temp_loop)
+n_vol=n_elements(volumes)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;calculate grid spacing
+;valid indices run from 0 to is-2 (volume grid), missing ends
+ds1 = temp_loop.s[1:is-1]-temp_loop.s[0:is-2]
+;ds1 interpolated onto the s grid, ends extrapolated.
+ds2 = [ds1[0],(ds1[0:is-3] + ds1[1:is-2])/2.0, ds1[is-2]]
+
+;A interpolated onto the e/n_e grid (missing ends)
+A1 = (temp_loop.A[0:is-2] + temp_loop.A[1:is-1])/2.0
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Set done switch
+done = 0
+;Set the time
+start_tim =temp_loop.state.time
+;number of dt intervals
+n_int = 0UL
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Begin time step loop
+while not done do begin
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;For debugging
+!except=2
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Calculate dt, the largest allowable time step
+    T = get_loop_temp(temp_loop)
+;Compute sound speed
+    cs = get_loop_sound_speed(temp_loop, T=T)
+;Interpolate sound speed to surface grid
+    cs_sm = (cs[0:is-1] + cs[1:is])/2.0
+;Courant condition for advection and acoustic waves,
+		;with a safety factor for stability.
+    dt = min( ds1/(cs_sm + abs(temp_loop.state.v[0:is-1])) )/safety
+
+;If something goes wrong and dt hits a non-finite value print
+;  an error message and stop.
+    if finite(dt) lt 1 then begin
+        print, 'Non-finite dt detected in msu_loop.'
+        stop
+    endif
+
+;If something goes wrong and dt goes negative  print
+;  an error message and stop.
+    if dt le 0d0 then begin
+        print, 'A negative or zero dt detected in msu_loop.pro.'
+        stop
+    endif
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Viscosity section
+;this section was taken directly from the work of McMullen 2002.
+
+    IF keyword_set(novisc) THEN BEGIN
+        mu = dblarr(is+1)
+        visc=0.d
+    ENDIF ELSE  mu=1
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Some information to print off when debugging, or just curious
+    ;if debug gt 0 then $
+    if size(avg_courant,/TYPE) eq 0 then avg_courant=dt $
+    else avg_courant=[avg_courant,dt]
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Check to see if this is the last step
+    if ((temp_loop.state.time-start_tim) + dt ge delta_t) then begin ;almost done!
+        dt = delta_t - (temp_loop.state.time - start_tim)
+        done = 1                ;This will be the last iteration.
+    endif
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Heating function section 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Insert the heating input from a user defined 
+;   function
+    heating=call_function(HEAT_FUNCTION,temp_LOOP,$
+                          temp_loop.state.time, dt)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;PATC section
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Insert the heating & momentum input from PaTC
+    if keyword_set(NT_PART_FUNC) then begin
+        DELTA_MOMENTUM_TEMP=0
+        NT_BREMS=1
+        DELTA_MOMENTUM=1
+        PATC_heating_rate=0
+;Call the user defined function that will define the 
+;  injected n.t. beam.
+        nt_beam=call_function(NT_PART_FUNC, $
+                              temp_LOOP, dt, $
+                              CURRENT_BEAM=nt_beam,$
+                              DEBUG=DEBUG) 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Test the beam.
+        if size(nt_beam,/TYPE) EQ 8 then begin
+            junk=where(nt_beam.state eq 'NT')
+            if DEBUG gt 0 then help, junk
+;All the particles have been thermalized.  Skip some steps. 
+            if junk[0] ne -1 then begin
+
+;Here is the actual call to PATC
+                patc_curr, nt_beam,loop[0],dt, DELTA_E=DELTA_E,$
+                        DELTA_MOMENTUM=DELTA_MOMENTUM,NT_BREMS=NT_BREMS
+                
+;Convert the keV lost by nt particles into ergs gained by the plasma.
+;Convert to power [ergs/sec]              
+               PATC_heating_rate=abs(-1d*DELTA_E*!msul_keV_2_ergs)/(dt)   
+                
+                if DEBUG gt 0 then begin
+                    print,'Total energy from NT particles:',$
+                          total(PATC_heating_rate*dt), ' ergs'
+                    print,'Total power from NT particles:', $
+                          total(PATC_heating_rate), ' ergs s^-1'
+                endif
+                
+                if total(PATC_heating_rate) le 0d then begin
+                    if DEBUG gt 0 then print, 'Total(PATC_heating_rate) le 0d'
+                    PATC_heating_rate =dblarr(n_vol)
+                endif
+                
+            endif
+       
+;Now convert to a volumetric heating rate and add it to the coronal heating
+            PATC_heating_rate=(PATC_heating_rate/volumes)
+            heating=heating+PATC_heating_rate
+            
+;Save the DELTA_E information to an array.
+            if size(DELTA_E_array, /TYPE) eq 0 then $
+              DELTA_E_array =PATC_heating_rate else $
+              DELTA_E_array =DELTA_E_array+PATC_heating_rate
+
+;Save the DELTA_MOMENTUM information to an array.
+            if size(DELTA_MOMENTUM_array, /TYPE) eq 0 then $
+              DELTA_MOMENTUM_array=DELTA_MOMENTUM else $
+              DELTA_MOMENTUM_array=DELTA_MOMENTUM_array+DELTA_MOMENTUM
+
+;Save the Bremsstraulung emission information to an array.
+            if size( NT_BREMS, /TYPE) ne 8 then begin
+                NT_BREMS={PH_ENERGIES:0., n_photons:0.}
+                NT_BREMS=replicate(NT_BREMS, n_vol)
+            endif
+
+            if size(NT_BREMS_array, /TYPE) ne 8 then $
+              NT_BREMS_array=NT_BREMS else $
+              NT_BREMS_array.n_photons=NT_BREMS_array.n_photons+NT_BREMS.n_photons
+        endif
+    endif
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;End PATC section
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;           
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+;Time stepping section
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;	
+;------ Do the time stepping here ------
+;a bit more than 1/2 timestep for stability
+    dt0 = 0.6 * dt              
+;.    
+    ds0 = dstate(temp_loop.state, T, temp_loop.g, temp_loop.A,$
+                 temp_loop.s, heating, dt0, T0, $
+                 src, depth, safety, uri, fal, DEBUG=DEBUG,$
+                 NOVISC=NOVISC,$
+                 NO_SAT=NO_SAT)
+
+    state0.e = temp_loop.state.e + ds0.e  ;> 0.0
+    state0.n_e = temp_loop.state.n_e + ds0.e
+;Here is where the viscosity gets added 
+    state0.v = temp_loop.state.v + ds0.v
+    state0.time = temp_loop.state.time + dt0
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;	
+;We feed the original temperature, T, to dstate. Thus,
+;implicit timestep for conduction does not use the 0.6*dt
+;timestep scheme.
+    ds = dstate(state0, T, temp_loop.g, temp_loop.A,$
+                temp_loop.s, heating, dt, T0, $
+                src,  depth, safety, uri, fal, DEBUG=DEBUG,$
+                NOVISC=NOVISC,$
+                NO_SAT=NO_SAT)
+    
+    temp_loop.state.e =temp_loop. state.e + ds.e ;> 0.0
+    temp_loop.state.n_e = temp_loop.state.n_e + ds.n_e
+    temp_loop.state.v = temp_loop.state.v + ds.v
+    temp_loop.state.time = temp_loop.state.time + dt
+    n_int = n_int + 1ul
+   ; temp_loop.state=state
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Make an array to store the 
+;information on the volumetric heating rate 
+    if size(e_h_array,/TYPE) eq 0 then e_h_array=heating $
+    else e_h_array=e_h_array+(heating) 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+;Level 2 debug
+    if debug ge 2 then begin
+        if strupcase(!d.name) eq'X' then window,0
+        stateplot3, temp_loop, /screen, WINDOW=WINDOW_STATE 
+        if strupcase(!d.name) eq'X' then window,3
+        plot,temp_loop.s_alt[1:n_elements(temp_loop.s_alt)-2],heating, $
+             TITLE="Heating"
+        if strupcase(!d.name) eq 'X' then window,10
+        plot,loop.s_alt[1:n_elements(loop.s_alt)-2], E_H, $
+             TITLE="Heating"
+        
+        if size(nt_beam,/TYPE) EQ 8 then begin
+            if strupcase(!d.name) eq'X' then $
+              particle_display, temp_loop,NT_beam,E_min=20,E_max=200, $
+                                WINDOW=4  else $
+              particle_display, temp_loop,NT_beam,E_min=20,E_max=200
+            
+            if strupcase(!d.name) eq 'X' then window,5
+            plot,loop.s_alt[1:n_elements(loop.s_alt)-2],PATC_heating_rate, $
+                 TITLE="PATC Heating"
+        endif
+        
+      
+  
+        plot,temp_loop.state.e,xrange=[80,150],yrange=[0,3]
+                                ;oplot,alog10(state.e/(3*state.n_e*!msul_kB)),psym=3
+        xyouts,1,1,'time = '+string(temp_loop.state.time),/device
+       ; wait,1
+    endif
+
+endwhile
+;End of time stepper loop
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Set the boundary conditions.
+temp_loop.state=msu_bcs(temp_loop.state, temp_loop.g, T0, ds2, is)
+;Send back the average volumetric heating rate
+temp_loop.e_h=(e_h_array/n_int)
+temp_loop.t_max=max(get_loop_temp(loop))
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+if debug gt 0 then begin
+    print,'Model time (s): ',temp_loop.state.time,' Number of intervals: ',n_int
+    print,'Total number of electrons:',total(temp_loop.state.n_e[1:is-1]*A1*ds1)
+    print, 'Avg Courant dt: '+STRCOMPRESS(mean(avg_courant,/DOUBLE),/REMOVE_ALL)
+endif
+
+E_H=temp_loop.e_h
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Need to reinstate later
+;temp_loop.notes[3]='Avg Courant dt: '+STRCOMPRESS(mean(avg_courant,/DOUBLE),/REMOVE_ALL)
+
+if not  keyword_set(OUT_LOOP) then loop=(temp_loop) $
+else OUT_LOOP=(temp_loop)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Set PATC output variables, if they exist.
+;if keyword_set(NT_PART_FUNC) then begin
+;    NT_BREMS=NT_BREMS_array
+;    NT_DELTA_E=DELTA_E_array
+;    NT_DELTA_MOMENTUM=DELTA_MOMENTUM_array
+;endif
+
+END ;OF MAIN
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

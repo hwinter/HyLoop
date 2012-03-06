@@ -1,0 +1,132 @@
+;+
+; NAME:
+;      loop_image
+; PURPOSE
+
+;      return an array image(nx, ny), containing the accumulated path lenghts
+;      from an axis axis(3, n) and radii rad(n).  the path lengths
+;      are measured parallel to the z axis at each of the grid of
+;      pixel locations.  the locations are specified by the arrays
+;      x_pix(nx) and y_pix(ny).
+; INPUTS:
+;	axis: a [3,N] array representing the x,y, & z coordinates of an n 
+;             element group
+;       rad:  an N element vector with the radii for each element
+;       phi:  number of instrument counts per vol. of plasma (N-1)
+;       x_pix:  x centers of each pixel in data coordinates
+;       y_pix:  y centers of each pixel in data coordinates
+; USAGE:
+;      image = loop_image( axis, rad, phi, x_pix, y_pix )
+; HISTORY:
+;      Dana Longcope 9/17/99
+;
+;10/4/99,jln -- added argument phi
+;10/6/99,jln -- modified for ends of cylinders not parallel
+
+FUNCTION loop_image, axis, rad, phi, x_pix, y_pix
+
+npx = n_elements( x_pix )
+npy = n_elements( y_pix )
+
+dx = x_pix(1)-x_pix(0)
+dy = y_pix(1)-y_pix(0)
+x0 = x_pix(0)
+y0 = y_pix(0)
+
+img =  fltarr( npx, npy )       ;  the blank image
+
+;  do every section of the cylinder
+n_cyl = n_elements( rad )-1     ; the number of cylinder segments
+
+FOR k = 0ul,  n_cyl-1ul DO BEGIN
+    p1 = reform( axis(*, k),  3 )
+    p2 = reform( axis(*, k+1),  3 ) 
+    r = 0.5*( rad(k) + rad(k+1) ) ;   the radius is mean of each end
+    
+; now draw the cylinder...
+
+; box containing the cylinder
+    xmin = min( [ p1(0), p2(0) ] ) - r
+    xmax = max( [ p1(0), p2(0) ] ) + r
+    ymin = min( [ p1(1), p2(1) ] ) - r
+    ymax = max( [ p1(1), p2(1) ] ) + r
+
+; locate pixel corners of cylinder k
+    i0 = fix( (xmin-x0)/dx - 0.5 ) > 0
+    i1 = fix( (xmax-x0)/dx + 0.5 ) < (npx-1)
+    j0 = fix( (ymin-y0)/dy - 0.5 ) > 0
+    j1 = fix( (ymax-y0)/dy + 0.5 ) < (npy-1)
+    
+
+; now consider each pixel in box... look for intersection
+  FOR i=i0, i1 DO BEGIN
+    xp = x_pix(i)
+    FOR j=j0, j1 DO BEGIN
+      yp =  y_pix(j)
+
+;determine normal vectors n1 and n2      
+      IF (k EQ 0) THEN BEGIN
+        n1 = axis(*,1) - axis(*,0)  
+        n2 = axis(*,2) - axis(*,0)
+      ENDIF ELSE IF (k EQ (n_cyl - 1) ) THEN BEGIN
+        n1 = axis(*,k+1) - axis(*,k-1)
+        n2 = axis(*,k+1) - axis (*,k)
+      ENDIF ELSE BEGIN
+        n1 = axis(*,k+1) - axis(*,k-1)
+        n2 = axis(*,k+2) - axis(*,k)
+      ENDELSE
+
+
+      img(i, j) =  img(i, j) + $
+                   ( phi(k) * path_length( p1, p2, r, n1, n2, xp, yp ) )
+    ENDFOR
+  ENDFOR
+
+ENDFOR
+;stop
+return, img
+END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

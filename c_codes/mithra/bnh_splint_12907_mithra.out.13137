@@ -1,0 +1,1 @@
+% gcc  -fPIC -I"/usr/local/rsi/idl/external/include" -c -m64 -D_REENTRANT "/disk/hl2/data/winter/data1/PATC/c_codes/mithra/bnh_splint.c" -o "bnh_splint_12907_mithra.o"

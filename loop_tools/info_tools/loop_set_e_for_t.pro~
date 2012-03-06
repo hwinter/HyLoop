@@ -1,0 +1,16 @@
+;get the loop temperature on the volume grid
+
+function loop_set_e_for_t,loop, T,LOOP_OUT=LOOP_OUT
+
+if size(T, /TYPE) eq 0 then T=1d6
+
+e=ABS(T*(3*loop.state.n_e*!msul_kB))
+
+
+if keyword_set(LOOP_OUT) then begin
+   loop_out=loop
+   loop_out.state.e =e
+   return, loop_out
+endif else return, e
+
+end

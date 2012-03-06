@@ -1,0 +1,110 @@
+;+
+; NAME:
+;	patc_nt_bremsstrahlung.pro
+;
+; PURPOSE:
+;	Use collisions from particle models to calculate non-thermal
+;	Bremsstralung radiation
+;
+; CATEGORY:
+;	
+;
+; CALLING SEQUENCE:
+;	
+;
+; INPUTS:
+;	
+;
+; OPTIONAL INPUTS:
+;	
+;	
+; KEYWORD PARAMETERS:
+;	
+;
+; OUTPUTS:
+;	
+;
+; OPTIONAL OUTPUTS:
+;	
+;
+; COMMON BLOCKS:
+;	
+;
+; SIDE EFFECTS:
+;	
+;
+; RESTRICTIONS:
+;	Currently this does not take into account the angular
+;	dependence of emitted radiation in either the relativistic or
+;	non-relativistic cases.  
+;
+;       .
+;
+; PROCEDURE:
+;	
+;
+; EXAMPLE:
+;	
+;
+; MODIFICATION HISTORY:
+; 	Written by:	HDW III 2006-Apr-19
+;       2006_JUL_18 HDWIII Rewrite to make dt the time it takes 
+;                   traverse a single cell
+;-
+
+function patc_nt_brem,loop,nt_beam, $
+  KEV_RANGE=KEV_RANGE, STEP=STEP
+
+
+version=0.1
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Define some constants
+;Charge on an electron in statcoulombs
+e=4.8032d-10
+;Speed of light in a vacuum [cm/s]
+c=3d10
+;Frequency associated with 1 keV [sec^-1] Plasma Formulary
+mu_0=2.4180d17
+;One AU [cm]
+AU=1.49597870691d13 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+volumes=get_loop_vol(loop.s,loop.a)
+s_alt=get_loop_s_alt(loop.s,/GT0)
+
+n_particles=n_elements(nt_beam)
+;Make pseudo volumes at the B.C.s based on the volumes of 
+; the adjacent cells
+volumes=[volumes[0], temporary(volumes)]
+volumes=[volumes,volumes[n_elements(volumes)-1l]]
+n_volumes=n_elements(volumes)
+
+position_index=lonarr(n_particles)
+velocities=kev2vel(
+;Number density of non-thermal particles
+n_nt_p=dblarr(n_volumes)
+
+;One of these days I'm going to sit down, and figure out how 
+;to do this without the loop.
+for i=0l, n_particles-1l do begin
+    position_index[i]=where(abs(nt_beam[i].x-s_alt) eq $
+                            min(abs(nt_beam[i].x-s_alt)))
+    n_nt_p[position_index[i]]= n_nt_p[position_index[i]+  $
+      (nt_beam[i].scale_factor/volumes[position_index[i]])
+    
+endfor
+
+
+
+for i=0l, n_volumes-1l do begin
+    
+F=
+
+
+return, FLUX
+
+end
+
+
+

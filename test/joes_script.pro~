@@ -1,0 +1,19 @@
+
+npts=15
+pi=3.14159
+xpts = (2*pi/8.0)*findgen(9)
+
+ypts = sin(xpts)
+print, 'Original ypts vector (sine evaluated from 0...2pi):'
+print, ypts
+print, 'Number of points to interpolate over, npts:'
+print, npts
+print, 'Interpolated points (interpol called here with npts as 2nd argument and /spline flag):'
+print,interpol(ypts,npts,/spline)
+print, 'interpol has turned npts into an array containing index values of ypts (a la findgen):'
+print,npts
+print, 'A second call to interpol fails because npts is now an array:'
+print,interpol(xpts,npts,/spline)
+print,npts2
+
+end

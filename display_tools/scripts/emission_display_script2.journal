@@ -1,0 +1,622 @@
+--------------------------------------------------------
+Running SSW, Last Updated: Tue Oct 18 21:21:57 GMT 2005
+
+IDL> ssw_path,/iii [,/remove]	        ; add and remove SSW instrument = iii
+IDL> pr_env,/xxx		        ; show environmentals/logicals xxx
+IDL> sswloc,/xxx [,outlist]		; SSW routines matching pattern xxx
+IDL> stuff=gt_tagval(xxx,/TAG)          ; extract TAG from structure array xxx
+IDL> text=get_infox(xxx,'t1,t2,t3...')  ; ascii summary of structure array xxx
+
+?? Why work with 1 FITS header when you can work with 100 FITS structures ??
+mreadfits converts vector of fits files to Structure array and 3D data
+IDL> mreadfits, FITSFILES, fitsstruct [ , data_3D, outsize=xy ]
+ 
+PROBLEMS? - e-mail TO: freeland@penumbra.nascom.nasa.gov
+--------------------------------------------------------
+IDL Version 6.2 (linux x86 m32). (c) 2005, Research Systems, Inc.
+Installation number: 1694-1.
+Licensed for use by: *** Physics*** DECSTATION 1200/533
+
+Executing SSW IDL_STARTUP for: GEN
+Executing SSW IDL_STARTUP for: SXT
+% Compiled module: STRJUSTIFY.
+% Compiled module: UNIQ.
+% Compiled module: PRSTR.
+Including Paths:
+ -----------------------------------
+| $SSW/yohkoh/gen/galileo/idl/lmsal |
+ -----------------------------------
+% SSW_PATH: Number of paths changed from 118 to 119
+% Compiled module: SET_LOGENV.
+% SET_LOGENV: setenv,SXT_DIR_UVDBASE=/disk/pd1/sswdb/ydb/uv_flood
+Executing SSW IDL_STARTUP for: CDS
+Executing SSW IDL_STARTUP for: TRACE
+Executing SSW IDL_STARTUP for: EIT
+executing EIT IDL_STARTUP
+Executing SSW IDL_STARTUP for: SITE
+Including Paths:
+ ---------------------------------
+| $SSW/yohkoh/ucon/idl/acton      |
+| $SSW/yohkoh/ucon/idl/bentley    |
+| $SSW/yohkoh/ucon/idl/freeland   |
+| $SSW/yohkoh/ucon/idl/hudson     |
+| $SSW/yohkoh/ucon/idl/labonte    |
+| $SSW/yohkoh/ucon/idl/lemen      |
+| $SSW/yohkoh/ucon/idl/linford    |
+| $SSW/yohkoh/ucon/idl/mcallister |
+| $SSW/yohkoh/ucon/idl/sato       |
+| $SSW/yohkoh/ucon/idl/mctiernan  |
+| $SSW/yohkoh/ucon/idl/metcalf    |
+| $SSW/yohkoh/ucon/idl/morrison   |
+| $SSW/yohkoh/ucon/idl/sakao      |
+| $SSW/yohkoh/ucon/idl/schwartz   |
+| $SSW/yohkoh/ucon/idl/slater     |
+| $SSW/yohkoh/ucon/idl/wuelser    |
+| $SSW/yohkoh/ucon/idl/zarro      |
+ ---------------------------------
+Executing SSW IDL_STARTUP: (Personal)
+% Compiled module: $MAIN$.
+under construction by Jenna
+% Compiled module: REVERSE.
+% Compiled module: CIRCLE_SYM.
+Temp max is:        4639243.0
+Temp min is:        0.0000000
+energy max is:    1.0691567e+26
+energy min is:       -0.0000000
+density max is:   1.81226e+13
+density min is:   1.23754e+09
+      239.990
+% Compiled module: LOADCT.
+% Compiled module: FILEPATH.
+% Compiled module: PATH_SEP.
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% Compiled module: LEGEND.
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% Compiled module: COLORBAR.
+% Compiled module: CONGRID.
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table BLUE/WHITE
+% Compiled module: X2GIF.
+% Compiled module: BREAK_FILE.
+% Compiled module: TRIM.
+% Compiled module: TEST_OPEN.
+% Compiled module: IS_BLANK.
+% Compiled module: IS_STRING.
+% Compiled module: GET_RID.
+% Compiled module: NINT.
+% Compiled module: IDL_RELEASE.
+% Compiled module: HAVE_WINDOWS.
+% Compiled module: SELECT_WINDOWS.
+% Compiled module: SSW_WRITE_GIF.
+% Compiled module: ALLOW_GIF.
+% Compiled module: GET_TEMP_DIR.
+% Compiled module: CURDIR.
+% Compiled module: IS_MEMBER.
+% Compiled module: TEST_DIR.
+% Compiled module: WRITE_DIR.
+% Compiled module: MK_TEMP_FILE.
+% Compiled module: WRITE_GIF.
+% Loaded DLM: GIF.
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table BLUE/WHITE
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table BLUE/WHITE
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table BLUE/WHITE
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table BLUE/WHITE
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table RED TEMPERATURE
+% LOADCT: Loading table GRN/WHT EXPONENTIAL
+% LOADCT: Loading table BLUE/WHITE
+% Compiled module: IMAGE2MOVIE.
+% Compiled module: SSW_BIN.
+% Compiled module: IS_NUMBER2.
+% Compiled module: UT_TIME.
+% Compiled module: UT_DIFF.
+% Compiled module: ANYTIM2INTS.
+% Compiled module: TIMSTR2EX.
+% Compiled module: EX2INT.
+% Compiled module: JDCNV.
+% Compiled module: CHECK_TIME.
+% Compiled module: FMT_TIM.
+% Compiled module: GT_DAY.
+% Compiled module: INT2EX.
+% Compiled module: DAYCNV.
+% Compiled module: GT_TIME.
+% Compiled module: TIME2FILE.
+% Compiled module: ANYTIM.
+% Compiled module: CHECKVAR.
+% Compiled module: STR_LASTPOS.
+% Compiled module: STR2UTC.
+% Compiled module: DELVARX.
+% Compiled module: BOOST_ARRAY.
+% Compiled module: VALID_NUM.
+% Compiled module: UTC2INT.
+% Compiled module: DATE2MJD.
+% Compiled module: CHECK_INT_TIME.
+% Compiled module: GET_LEAP_SEC.
+% Compiled module: GET_UTC.
+% Compiled module: FIND_WITH_DEF.
+% Compiled module: FIND_ALL_DIR.
+% Compiled module: BREAK_PATH.
+% Compiled module: STRSPLIT.
+% Compiled module: INT2UTC.
+% Compiled module: MJD2DATE.
+% Compiled module: UTC2STR.
+% Compiled module: STRSPECIAL.
+% Compiled module: STRLASTCHAR.
+% Compiled module: STR_SEP.
+% Compiled module: ATIME.
+% Compiled module: FCHECK.
+% Compiled module: INT2SEC.
+% Compiled module: UTIME2STR.
+% Compiled module: F_ATIME.
+% Compiled module: INT2SECARR.
+% Compiled module: GRID_DATA.
+% Compiled module: TIMEGRID.
+% Compiled module: CONCAT_STRUCT.
+% Compiled module: MATCH_STRUCT.
+% Compiled module: MATCH.
+% Compiled module: TIM2DSET.
+read_gif,newfil(i),image,r,g,b
+% Compiled module: READ_GIF.
+ ---------------------------------------------------------
+| Writing temporary files...                              |
+| /disk/hl2/data/winter/data1/PATC/big_movie00000.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00001.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00002.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00003.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00004.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00005.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00006.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00007.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00008.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00009.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00010.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00011.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00012.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00013.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00014.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00015.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00016.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00017.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00018.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00019.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00020.gif     |
+| /disk/hl2/data/winter/data1/PATC/big_movie00021.gif     |
+| /disk/hl2/data/winter/data1/PATC/hd00000.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00001.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00002.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00003.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00004.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00005.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00006.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00007.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00008.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00009.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00010.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00011.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00012.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00013.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00014.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00015.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00016.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00017.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00018.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00019.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00020.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00021.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00022.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00023.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00024.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00025.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00026.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00027.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00028.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00029.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00030.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00031.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00032.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00033.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00034.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00035.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00036.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00037.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00038.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00039.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00040.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00041.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00042.gif            |
+| /disk/hl2/data/winter/data1/PATC/hd00043.gif            |
+| /disk/hl2/data/winter/data1/PATC/particles00000.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00001.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00002.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00003.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00004.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00005.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00006.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00007.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00008.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00009.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00010.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00011.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00012.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00013.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00014.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00015.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00016.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00017.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00018.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00019.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00020.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00021.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00022.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00023.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00024.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00025.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00026.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00027.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00028.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00029.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00030.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00031.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00032.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00033.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00034.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00035.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00036.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00037.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00038.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00039.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00040.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00041.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00042.gif     |
+| /disk/hl2/data/winter/data1/PATC/particles00043.gif     |
+| /disk/hl2/data/winter/data1/PATC/power00000.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00001.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00002.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00003.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00004.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00005.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00006.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00007.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00008.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00009.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00010.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00011.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00012.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00013.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00014.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00015.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00016.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00017.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00018.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00019.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00020.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00021.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00022.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00023.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00024.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00025.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00026.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00027.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00028.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00029.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00030.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00031.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00032.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00033.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00034.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00035.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00036.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00037.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00038.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00039.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00040.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00041.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00042.gif         |
+| /disk/hl2/data/winter/data1/PATC/power00043.gif         |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00000.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00001.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00002.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00003.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00004.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00005.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00006.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00007.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00008.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00009.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00010.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00011.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00012.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00013.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00014.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00015.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00016.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00017.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00018.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00019.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00020.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00021.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00022.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00023.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00024.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00025.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00026.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00027.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00028.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00029.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00030.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00031.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00032.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00033.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00034.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00035.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00036.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00037.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00038.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00039.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00040.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00041.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00042.gif |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00043.gif |
+ ---------------------------------------------------------
+% Compiled module: LAST_NELEM.
+% Compiled module: SSW_DELTAT.
+% Compiled module: ANYTIM2TAI.
+% Compiled module: UTC2TAI.
+% Compiled module: MKTHUMB.
+% Compiled module: WDEF.
+% Compiled module: FILM_THUMBNAIL.
+% MKTHUMB: Writing thumbnail to file: /disk/data1/winter/PATC//runs/2005_11_03/
+           gifs/emission_movie_mthumb.gif
+% MKTHUMB: Writing thumbnail to file: /disk/data1/winter/PATC//runs/2005_11_03/
+           gifs/emission_movie_micon.gif
+% Compiled module: FILE_SIZE.
+% Compiled module: FSTRING.
+ ------------------------------------------------------------------
+| /disk/hl2/data/winter/data1/PATC/big_movie00000.gif     36.67 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00001.gif     40.48 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00002.gif     45.10 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00003.gif     47.99 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00004.gif     49.24 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00005.gif     51.07 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00006.gif     48.68 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00007.gif     48.99 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00008.gif     38.05 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00009.gif     38.35 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00010.gif     38.73 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00011.gif     39.42 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00012.gif     39.61 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00013.gif     40.11 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00014.gif     40.66 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00015.gif     41.44 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00016.gif     42.06 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00017.gif     42.68 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00018.gif     43.42 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00019.gif     43.36 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00020.gif     43.51 KB |
+| /disk/hl2/data/winter/data1/PATC/big_movie00021.gif     43.48 KB |
+| /disk/hl2/data/winter/data1/PATC/hd00000.gif            9.13 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00001.gif            9.50 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00002.gif            9.91 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00003.gif            10.04 KB |
+| /disk/hl2/data/winter/data1/PATC/hd00004.gif            9.78 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00005.gif            10.16 KB |
+| /disk/hl2/data/winter/data1/PATC/hd00006.gif            10.33 KB |
+| /disk/hl2/data/winter/data1/PATC/hd00007.gif            10.17 KB |
+| /disk/hl2/data/winter/data1/PATC/hd00008.gif            9.70 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00009.gif            9.71 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00010.gif            9.74 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00011.gif            9.75 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00012.gif            9.76 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00013.gif            9.78 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00014.gif            9.79 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00015.gif            9.75 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00016.gif            9.82 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00017.gif            9.89 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00018.gif            9.98 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00019.gif            10.11 KB |
+| /disk/hl2/data/winter/data1/PATC/hd00020.gif            10.14 KB |
+| /disk/hl2/data/winter/data1/PATC/hd00021.gif            10.05 KB |
+| /disk/hl2/data/winter/data1/PATC/hd00022.gif            9.97 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00023.gif            9.92 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00024.gif            9.69 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00025.gif            9.95 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00026.gif            9.99 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00027.gif            10.11 KB |
+| /disk/hl2/data/winter/data1/PATC/hd00028.gif            9.79 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00029.gif            9.82 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00030.gif            9.90 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00031.gif            9.91 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00032.gif            9.91 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00033.gif            9.99 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00034.gif            9.93 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00035.gif            9.99 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00036.gif            10.03 KB |
+| /disk/hl2/data/winter/data1/PATC/hd00037.gif            10.03 KB |
+| /disk/hl2/data/winter/data1/PATC/hd00038.gif            10.05 KB |
+| /disk/hl2/data/winter/data1/PATC/hd00039.gif            10.10 KB |
+| /disk/hl2/data/winter/data1/PATC/hd00040.gif            10.13 KB |
+| /disk/hl2/data/winter/data1/PATC/hd00041.gif            10.07 KB |
+| /disk/hl2/data/winter/data1/PATC/hd00042.gif            9.98 KB  |
+| /disk/hl2/data/winter/data1/PATC/hd00043.gif            9.95 KB  |
+| /disk/hl2/data/winter/data1/PATC/particles00000.gif     9.38 KB  |
+| /disk/hl2/data/winter/data1/PATC/particles00001.gif     10.38 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00002.gif     12.08 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00003.gif     13.14 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00004.gif     13.76 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00005.gif     14.29 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00006.gif     14.12 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00007.gif     14.38 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00008.gif     10.38 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00009.gif     10.62 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00010.gif     10.70 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00011.gif     10.82 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00012.gif     11.11 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00013.gif     11.39 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00014.gif     11.57 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00015.gif     12.05 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00016.gif     12.31 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00017.gif     12.48 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00018.gif     12.60 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00019.gif     12.66 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00020.gif     12.79 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00021.gif     12.93 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00022.gif     12.95 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00023.gif     13.02 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00024.gif     13.09 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00025.gif     13.09 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00026.gif     13.19 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00027.gif     13.27 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00028.gif     13.09 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00029.gif     13.07 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00030.gif     13.09 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00031.gif     13.09 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00032.gif     13.10 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00033.gif     12.95 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00034.gif     12.98 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00035.gif     12.93 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00036.gif     13.05 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00037.gif     13.09 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00038.gif     13.02 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00039.gif     12.82 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00040.gif     12.74 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00041.gif     12.78 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00042.gif     12.80 KB |
+| /disk/hl2/data/winter/data1/PATC/particles00043.gif     12.79 KB |
+| /disk/hl2/data/winter/data1/PATC/power00000.gif         4.70 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00001.gif         5.77 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00002.gif         6.02 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00003.gif         6.38 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00004.gif         6.17 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00005.gif         6.82 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00006.gif         6.87 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00007.gif         6.91 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00008.gif         7.10 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00009.gif         7.42 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00010.gif         7.42 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00011.gif         7.35 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00012.gif         7.45 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00013.gif         7.50 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00014.gif         7.64 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00015.gif         8.21 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00016.gif         6.84 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00017.gif         5.72 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00018.gif         5.64 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00019.gif         5.60 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00020.gif         5.75 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00021.gif         5.87 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00022.gif         5.69 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00023.gif         5.77 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00024.gif         6.14 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00025.gif         5.86 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00026.gif         6.66 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00027.gif         7.03 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00028.gif         7.32 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00029.gif         5.97 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00030.gif         5.98 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00031.gif         6.49 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00032.gif         6.74 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00033.gif         6.33 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00034.gif         6.64 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00035.gif         7.21 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00036.gif         6.92 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00037.gif         6.92 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00038.gif         6.64 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00039.gif         7.09 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00040.gif         6.18 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00041.gif         6.66 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00042.gif         6.85 KB  |
+| /disk/hl2/data/winter/data1/PATC/power00043.gif         6.47 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00000.gif 4.89 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00001.gif 6.06 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00002.gif 7.41 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00003.gif 7.14 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00004.gif 7.18 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00005.gif 6.88 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00006.gif 7.39 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00007.gif 7.18 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00008.gif 6.72 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00009.gif 6.73 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00010.gif 6.75 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00011.gif 6.78 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00012.gif 6.82 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00013.gif 6.84 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00014.gif 6.91 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00015.gif 5.87 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00016.gif 5.93 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00017.gif 5.51 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00018.gif 5.73 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00019.gif 5.74 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00020.gif 5.89 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00021.gif 6.65 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00022.gif 6.18 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00023.gif 6.88 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00024.gif 6.46 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00025.gif 7.19 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00026.gif 6.88 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00027.gif 6.74 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00028.gif 6.81 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00029.gif 6.45 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00030.gif 6.69 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00031.gif 6.72 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00032.gif 6.50 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00033.gif 6.47 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00034.gif 6.83 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00035.gif 6.92 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00036.gif 6.84 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00037.gif 6.94 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00038.gif 7.14 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00039.gif 7.15 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00040.gif 7.00 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00041.gif 6.99 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00042.gif 6.74 KB  |
+| /disk/hl2/data/winter/data1/PATC/power_per_vol00043.gif 6.86 KB  |
+ ------------------------------------------------------------------
+% IMAGE2MOVIE: Spawning movie generation command (GIF Animation)
+ ---------------------------------------------------------------------------------------------------------
+| Movie Command                                                                                           |
+| /ssw/packages/binaries/exe/linux_x86/whirlgif -o /disk/data1/winter/PATC//runs/2005_11_03/gifs/emiss... |
+ ---------------------------------------------------------------------------------------------------------
+mesg: ttyname: Inappropriate ioctl for device
+/ssw/packages/binaries/exe/linux_x86/whirlgif: Command not found.
+% FILE_SIZE: File: /disk/data1/winter/PATC//runs/2005_11_03/gifs/emission_movie
+             .gif not found...
+% Compiled module: HTTP_NAMES.
+ ------------------------------------------------------------------
+| Movie written to                                                 |
+| /disk/data1/winter/PATC//runs/2005_11_03/gifs/emission_movie.gif |
+| URL:                                                             |
+| emission_movie.gif                                               |
+ ------------------------------------------------------------------
+% Compiled module: SSW_STRSPLIT.
+% Compiled module: STR2HTML.
+% Compiled module: REMTAB.
+% Compiled module: STRLIST2HTML.
+% Compiled module: WHERE_TITLE.
+% Compiled module: ALPHAGEN.
+% Compiled module: STRFIND_URLS.
+% Compiled module: WHERE_TABLE.
+emission_display_script2.pro took       0.52463123 minutes to run

@@ -1,0 +1,1 @@
+% cc  -fPIC -no-cpp-precomp -dynamic -fPIC -fno-common -I"/Applications/rsi/idl_6.2/external/include" -c -D_REENTRANT "/Users/winter/programs/PATC/c_codes/dawntreader/bnh_splint.c" -o "bnh_splint_4714_Dawntreader.o"

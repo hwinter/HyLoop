@@ -1,0 +1,29 @@
+function get_nfe_gauss_dist, s, s_nano,power_nano, fwhm
+
+n_nanos=n_elements(s_nano)
+
+s_e_h=msu_get_s_alt(s)
+s_e_h=s_e_h[1:n_elements(s_e_h)-2ul]
+e_h=s_e_h*0d
+if n_elements(power_nano) ne n_nanos  then $
+   power_nano_in=power_nano[0]*(1.0+dblarr(n_nanos)) else $
+      power_nano_in=power_nano
+
+if n_elements(fwhm) ne n_nanos  then $
+   fwhm_in=fwhm_in[0]*(1.0+dblarr(n_nanos)) else $
+      fwhm_in=fwhm_in
+
+for i=0ul, do begin
+   nano_s=(s_nano[i]- 4.0*fwhm_in[i])+8.0*dindgen(100)/99.
+   g_nano=gaussian(nano_s,[1.0,s_nano, fwhm_in[i] ])
+   g_nano=power_nano_in[i]*(g_nano/total(g_nano))
+   g_nano=SPLINE(nano_s,g_nano, s_e_h )
+   
+   e_h=e_h+g_nano
+   help, g_nano, e_h
+   window, /free
+   plot,s_e_h, g_nano
+endfor
+
+
+End ;get_nf_gauss

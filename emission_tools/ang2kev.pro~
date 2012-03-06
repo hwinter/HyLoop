@@ -1,0 +1,9 @@
+function ang2kev,ang 
+
+kev_per_ang=1.2398D1
+
+keV=kev_per_ang/ang 
+return,ang
+
+end 
+

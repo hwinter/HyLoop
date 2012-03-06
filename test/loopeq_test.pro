@@ -1,0 +1,17 @@
+
+data_dir=getenv('DATA')
+dir=data_dir+'/MSUloop/POCET/equil_test/semi_c_const_a/'
+fname='/L10Mm_D7mm_q00_cons'
+save_file=dir+fname+'.start'
+restore, save_file
+outfile='sc_loop.sav'
+ttop=1d6
+outname=dir+outfile
+set_plot, 'z'
+loopeqt, g, A, x, computer=!computer,Ttop=Ttop, fname=outname,rtime=5d3
+
+
+
+
+
+end

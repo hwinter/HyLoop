@@ -1,0 +1,147 @@
+
+pro mk_trace_map_movie FILES, $
+  GIF_DIR=GIF_DIR,EXT=EXT,$
+  FILE_PREFIX=FILE_PREFIX,$
+  MOVIE_NAME=MOVIE_NAME,$
+  RES=RES, STR=STR, MAP195=MAP195,$
+  MAP171=MAP171, EXP=EXP,$
+  CADENCE=CADENCE, $
+  XSIZE=XSIZE, YSIZE=YSIZE,$
+  XRANGE=XRANGE, YRANGE=YRANGE, $
+  XC=XC, YC=YC,$
+  DATE=DATE,dxp0=dxp0,dyp0=dyp0 ,$
+;  DO_171=DO_171, DO_195=DO_195,$
+  FREQ_OUT=FREQ_OUT,title_add=title_add
+
+
+restore, file
+current_device=!d.name
+IF not keyword_set(XSIZE) THEN XSIZE=600
+IF not keyword_set(YSIZE) THEN YSIZE=300
+if size(folder,/TYPE) ne 7 then folder='./'
+IF not keyword_set(FILE_PREFIX) THEN FILE_PREFIX='T*'
+IF not keyword_set(EXT) THEN EXT='.loop'
+IF not keyword_set(MOVIE_NAME) THEN MOVIE_NAME ='trace_movie'
+IF not keyword_set(GIF_DIR) then GIF_DIR='./'
+IF n_elements(XRANGE) ne 2 then XRANGE=[900.,1200.]
+IF n_elements(YRANGE) ne 2 then YRANGE=[-100.,100.]
+IF not keyword_set(XC) THEN XC=990.
+IF not keyword_set(YC) THEN YC= 0.
+IF not keyword_set(DATE) THEN DATE=' 19-JUN-2007 00:00:'
+IF (not keyword_set(DO_171) AND not keyword_set(DO_195)) then DO_171=1 & DO_195=1
+if not keyword_set(FREQ_OUT) then FREQ_OUT=1l else FREQ_OUT=long(FREQ_OUT)
+IF not keyword_set(title_add) then title_add=''
+
+IF not keyword_set(res) then res=0.5d ;TRACE pixel res. arcsec
+pixel=res*720d*1d5 ;TRACE pixel res.in cm.
+
+IF not keyword_set(exp) then exp=1d
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Define the PSF
+FWHM=2
+psf = psf_Gaussian( NPIXEL=[5,5], FWHM=FWHM ,$
+                     /NORMALIZE);, ST_DEV=,  NDIMEN= ] ) 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+start_time=systime(/julian)
+rot1=rotation(2,!dpi/2) 
+rot2=rotation(3,-1d*!dpi)
+;rot2=rotation(3,!dpi/2)
+rot3=rotation(1,!dpi)
+
+do_195=1
+do_171=1
+FILE_COUNT<=600
+n_depth=loop[0].n_depth
+if  n_depth le 0 then begin
+    t=get_loop_temp(loop[0])
+    junk=where(t le 1d5, n_depth)
+    n_depth=long(n_depth/2)
+    
+end
+help, i
+
+    
+                                ;axis=loop[i].axis
+                                ;axis=(rot2#rot1#axis)
+axis=loop[0].axis
+axis[0,*]=loop[0].axis[2,*]
+axis[1,*]=loop[0].axis[1,*]
+axis[2,*]=loop[0].axis[0,*]
+;For the side tip
+;axis=(rot3#axis)
+rad=loop[0].rad
+image_171=1
+image_195=1
+volumes=get_loop_vol(loop[0])
+rad=loop[0].rad
+if max(rad) le 0 then rad=sqrt(loop[0].A/!dpi)
+signal=get_trace_emiss(loop[0],/per)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Artificially kill the chromospheric signal;
+signal.oa171[0:n_depth]=0d
+signal.oa171[(n_vol-1-n_depth):n_vol-1]=0
+signal.oa195[0:n_depth]=0d
+signal.oa195[(n_vol-1-n_depth):n_vol-1]=0
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Arrays for the map
+if keyword_set(do_171) then begin
+    show_loop_image,axis,rad,$
+                    signal.oa171,pixel=pixel,win=win_num,$
+                    dxp0=dxp0, dyp0=dyp0,IMAGE_OUT=image_171,/NOSCALE ;,/sqrt; $ 
+    image_171=  image_171*(pixel^2.) 
+    image_171=convol(image_171, psf,EDGE_ZERO=1)
+    
+endif else image_171=0
+
+if keyword_set(do_195) then begin
+    show_loop_image,axis,rad,signal.oa195,pixel=pixel,win=win_num,$
+                    dxp0=dxp0, dyp0=dyp0,IMAGE_OUT=image_195,/NOSCALE ;,/sqrt;     
+    image_195=image_195*(pixel^2.) 
+    image_195=convol(image_195, psf,EDGE_ZERO=1)
+endif else image_195=0
+
+temp_image_struct={image_171:image_171,image_195:image_195}
+
+if n_elements(image_struct) lt 1l then image_struct=temp_image_struct $
+else image_struct=concat_struct(TEMPORARY(image_struct),temp_image_struct)
+
+if n_elements(time_array) lt 1l  then $
+  time_array=Strcompress(string(loop[0].state.time,$
+                                format='(g5.3)'),/remove_all) else $
+  time_array=[temporary(time_array),Strcompress(string(loop[0].state.time,$
+                                                       format='(g5.3)'),/remove_all)]
+
+files=old_files
+
+endfor
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+
+scale171=255/max(image_struct.image_171)
+scale195=255/max(image_struct.image_195)
+
+help,FILE_COUNT
+FILE_COUNT<=600
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Make the map & map array  
+map={data:image_struct[i].image_171*scale171,$
+     xc:XC,yc:YC,$
+     dx:res,$                    ;pix1d/(3600*700*1d5)),$
+     dy:res,$                    ;:pixel*(/(700*1d5)),$
+     time:(time),$
+     ID:'TRACE: 171'+title_add,$
+     UNITS:'arcsecs'}
+
+if n_elements(MAP171) lt 1ul then  MAP171=map $
+else MAP171=concat_struct(MAP171,map)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;plot it to the Z-buffer
+trace_colors,171
+plot_map,Map,XRANGE=XRANGE,YRANGE=YRANGE,$
+         /limb_plot,lmthick=1,grid=50 ;,/nodata;,grid=50;composite=1,/over,/average,/INTER
+        
+x2gif,'/Users/winter/Desktop/2007_Santorini_Loops_WKSP'
+end

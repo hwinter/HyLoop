@@ -1,0 +1,136 @@
+
+;Simulate loop equilibria at a variety of temperatures
+;Test current version of hd_software
+; ssw_batch msu_code_test_2 msu_code_test_batch.txt
+
+;resolve_all
+;Profile the performance of codes
+Profiler, /SYSTEM
+resolve_routine,['add_loop_chromo',$
+                 'mk_loop_struct',$
+                 'mk_semi_circular_loop', $
+                 'regrid_step', $
+                 'regrid_inject', $ $
+                 'loop6a',$
+                 'msu_loopmodel',$
+                 'get_loop_n_e_cls',$
+                 'get_loop_e_cls',$
+                 'get_loop_temp_cls',$
+                 'get_loop_b_cls',$
+                 'get_loop_v_cls'], $
+                /EITHER
+
+set_plot,'x'
+patc_dir=getenv('PATC')
+;sav_dir= patc_dir+'/test/loop_data/' 
+;so =get_bnh_so(!computer,/INIT)
+rtime=60d0*60d0
+if size(name_prefix,/TYPE) ne 7 then  $
+  name_prefix =strcompress(arr2str(bin_date(),$
+                                   DELIM='_',/NO_DUP),$
+                           /REMOVE_ALL)
+fname1=name_prefix+ '_test_eq2.sav'
+fname2=name_prefix+ '_test_eq2.loop'
+time=60.*60.;sec
+DELTA_T=10. ;sec
+SHOWME=1
+ATM=1
+OUTPUT_PREFIX='msu_code_test_2'
+;VERSION=
+ATM=1
+GRID_safety=15
+so=get_bnh_so(/INIT)
+N_CELLS=100
+n_depth=100
+delvarx,so
+
+max_time=10.*time
+;Maximum temps of loops, MK
+;Tmax = [0.6, 1.0, 1.5, 2.0, 2.5, 3.0, 5.0, 7.0, 10.0]
+Tmax = 1d6
+LOOP=1
+mk_semi_circular_loop, $
+  /NOSAVE,$
+  outname=outname,N_CELLS=N_CELLS,$
+  X_SHIFT=X_SHIFT,Y_SHIFT=Y_SHIFT,$
+  Z_SHIFT=Z_SHIFT, LOOP=LOOP,$
+  depth=2d6, N_DEPTH=N_DEPTH
+;Get the amount of heating [ergs] needed to heat a loop of a certain length
+
+Q0=get_serio_heat( loop.L,Tmax)	
+
+;restore,patc_dir+'/test/loop_data/gcsm_loop.sav'
+Nloops = n_elements(Tmax)
+i=0
+STATE_out=1
+old_loop=loop
+
+if strupcase(!d.name) eq 'X' then begin
+    window,15
+    regrid_step, loop, /showme, GRID_safety=GRID_safety
+    window,0
+endif else regrid_step, loop,  GRID_safety=GRID_safety
+
+;regrid_inject, loop, /showme, grid_safety=10
+done=0
+counter=0
+while not done do begin
+    current_time=time*counter
+    s_form=loop[0].e_h;
+    temp_loop=loop[n_elements(loop)-1]
+    LHIST=temp_loop.state
+    msu_loop_model, loop, time, $
+                    DELTA_T=DELTA_T,  S_FORM=S_FORM,$
+                    ATM=ATM, SHOWME=SHOWME, $
+                    TEST=TEST, NOVISC=NOVISC, VERSION=VERSION,$
+                    SO=SO,SPIT=SPIT, URI=URI, FAL=FAL,$
+                    OUTPUT_PREFIX=OUTPUT_PREFIX,QUIET=QUIET,$
+                    LHIST=LHIST
+;    msu_evolve_loop2, temp_loop.g,temp_loop.a,temp_loop.s,$
+;                      time, e_h, $
+;                       s_form=s_form, atm=atm, $
+;                      /showme, $
+;                      test=test, novisc=novisc, computer=!computer,$
+;                      lhist=lhist
+    HELP, old_LOOP, TEMP_LOOP, /STR
+;    loopmodelt2, temp_loop.g, temp_loop.A,temp_loop.s, $
+;                 temp_loop.e_h,time, lhist=temp_loop.state, $
+;                 T0=1d4,  src=1,$ ; uri=uri, fal=fal, $
+;                 ;depth=loop[n_elements(loop)-1].depth, $
+;                 safety=5,DELTA_T=DELTA_T, $ ;SO=SO,
+;                 /LOUD
+;   loopmodelt, temp_loop.g, temp_loop.A,temp_loop.s, $
+;               temp_loop.e_h,time, lhist=temp_loop.state, $
+;                T0=1d4,  src=1,$ ; uri=uri, fal=fal, $
+;                                ;depth=loop[n_elements(loop)-1].depth, $
+;                safety=5,DELTA_T=DELTA_T
+;   msu_loopmodel , temp_loop.g, temp_loop.A,temp_loop.s, $
+;                temp_loop.e_h,time, lhist=temp_loop.state, $;
+;                T0=1d4,  src=1,$ ; uri=uri, fal=fal, $
+;                safety=5 ;SO=SO,
+                                ;depth=loop[n_elements(loop)-1].depth, $
+             
+    restore, 'foo.sav'
+    temp_loop.state=lhist[n_elements(lhist)-1]
+    loop=[loop, temp_loop]
+    max_v=max(abs(loop.state.v))
+    counter+=1 
+    case 1 of 
+        counter eq 500: done=1
+        max_v le 1e+5: done=1
+        current_time ge max_time: done=1
+        else: 
+    endcase
+    
+
+    Profiler, /SYSTEM, /REPORT
+endwhile
+
+save, loop, FILE=fname2
+
+PROFILER , DATA=profiler_data, OUTPUT=profiler_report, /REPORT, /SYSTEM
+
+;Clear out the profiler's memory
+Profiler, /RESET
+
+end

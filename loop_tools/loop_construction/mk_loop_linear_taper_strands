@@ -1,0 +1,188 @@
+
+
+
+
+function mk_loop_linear_taper_strands,gamma, STR_DIAM=STR_DIAM,$
+                                      LOOP_DIAM=LOOP_DIAM,$
+                                      LOOP_LENGTH=LOOP_LENGTH,B=B,$
+                                      DIR=DIR,N_CELLS=N_CELLS, $
+                                      strand_struct=strand_struct, $
+                                      ENVELOPE_LOOP=ENVELOPE_LOOP
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Do some work with keywords & positional parameters
+  if keyword_set(LOOP_DIAM) ne 1 then LOOP_DIAM =1d8
+
+;[cm]
+  if keyword_set(STR_DIAM) ne 1 then  STR_DIAM=LOOP_DIAM/3
+
+;[cm]
+;[cm]
+  if keyword_set(LOOP_LENGTH) ne 1 then  LOOP_LENGTH =1d9
+;[Gauss]
+  N_DEPTH=50
+  N_CELLS=750
+  AZ=0
+  AX=90
+
+
+  xs=500
+  ys=500
+  C_SKIP=10
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  color_names=['Red', 'Blue', 'Green','Dark Red', 'Purple',  'Cyan', 'Lawn Green',$
+               'Orange','Violet', 'Magenta', 'Cadet Blue', 'Navy', 'Orange Red', $
+               'Aquamarine','Olive', 'Rose','Turquoise',  'Gold', $
+               'Crimson', 'Powder Blue', 'Lime Green','Coral','Forest Green',$
+               'Plum', 'Royal Blue', 'Salmon', 'Yellow', 'Violet Red','Sky Blue',$
+               'Green Yellow', 'Steel Blue', 'Blue Violet','Dark Red', 'Sea Green', 'Tomato']
+
+
+  n_color_names=n_elements(color_names)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  if keyword_set(B) ne 1 then B =10
+
+  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;This won't change with the taper  
+  loop_height=LOOP_LENGTH/!dpi
+  loop_radius=(.5d*LOOP_DIAM)
+;The base diameter and radius does change due  to the tapering.
+  loop_base_diam=LOOP_DIAM/gamma
+  loop_base_rad=loop_base_diam/2.0
+  
+  data_dir=get_environ('DATA')
+
+
+  if keyword_set(dir) then sav_file=dir+'taper_strand_start' $
+  else sav_file=data_dir+'/AIA/strand_start'
+  strand_base_diameter=STR_DIAM/gamma
+  strand_base_radius=.5d*strand_base_diameter
+
+;  Loop_area=!dpi*(loop_radius)^2d
+;  strand_area=!dpi*(strand_radius)^2d
+
+  N_rows=long64(5.0*loop_base_diam/strand_base_diameter)
+  N_columns=L64INDGEN(N_rows)
+
+  npts=long64(1000)
+  theta = lindgen(npts)*2*!pi / (npts-1l)
+
+  xx = loop_base_rad * sin(theta) ;
+  yy = loop_base_rad * cos(theta) ;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  for i=0ul,N_rows-1ul do begin
+;rc_x=X center of strand, rc_y=X center of strand
+     rc_y=loop_base_rad-strand_base_radius-strand_base_diameter*double(i)
+     index=where(abs(yy-rc_y) eq min(abs(yy-rc_y)))
+     
+     n_columns[i]=long64(2*abs(xx[index[0]])/STR_DIAM)+1l
+;    
+     if n_columns[i] gt 0 then begin
+        for k=0,n_columns[i]-1l do begin
+           rc_x=abs(xx[index[0]])-strand_base_radius-strand_base_diameter*double(k)
+           
+           strand_height=loop_height-rc_x
+           strand_length=!dpi*strand_height
+                                ;print,'rc_x'+string(rc_x)
+                                ;x &y are switched in other coord.
+           strand_temp={x:rc_y,y:rc_x,$
+                        length:strand_length,$
+                        diameter:STR_DIAM, height:strand_height}
+
+           distance_to_strand_center=sqrt((rc_x*rc_x)+(rc_y*rc_y))
+                                ;print, distance_to_strand_center/loop_radius
+
+           Case 1 of
+              distance_to_strand_center gt loop_radius :begin
+                 
+              end
+
+              size(strand_struct_in,/TYPE) EQ 0: strand_struct_in=strand_temp
+              else: strand_struct_in=[strand_struct_in,strand_temp]
+           endcase
+
+        endfor                  ;K loop.  Columns
+     endif                      ;Columns exist   
+  endfor                        ;
+
+  n_strands=n_elements(strand_struct_in)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  While n_color_names lt n_strands do begin
+     color_names=[color_names, color_names]
+     
+     n_color_names=n_elements(color_names)
+
+  endwhile
+
+  colors=fsc_color(color_names)
+
+  window,0,xs=xs,ys=ys
+
+;Dumb way to set the x and y ranges
+
+  plot, strand_struct_in.x,  strand_struct_in.y,$
+        XRANGE=[-1.1*loop_base_rad, 1.1*loop_base_rad], $
+        YRANGE=[-1.1*loop_base_rad, 1.1*loop_base_rad],$
+        /XS, /YS, /NODATA
+  draw_circle,0 ,0 , loop_base_rad
+  for i=0ul, n_strands-1l do begin
+     plots,strand_struct_in[i].x,$
+           strand_struct_in[i].y,psym=4,$
+           color=colors[i]
+     draw_circle,strand_struct_in[i].x,$
+                 strand_struct_in[i].y, strand_base_radius,$
+                 color=colors[i]
+     
+  endfor
+  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  b=(10d*!dpi*loop_base_rad^2d)/(!dpi*strand_base_radius^2d)
+
+;  print,',n_elements(strand_struct'+string(n_elements(strand_struct))
+  files=strarr(n_strands)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Create each strands' loop structure.
+  for i=0ul,n_strands-1l do begin
+     
+     loop=mk_tapered_loop(gamma, strand_struct_in[i].diameter,strand_struct_in[i].length, $
+                          T_MAX=T_MAX, N_DEPTH=N_DEPTH,$
+                          TO=T0,$
+                          B_Mag=B,Q0=Q0,  NOSAVE=1, $
+                          outname=outname,N_CELLS=N_CELLS,$
+                          X_SHIFT=strand_struct_in[i].x,Y_SHIFT=strand_struct_in[i].y,$
+                          DEPTH=DEPTH,$
+                          ADD_CHROMO=1)  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Save the strand   
+     files[i]=strcompress(sav_file+'.'+string(i,format='(I4.4)' )+'.loop', $
+                          /remove_all)
+
+     save,loop,FILE=files[i]
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;     
+     print,'save_file',files[i]
+     
+  endfor                        ; of i loop  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+ 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Make the "Envelope" loop
+  ENVELOPE_LOOP=mk_tapered_loop(gamma, LOOP_DIAM,LOOP_LENGTH, $
+                                T_MAX=T_MAX, N_DEPTH=N_DEPTH,$
+                                TO=T0,$
+                                B_Mag=B,Q0=Q0,  NOSAVE=1, $
+                                outname=outname,N_CELLS=N_CELLS,$
+                                DEPTH=DEPTH)  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;stop
+  strand_struct=strand_struct_in
+  return, files
+
+
+END                             ; of Main

@@ -1,0 +1,159 @@
+#LyX 1.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 221
+\textclass aastex
+\begin_preamble
+\slugcomment{}
+\shorttitle{}
+\shortauthors{}
+\end_preamble
+\language english
+\inputencoding default
+\fontscheme default
+\graphics default
+\paperfontsize default
+\spacing single 
+\papersize Default
+\paperpackage a4
+\use_geometry 0
+\use_amsmath 0
+\use_natbib 1
+\use_numerical_citations 0
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\quotes_times 2
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+
+\layout Title
+
+<PATC Technical Note 1:>
+\layout Author
+
+<Henry deG.
+ Winter III>
+\begin_inset ERT
+status Inlined
+
+\layout Standard
+
+\backslash 
+altaffilmark{1}
+\end_inset 
+
+
+\layout Affiliation
+
+Department of Physics, Montana State University, Bozeman, MT 59717-3840
+\layout Email
+
+winter@solar.physics.montana.edu
+\layout Standard
+
+
+\begin_inset ERT
+status Inlined
+
+\layout Standard
+
+\backslash 
+altaffiltext{1}{Graduate Student}
+\end_inset 
+
+ 
+\layout Abstract
+
+<Abstract text>
+\layout Keywords
+
+\layout Section
+
+Introduction
+\layout Standard
+
+<intro text>
+\layout Section
+
+Observations
+\layout Standard
+
+<observations text>
+\layout Section
+
+Results
+\layout Standard
+
+<results text; refer to Figure 
+\begin_inset LatexCommand \ref{fig1}
+
+\end_inset 
+
+ and to 
+\begin_inset LatexCommand \citet{ref1}
+
+\end_inset 
+
+> 
+\layout Section
+
+Discussion
+\layout Standard
+
+<discussion text> 
+\layout Section
+
+Conclusions
+\layout Standard
+
+<conclusions text>
+\layout Acknowledgements
+
+\layout Standard
+
+<acknowledgment text>
+\layout Appendix
+
+\layout Section
+
+Appendix
+\layout References
+\bibitem [Author(1982)]{ref1}
+
+Author, A., 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+
+\backslash 
+apj
+\end_inset 
+
+, 109, 301 
+\layout Standard
+
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+
+\backslash 
+clearpage
+\end_inset 
+
+
+\layout FigCaption
+
+
+\begin_inset LatexCommand \label{fig1}
+
+\end_inset 
+
+This is the first figure.
+ 
+\the_end

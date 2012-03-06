@@ -1,0 +1,90 @@
+;get_loop_v_cls
+;
+function get_loop_v_cls, loop,ROOF=ROOF,S_GRID=S_GRID,$
+  VOL_GRID=VOL_GRID, SMOOTH=SMOOTH, ITER_SMOOTH=ITER_SMOOTH,$
+  NO_ENDS=NO_ENDS,SOUND=SOUND, AVG=AVG
+
+if not keyword_set(ROOF) then ROOF=1d+22
+
+q=loop.state.v
+;
+grid=loop.s
+n_s=n_elements(grid)
+
+;Take the derivative of the quantity with respect to the grid
+dq_dx=deriv(grid,q)
+
+;Get rid of zeores which cause problems
+junk=where(abs(q) eq 0)
+if junk[0] ne -1 then q[junk]=1d-14
+
+;If the derivative is zero everywhere, make it a large value
+test=where(dq_dx ne 0d)
+case 1 of 
+    (test[0] eq -1): begin
+        cls=dblarr(n_s)+ROOF 
+        goto, end_jump
+    end
+    
+    ((min(abs(q)) eq 0) and (max(abs(q)) eq 0. )): begin
+        cls=dblarr(n_s)+ROOF 
+        goto, end_jump
+    end
+    KEYWORD_SET(SOUND): begin
+;Zeroes can cause problems so make zeroes small numbers
+        zeroes= where(dq_dx eq 0d)
+        if zeroes[0] ne -1 then dq_dx[zeroes]=1d-15
+        cs = get_loop_sound_speed(loop)
+        zeroes= where(cs eq 0d)
+        if zeroes[0] ne -1 then cs[zeroes]=1d-15
+;Define the charactersitic scale length
+        cls=abs((cs/q)*((dq_dx/q)^(-1d)))
+    end
+    KEYWORD_SET(avg): begin
+;Zeroes can cause problems so make zeroes small numbers
+        zeroes= where(dq_dx eq 0d)
+        if zeroes[0] ne -1 then dq_dx[zeroes]=1d-15
+        avg =mean(abs(q))
+        zeroes= where(cs eq 0d)
+        if zeroes[0] ne -1 then cs[zeroes]=1d-15
+;Define the charactersitic scale length
+        cls=abs((avg/q)*((dq_dx/q)^(-1d)))
+    end
+    else: begin
+;Zeroes can cause problems so make zeroes small numbers
+        zeroes= where(dq_dx eq 0d)
+        if zeroes[0] ne -1 then dq_dx[zeroes]=1d-15
+        zeroes= where(q eq 0d)
+        if zeroes[0] ne -1 then q[zeroes]=1d-15
+;Define the charactersitic scale length
+        cls=abs((dq_dx/q)^(-1d))
+    end
+endcase
+
+
+end_jump:
+
+test=where(finite(cls) ne 1)
+if test[0] ne -1 then cls[test]=roof
+;If the keyword is set then spline it to the s grid
+if keyword_set(VOL_GRID) then begin
+    print, 'Vol_Grid'
+    alt_grid=get_loop_s_alt(loop)
+    cls=spline(grid,cls,alt_grid)
+    if keyword_set(NO_ENDS) then $
+      cls=temporary(cls[1:n_s-1])
+    help,cls
+endif
+
+;Smooth if desired.
+if keyword_set(SMOOTH) then begin    
+    if not keyword_set(ITER_SMOOTH) then ITER_SMOOTH=5
+    if SMOOTH eq 1 then SMOOTH=5
+    for j=0,ITER_SMOOTH do cls=smooth(cls, SMOOTH)
+
+    test=where(finite(cls) ne 1)
+    if test[0] ne -1 then cls[test]=roof
+endif
+return, abs(cls)
+
+END

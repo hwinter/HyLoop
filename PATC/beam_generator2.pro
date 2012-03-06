@@ -1,0 +1,266 @@
+;+
+; NAME:
+;	beam_generator
+;
+; PURPOSE:
+;	
+;
+; CATEGORY:
+;	
+;
+; CALLING SEQUENCE:
+;	
+;
+; INPUTS:
+;	
+;
+; OPTIONAL INPUTS:
+;	
+;	
+; KEYWORD PARAMETERS:
+;	IP: Injection point.  If set to 'Z' then the particles will be 
+;              injected at the loop apex.  Otheriwise this is the index
+;              corresponding to the s_alt position of particle injection
+;
+; OUTPUTS:
+;	
+;
+; OPTIONAL OUTPUTS:
+;	
+;
+; COMMON BLOCKS:
+;	
+;
+
+; SIDE EFFECTS:
+;	
+; RESTRICTIONS:	
+;
+; PROCEDURE:
+;	
+;
+; EXAMPLE:
+;	
+;
+; MODIFICATION HISTORY:
+; 	Written by: Henry deg. Winter III (Trae) 2006_JUL_19
+;    2006-SEP-15  HDW III Replaced many double variable with floats when I could.
+;                 I find that I'm often running out of memory space during the simulations 
+;                 with an adequate number of particles.  Oh, bother...
+;-
+
+
+
+function beam_generator2, loop,min_max, TOTAL_ENERGY=TOTAL_ENERGY, $
+  SPEC_INDEX=SPEC_INDEX, N_BINS=N_BINS, N_PART=N_PART,$
+  N_BEAMS=N_BEAMS,IP=IP,T_PROFILE=T_PROFILE,$
+  PROT=PROT,ELECTS=ELECTS,SAVE_FILE=SAVE_FILE, $
+  E_RES=E_RES, TIME=TIME, DELTA_T=DELTA_T,$
+  UNIFORM=UNIFORM,$
+  ALPHA=ALPHA, BETA=BETA, grr=grr
+
+if n_elements(min_max) ne 2 then begin
+    box_message, ['Error in beam_generator.pro',$
+                  'min_max must be a two element array',$
+                  'containing the minumum and maximum',$
+                  'non-thermal particle energy']
+    nt_beam=-1
+    goto, end_jump
+endif
+
+n_loop=n_elements(loop)
+
+if n_elements(min_max) ne 2 then begin
+    box_message, ['Error in beam_generator.pro',$
+                  'Loop must be a MSULoop loop structure.']
+    nt_beam=-1
+    goto, end_jump
+endif
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Define some constants
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;1 keV=1.602e-9 ergs
+; converts keV to ergs
+keV_2_ergs = 1.602d-9
+;converts ergs to keV
+egs_2_kev=1d/(keV_2_ergs)
+;Boltzmann's constant in ergs/[K]
+k_boltz_ergs=1.3807d-16
+;Boltzmann's constant in Joules/[K]
+k_boltz_joules=1.3807d-23 
+;Electron mass in grams
+e_mass_g=9.1094d-28 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;If not already defined, define important quantities
+if not keyword_set(TOTAL_ENERGY) then TOTAL_ENERGY=1d+30
+if not keyword_set(SPEC_INDEX) then SPEC_INDEX=3d
+if not keyword_set(N_PART) THEN N_PART= 1000UL
+if not keyword_set(IP) THEN IP='z'
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Set the resolution and number of energy bins
+case 1  of 
+    ((keyword_set(E_RES) lt 1) and $
+    (keyword_set(N_BINS) lt 1)): begin
+        E_RES=10d               ;keV
+        n_bins=(min_max[1]-min_max[0])/E_RES
+    end
+    
+    ((keyword_set(E_RES) gt 0) and $
+      (keyword_set(N_BINS) lt 1)): begin
+        n_bins=(min_max[1]-min_max[0])/E_RES
+    end
+    ((keyword_set(E_RES) lt 1) and $
+     (keyword_set(N_BINS) gt 0)): begin
+       E_RES=(min_max[1]-min_max[0])/N_BINS
+   end
+   else:  begin
+       box_message, ['Error in beam_generator.pro',$
+                       'bins case statement'] 
+       stop
+   endelse
+
+    endcase
+n_bins=ULONG(n_bins)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;How long does the beam last?
+duration=max(time)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Determine the time step
+case 1  of 
+    ((keyword_set(DELTA_T) lt 1) and $
+    (keyword_set(N_BEAMS) lt 1)): begin
+        DELTA_TIME=TIME       ;seconds
+        N_BEAMS=1
+    end
+    ((keyword_set(DELTA_T) gt 0) and $
+      (keyword_set(N_BEAMS) lt 1)): begin
+        N_BEAMS=ulong(duration/DELTA_T)
+    end
+    ((keyword_set(DELTA_T) lt 1) and $
+     (keyword_set(N_BEAMS) gt 0)): begin
+        DELTA_T=duration/N_BEAMS
+ end
+   else:  box_message, ['Error in beam_generator.pro',$
+                       'DELTA_T case statement']
+endcase;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Determine the time profile
+case 1  of 
+    ((keyword_set(TIME) lt 1) and $
+    (keyword_set(T_PROFILE) lt 1)): begin
+        TIME=1D       ;seconds
+        T_PROFILE=1/N_BEAMS
+    end
+    
+    ((keyword_set(TIME) gt 0) and $
+      (keyword_set(T_PROFILE) lt 1)): begin
+       T_PROFILE=(1d/N_BEAMS)+dblarr(n_elements(TIME))
+    end
+    ((keyword_set(TIME) lt 1) and $
+     (keyword_set(T_PROFILE) gt 0)): begin
+      time=dindgen(n_elements(T_PROFILE))
+   end
+   else:    begin
+       box_message, ['Error in beam_generator.pro',$
+                       'time case statement']
+       stop
+   end
+
+endcase
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+if n_elements(time) ne N_BEAMS then begin
+  time=reverse(duration*((1d)-(dindgen(N_BEAMS)/(N_BEAMS-1d))))
+  t_profile=temporary(t_profile[0])+dblarr(N_BEAMS)/N_BEAMS
+endif
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Define the particle energies based on the above
+energies=min_max[0]+$
+         ((min_max[1]-min_max[0])*dindgen(N_BINS)/(N_BINS-1ul))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;f=A(E/E_0)^(-delta)
+E_0=min(energies)
+percent=double((energies/E_0)^(-SPEC_INDEX)) 
+percent=percent/total(percent)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+number_n_E_bin=lonarr(N_BINS)+long(N_PART/N_BINS)+1l
+number_n_E_bin>=51l
+n_part=total(number_n_E_bin)
+energy_per_beam=TOTAL_ENERGY/N_BEAMS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Make a structure for each time step.
+for i=0ul, N_BEAMS-1ul do begin
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;For each energy bin create an array of nt_beam
+    for j =0ul , n_bins-1ul do  begin
+        nt_beam_temp=mk_nt_P_struct(loop[n_loop-1l].s,$
+                                    loop[n_loop-1l].axis[2,*], $
+                                    loop[n_loop-1l].B,$
+                                    N_Part=number_n_E_bin[j],$ ;
+                                    IP=IP,$
+                                    E_0=energies[j], $
+                                    /ELECTS,ALPHA=ALPHA, BETA=BETA, grr=grr)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;We defined a total energy for a flare.  The next three lines define a
+;scale factor so that we acheive that energy.
+        energy_per_bin=energy_per_beam*percent[j]
+        ;energy_per_beam=total(nt_beam_temp.ke_total)$
+        ;                   *keV_2_ergs
+        nt_beam_temp[*].scale_factor= $
+         (energy_per_bin)/ total(nt_beam_temp[*].ke_total)
+;stop
+        if n_elements(nt_beam) eq 0 then nt_beam=nt_beam_temp $
+        else nt_beam=concat_struct(temporary(nt_beam),nt_beam_temp)
+
+    endfor
+;stop
+    temp_beam_struct={nt_beam:nt_beam,TIME:TIME[i],$
+                     t_profile: t_profile[i]  }
+
+     delvarx, nt_beam
+        
+        if n_elements(beam_struct) eq 0ul then $
+          beam_struct=temp_beam_struct $
+            else $
+            beam_struct=concat_struct(temporary(beam_struct), $
+                                      temp_beam_struct)
+       
+
+    endfor
+t_e=total(beam_struct.nt_beam.ke_total* $
+         beam_struct.nt_beam.scale_factor)*kev_2_ergs
+
+if  t_e gt total_energy then begin
+    re_scale=t_e/total_energy
+    beam_struct.nt_beam.scale_factor= $
+      beam_struct.nt_beam.scale_factor*re_scale
+endif
+
+
+if  t_e lt total_energy then begin
+    re_scale=total_energy/t_e
+    beam_struct.nt_beam.scale_factor= $
+      beam_struct.nt_beam.scale_factor*re_scale
+endif
+            
+;stop
+IF keyword_set(SAVE_FILE) then begin
+    if size(SAVE_FILE,/TYPE) ne 7 then $
+      SAVE_FILE='initial_beam_stuct.sav'
+    save,beam_struct , file=SAVE_FILE
+endif
+
+
+    
+
+end_jump:
+return , beam_struct
+END
+
+
+

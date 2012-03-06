@@ -1,0 +1,196 @@
+function mk_loop_aia_signal,loop, RES=RES, PIXEL=PIXEL, $
+                       A94=A94, A131=A131,A171=A171, $
+                       A194=A194, A211=A211, A335=A335,$
+                       PER_VOL=PER_VOL, NO_CHROMO=NO_CHROMO
+
+;Modified by HDWII 2011-10-27
+;Units at time of writing are 'DN cm^5 s^-1 pix^-1'
+defsysv, '!AIA_tresp', exists=test
+if test lt 1 then begin
+    data_dir=getenv('DATA')
+    AIA_tresp
+    defsysv, '!AIA_tresp',AIA_tresp
+endif 
+
+
+max_factor=1d-2
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Set keywords
+if not keyword_set(RES) then RES=0.6d0; [arcsec]
+;Define Constants
+;Pixel's extent in cm * Guestimate
+if not keyword_set(pixel) then pixel=.6d*750d*1d5; ~750 km/arcsec
+
+;figure out grid size
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+EM=get_loop_em(loop, VOL=vol,T=loop_temp)
+n_vol=n_elements(VOL)
+;Artificially kill the chromospheric signal if desired.;
+    if keyword_set(NO_CHROMO) then begin
+        em[0:loop.n_depth]=0d
+        em[(n_vol-1-loop.n_depth):n_vol-1]=0d
+    endif
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+n_volumes=n_elements(loop_temp)
+index=l64indgen(n_volumes)
+loop_temp=alog10(loop_temp)
+loop_index=sort(loop_temp,/L64)
+
+resp_index=where( !AIA_TRESP.logte ge 0)
+
+    
+signal=dblarr(n_volumes)
+;UNITS !AIA_TRESP.xxx.TRESP         STRING    'phot cm^5 s^-1 pix^-1'
+
+case 1 of 
+    keyword_set(A94):begin
+        
+        resp_index=where(!AIA_TRESP.A94.TRESP[resp_index] ge $
+                         max_factor*max(!AIA_TRESP.A94.TRESP[resp_index]), $
+                         resp_i_count)
+
+        signal[loop_index]=10^em[loop_index]* $
+          (spline(!AIA_TRESP.logte[resp_index],$
+                  !AIA_TRESP.A94.TRESP[resp_index], $
+                  loop_temp[loop_index]))
+    
+        signal>=0.
+        bad_index=where(loop_temp lt min(!AIA_TRESP.logte[resp_index]))
+        if bad_index[0] ne -1 then $
+          signal[bad_index]=0d0
+        
+        bad_index=where(loop_temp gt max(!AIA_TRESP.logte[resp_index]))
+        if bad_index[0] ne -1 then $
+          signal[bad_index]=0d0
+    end
+    
+    keyword_set(A131):begin
+        
+        resp_index=where(!AIA_TRESP.A131.TRESP[resp_index] ge $
+                         max_factor*max(!AIA_TRESP.A131.TRESP[resp_index]), $
+                         resp_i_count)
+        
+        signal[loop_index]=10^em[loop_index]* $
+          (spline(!AIA_TRESP.logte[resp_index],$
+                  !AIA_TRESP.A131.TRESP[resp_index], $
+                  loop_temp[loop_index]))
+    
+        signal>=0.
+        bad_index=where(loop_temp lt min(!AIA_TRESP.logte[resp_index]))
+        if bad_index[0] ne -1 then $
+          signal[bad_index]=0d0
+        
+        bad_index=where(loop_temp gt max(!AIA_TRESP.logte[resp_index]))
+        if bad_index[0] ne -1 then $
+          signal[bad_index]=0d0
+    end
+
+    keyword_set(A171):begin
+        
+        resp_index=where(!AIA_TRESP.A171.TRESP[resp_index] ge $
+                         max_factor*max(!AIA_TRESP.A171.TRESP[resp_index]), $
+                         resp_i_count)
+        signal[loop_index]=(10^em[loop_index])* $
+          (spline(!AIA_TRESP.logte[resp_index],$
+                  !AIA_TRESP.A171.TRESP[resp_index], $
+                  loop_temp[loop_index]))
+        signal>=0.
+        bad_index=where(loop_temp lt min(!AIA_TRESP.logte[resp_index]))
+        if bad_index[0] ne -1 then $
+          signal[bad_index]=0d0
+        
+        bad_index=where(loop_temp gt max(!AIA_TRESP.logte[resp_index]))
+        if bad_index[0] ne -1 then $
+          signal[bad_index]=0d0
+    end
+    keyword_set(A194):begin
+        
+        resp_index=where(!AIA_TRESP.A194.TRESP[resp_index] ge $
+                         max_factor*max(!AIA_TRESP.A194.TRESP[resp_index]), $
+                         resp_i_count)
+
+        signal[loop_index]=10^em[loop_index]* $
+          (spline(!AIA_TRESP.logte[resp_index],$
+                  !AIA_TRESP.A194.TRESP[resp_index], $
+                  loop_temp[loop_index]))
+    
+        signal>=0.
+        bad_index=where(loop_temp lt min(!AIA_TRESP.logte[resp_index]))
+        if bad_index[0] ne -1 then $
+          signal[bad_index]=0d0
+        
+        bad_index=where(loop_temp gt max(!AIA_TRESP.logte[resp_index]))
+        if bad_index[0] ne -1 then $
+          signal[bad_index]=0d0
+    end
+    keyword_set(A211):begin
+        
+        resp_index=where(!AIA_TRESP.A211.TRESP[resp_index] ge $
+                         max_factor*max(!AIA_TRESP.A211.TRESP[resp_index]), $
+                         resp_i_count)
+
+        signal[loop_index]=10^em[loop_index]* $
+          (spline(!AIA_TRESP.logte[resp_index],$
+                  !AIA_TRESP.A211.TRESP[resp_index], $
+                  loop_temp[loop_index]))
+    
+        signal>=0.
+        bad_index=where(loop_temp lt min(!AIA_TRESP.logte[resp_index]))
+        if bad_index[0] ne -1 then $
+          signal[bad_index]=0d0
+        
+        bad_index=where(loop_temp gt max(!AIA_TRESP.logte[resp_index]))
+        if bad_index[0] ne -1 then $
+          signal[bad_index]=0d0
+    end
+    keyword_set(A335):begin
+        
+        resp_index=where(!AIA_TRESP.A335.TRESP[resp_index] ge $
+                         max_factor*max(!AIA_TRESP.A335.TRESP[resp_index]), $
+                         resp_i_count)
+
+        signal[loop_index]=10^em[loop_index]* $
+          (spline(!AIA_TRESP.logte[resp_index],$
+                  !AIA_TRESP.A335.TRESP[resp_index], $
+                  loop_temp[loop_index]))
+    
+        signal>=0.
+        bad_index=where(loop_temp lt min(!AIA_TRESP.logte[resp_index]))
+        if bad_index[0] ne -1 then $
+          signal[bad_index]=0d0
+        
+        bad_index=where(loop_temp gt max(!AIA_TRESP.logte[resp_index]))
+        if bad_index[0] ne -1 then $
+          signal[bad_index]=0d0
+    end
+;Make A171 the default
+    else:begin
+        
+        resp_index=where(!AIA_TRESP.A171.TRESP[resp_index] ge $
+                         max_factor*max(!AIA_TRESP.A171.TRESP[resp_index]), $
+                         resp_i_count)
+
+        signal[loop_index]=10^em[loop_index]* $
+          (spline(!AIA_TRESP.logte[resp_index],$
+                  !AIA_TRESP.A171.TRESP[resp_index], $
+                  loop_temp[loop_index]))
+    
+        signal>=0.
+        bad_index=where(loop_temp lt min(!AIA_TRESP.logte[resp_index]))
+        if bad_index[0] ne -1 then $
+          signal[bad_index]=0d0
+        
+        bad_index=where(loop_temp gt max(!AIA_TRESP.logte[resp_index]))
+        if bad_index[0] ne -1 then $
+          signal[bad_index]=0d0
+    end
+endcase
+
+if keyword_set(PER_VOL) THEN signal=signal/vol
+;stop
+return, signal
+
+
+end

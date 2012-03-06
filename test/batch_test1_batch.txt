@@ -1,0 +1,143 @@
+--------------------------------------------------------
+Running SSW, Last Updated: Wed Nov 2 22:22:51 GMT 2005
+ 
+PROBLEMS? - e-mail TO: freeland@penumbra.nascom.nasa.gov
+--------------------------------------------------------
+IDL Version 6.3, Mac OS X (darwin ppc m32). (c) 2006, Research Systems, Inc.
+Installation number: 212173.
+Licensed for personal use by Henry Winter only.
+All other use is strictly prohibited.
+
+Executing SSW IDL_STARTUP for: GEN
+Executing SSW IDL_STARTUP for: SXT
+% Compiled module: STRJUSTIFY.
+% Compiled module: UNIQ.
+% Compiled module: DEFAULT.
+% Compiled module: PRSTR.
+Including Paths:
+ -----------------------------------
+| $SSW/yohkoh/gen/galileo/idl/lmsal |
+ -----------------------------------
+% SSW_PATH: Number of paths changed from 151 to 152
+% Compiled module: SET_LOGENV.
+% SET_LOGENV: setenv,SXT_DIR_UVDBASE=/Users/winter/uv_flood
+Executing SSW IDL_STARTUP for: CDS
+Executing SSW IDL_STARTUP for: EIT
+executing EIT IDL_STARTUP
+Executing SSW IDL_STARTUP for: TRACE
+Executing SSW IDL_STARTUP for: SITE
+Including Paths:
+ ---------------------------------
+| $SSW/yohkoh/ucon/idl/acton      |
+| $SSW/yohkoh/ucon/idl/bentley    |
+| $SSW/yohkoh/ucon/idl/freeland   |
+| $SSW/yohkoh/ucon/idl/hudson     |
+| $SSW/yohkoh/ucon/idl/labonte    |
+| $SSW/yohkoh/ucon/idl/lemen      |
+| $SSW/yohkoh/ucon/idl/linford    |
+| $SSW/yohkoh/ucon/idl/mcallister |
+| $SSW/yohkoh/ucon/idl/sato       |
+| $SSW/yohkoh/ucon/idl/mctiernan  |
+| $SSW/yohkoh/ucon/idl/metcalf    |
+| $SSW/yohkoh/ucon/idl/morrison   |
+| $SSW/yohkoh/ucon/idl/sakao      |
+| $SSW/yohkoh/ucon/idl/schwartz   |
+| $SSW/yohkoh/ucon/idl/slater     |
+| $SSW/yohkoh/ucon/idl/wuelser    |
+| $SSW/yohkoh/ucon/idl/zarro      |
+ ---------------------------------
+Including Paths:
+ ----------------------------
+| $SSW/trace/ssw_contributed |
+ ----------------------------
+Executing SSW IDL_STARTUP: (Personal)
+% Compiled module: SSW_PACKAGES.
+% Compiled module: BREAK_FILE.
+Including Paths:
+ -----------------------------------------------
+| $SSW/packages/chianti/idl/extra               |
+| $SSW/packages/chianti/idl/low_level/continuum |
+| $SSW/packages/chianti/idl/low_level           |
+| $SSW/packages/chianti/idl/other/DEM           |
+| $SSW/packages/chianti/idl/other/low_level     |
+| $SSW/packages/chianti/idl/other               |
+| $SSW/packages/chianti/idl/SETUP               |
+| $SSW/packages/chianti/idl                     |
+ -----------------------------------------------
+% SSW_PATH: Number of paths changed from 224 to 232
+% Compiled module: SSW_SET_CHIANTI.
+% Compiled module: RD_TFILE.
+% Compiled module: MAIN_EXECUTE.
+
+ff = findfile(concat_dir(!xuvtop,'VERSION'))
+                                            ^
+% Obsolete routine. Please consult the IDL Reference Manual for alternatives:
+  FINDFILE
+  At: /usr/local/ssw/packages/chianti/idl/SETUP/use_chianti.pro, Line 143
+% Compiled module: USE_CHIANTI.
+
+---------------------------------------------------------------
+                  Welcome to  CHIANTI
+  For current information see one of the CHIANTI WWW pages
+e.g: http://www.damtp.cam.ac.uk/user/astro/chianti/chianti.html
+If you have PROBLEMS please e-mail chianti_help@halcyon.nrl.navy.mil
+
+		 fil=findfile(testdir,count=dcount)
+		                                   ^
+% Obsolete routine. Please consult the IDL Reference Manual for alternatives:
+  FINDFILE
+  At: /usr/local/ssw/gen/idl/system/dir_exist.pro, Line 34
+% Compiled module: DIR_EXIST.
+CHIANTI system variable !xuvtop set=/usr/local/ssw/packages/chianti/dbase
+You are using the CHIANTI database VERSION 5.2
+CHIANTI system variable !ioneq_file set=/usr/local/ssw/packages/chianti/dbase/ioneq/mazzotta_etal_9.ioneq
+CHIANTI system variable !abund_file set=/usr/local/ssw/packages/chianti/dbase/abundance/sun_photospheric.abund
+% DEVICELIB: Added system variable !BCOLOR
+% DEVICELIB: Added system variable !ASPECT
+-------------------------------------------------------------------
+
+% Compiled module: STRSPLIT.
+/usr/local/ssw
+Including Paths:
+ ---------------------------------
+| $SSW/hinode/gen/idl/pointing    |
+| $SSW/hinode/sot/idl/fg/cal      |
+| $SSW/hinode/sot/idl/fg/fgram    |
+| $SSW/hinode/sot/idl/fg/util     |
+| $SSW/hinode/sot/idl/sodasurf    |
+| $SSW/hinode/sot/idl/sp/util     |
+| $SSW/hinode/sot/idl/user/berger |
+| $SSW/hinode/sot/idl/util        |
+| $SSW/hinode/sot/idl             |
+| $SSW/hinode/xrt/idl/info        |
+| $SSW/hinode/xrt/idl/objects     |
+| $SSW/hinode/xrt/idl/response    |
+| $SSW/hinode/xrt/idl/util        |
+ ---------------------------------
+% SSW_PATH: Number of paths changed from 232 to 245
+% SSW_PATH: No matches, nothing added...
+% SSW_PATH: Path not changed Number of paths: 245
+% Compiled module: JOURNAL_UNIQUE.
+% Compiled module: BIN_DATE.
+
+.rnew batch_test1a.pro
+ ^
+% Syntax error.
+  At: /Users/winter/programs/PATC/test/batch_test1.pro, Line 4
+
+.rnew batch_test1b.pro
+ ^
+% Syntax error.
+  At: /Users/winter/programs/PATC/test/batch_test1.pro, Line 5
+
+.rnew batch_test1c.pro
+ ^
+% Syntax error.
+  At: /Users/winter/programs/PATC/test/batch_test1.pro, Line 6
+
+.rnew batch_test1d.pro
+ ^
+% Syntax error.
+  At: /Users/winter/programs/PATC/test/batch_test1.pro, Line 7
+% 4 Compilation error(s) in module $MAIN$.
+batch_test1 took    3.5035610e-05 minutes to run

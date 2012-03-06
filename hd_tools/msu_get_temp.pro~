@@ -1,0 +1,11 @@
+;get the loop temperature on the volume grid
+
+function msu_get_temp,state
+;Constants
+kB = 1.38e-16 ;Boltzmann constant (erg/K)
+
+T = state.e/(3*state.n_e*kB)
+
+return, abs(T)
+
+end

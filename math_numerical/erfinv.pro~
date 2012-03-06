@@ -1,0 +1,40 @@
+function erfinv, y
+;   Stephen Mahan
+;   Department of Physics and Astronomy
+;   September 1996
+;  
+;x=erfinv(y)
+l=size(y)
+pl=2+l(0)
+x=fltarr(l(pl))
+a=[0.886226899, -1.645349621, 0.914624893, -0.140543331]
+b=[-2.118377725, 1.442710462, -0.329097515, 0.012229801]
+c=[-1.970840454,-1.624906493, 3.429567803, 1.641345311]
+d=[3.543889200, 1.637067800]
+y0=.7
+k=where(abs(y) le y0)
+if (k(0) ne -1) then begin
+        z=y(k)*y(k)
+        x(k)=y(k)*(((a(3)*z+a(2))*z+a(1))*z+a(0))/((((b(3)*z+b(2))*z+b(1))*z+b(0))*z+1)
+endif
+k=where( (y gt y0) and (y lt 1))
+if (k(0) ne -1) then begin
+        z=sqrt(-alog((1-y(k))/2.))
+        x(k)=(((c(3)*z+c(2))*z+c(1))*z+c(0))/((d(1)*z+d(0))*z+1)
+endif
+k=where((y gt -y0) and (y gt -1))
+if (k(0) ne -1) then begin
+        z=sqrt(-alog((1+y(k))/2.))
+        x(k)=-(((c(3)*z+c(2))*z+c(1))*z+c(0))/((d(1)*z+d(0))*z+1)
+endif
+x=x-(errorf(x)-y)/(2./sqrt(!dpi) * exp(-x^2))
+x=x-(errorf(x)-y)/(2./sqrt(!dpi) * exp(-x^2))
+
+k=where(y eq -1)
+if (k(0) ne -1) then x(k)=-k*1./0.
+k=where(y eq 1)
+if (k(0) ne -1) then x(k)=k*1./0.
+k=where(y gt 1)
+if (k(0) ne -1) then x(k)=k*0./0.
+return,x
+end 

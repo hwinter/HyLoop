@@ -1,0 +1,30 @@
+;.r new_delta_test
+
+;ac=(Z_1*z_2*!msul_qe*!msul_qe)/(mu_rm*)
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;test the new formulation for the d/dt term
+
+m_test= !msul_me
+m_field=!msul_mp
+t=1d6
+n_e=1d9
+energy=15.
+v=energy2vel(energy)
+help, v
+
+mu_rm=(m_test*m_field)/(m_test+m_field)
+
+b_Debye=6.65*((T/n_e)^.5)
+A=2*!dpi*n_e*v*v*v*m_test*m_test*m_field/((m_field+m_test)^2)
+
+xi=!msul_qe*!msul_qe/(mu_rm*v*v)
+print, ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;'
+print, A*(1/b_Debye)*b_Debye
+
+print, xi*xi*A*alog(1d0+(b_Debye*b_Debye/(xi*xi)))
+
+end

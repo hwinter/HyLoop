@@ -1,0 +1,138 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;----- Eulerian time stepper (result is change in state variable) -----
+function msu_dstate4, state, T, g, A, s, heating, dt, T0, $
+  src, depth, safety, uri, fal, $
+  DEBUG=DEBUG,$
+  SO=SO, $
+  NO_SAT=NO_SAT,$
+  NOVISC=NOVISC, mu=mu, $
+  Coulomb_log=Coulomb_log, $
+  CONDUCTION=CONDUCTION, $
+  DN_E=DN_E, $
+  E_FLUX=E_FLUX, $
+  ADVECT_WORK=ADVECT_WORK, $
+  CONDUCTION=CONDUTION, $
+  RADIATIVE_LOSS=RADIATIVE_LOSS,$
+  DE=DE, DIV_V=DIV_V, DV=DV,$
+  VISC0=VISC0, K2=K2,$
+  MFP=MFP,$
+  L_T=L_T
+  
+  
+common loopmodel, ds1, ds2, A1, is
+
+;Force proper (), [] syntax
+COMPILE_OPT STRICTARR
+if not keyword_set(DEBUG) then DEBUG=0
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;useful thermodynamic quantities (e/n_e grid)
+P = (2.0/3.0)*state.e
+;temperature interpolated to the v grid
+T2 = (T[0:is-1] + T[1:is])/2.0
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;calculate rho (mass density) on v grid
+rho = !msul_mp * (state.n_e[0:is-1] + state.n_e[1:is])/2.0
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;boundary conditions
+state=msu_bcs(state, g, T0, ds2, is)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Upwind differencing stuff
+vpos = float(state.v gt 0.0)
+vneg = not vpos
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;	
+;***** Continuity equation (n_e) *****
+;Scheme rigorously conserves mass.
+mass_flux = A * vpos * state.v * state.n_e[0:is-1] + $
+            A * vneg * state.v * state.n_e[1:is]
+dn_e = - (dt/A1)* $
+	(mass_flux[1:is-1] - mass_flux[0:is-2])/ds1
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;***** Internal energy equation (e) *****
+;Note: Advection uses a conservative form.
+;Advection and work:
+e_flux = A * vpos * state.v * state.e[0:is-1] + $
+         A * vneg * state.v * state.e[1:is]
+
+advect_work = -(dt/(A1*ds1)) * $
+              ( e_flux[1:is-1] - e_flux[0:is-2] ) $ ;advection
+              -(dt*P[1:is-1]/(A1*ds1)) * $
+              ((A[1:is-1]*state.v[1:is-1]) -( A[0:is-2]*state.v[0:is-2])) ;work
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+conduction = MSU_conduction(state, s, a, $
+                            SO=SO, $ ;Pass the SO for C codes if desired
+                            IS=is, $
+                            DT=dt, $
+                            DS1=ds1, $
+                            DS2=ds2, $
+                            TEMP=TEMP,$
+                            S_GRID_TEMP=S_GRID_TEMP,$
+                            SPIT=SPIT,$
+                            NO_SAT=NO_SAT,$
+                            A1=A1,$
+                            coulomb_log=coulomb_log,$
+                            K2=K2,$
+                            MFP=MFP,$
+                            L_T=L_T)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Calculate radiative losses
+radiative_loss=-msu_radloss(state.n_e[1:is-1],T[1:is-1],T0=T0,$
+        	src=src,uri=uri,fal=fal, disp=disp,SO=SO )*dt 	
+
+;viscous energy loss Mu is passed in
+;temp1 = 2.d0*(A[1:is-1ul]*state.v[1:is-1ul] $
+;              - A[0:is-2ul]*state.v[0:is-2ul]) / $
+;        (ds1[0:is-2ul]*(A[1:is-1ul] + A[0:is-2ul]));
+
+;visc0 = dt * mu[0:is] * [0d, (temp1)^2d0, 0d0] 
+;d^2 v heats the plasma
+;visc0 = dt * mu[1:is-1ul] * (temp1)^2d0 
+   
+;Round up all terms
+de = conduction[1:is-1] $
+     + advect_work   $
+     + radiative_loss $
+     + heating*dt ;$
+    ; + visc0                    ;viscousity
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;***** Momentum equation (v) *****
+div_v = (state.v[1:is-1] - state.v[0:is-2])/ds1
+dv =    - (dt/rho) * (P[1:is] - P[0:is-1])/ds2 $ ;grad P
+	- dt * state.v * $
+	  ( vpos * [0.0, div_v] + $
+	    vneg * [div_v, 0.0] ) $ ;advection
+	+ (dt*g); $;gravity
+  ;      + visc;Viscous term
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Maintain chromospheric depth if desired.
+if keyword_set(depth) then begin
+    s_alt = [2*s[0]-s[1],(s[0:is-2]+s[1:is-1])/2.0,2*s[is-1]-s[is-2]]
+                                ;s on the volume element grid (like e, n_e)
+    L = s[is-1] + s[0]          ;Length of coronal loop
+    
+;find location of transition region at bottom of each loop leg.
+    ss = where(T ge 1.1*T0)
+    n_ss = n_elements(ss)
+    i0 = ss[0]>1 & i1 = ss[n_ss-1]<(is-3)
+        
+        strength = (1.0/safety)*((depth - s_alt[i0])/depth)^3 $
+        	< 1.0/safety > (-1.0/safety) ;clamp density loss
+;relevant density scale
+        nscale = 0.5*min(state.n_e[0:i0]) 
+
+        dn_e[i0] = dn_e[i0] + nscale*strength
+	
+        strength = (1.0/safety)*((depth - (L - s_alt[i1]))/depth)^3 $
+        	< 1.0/safety > (-1.0/safety) ;clamp density loss
+        nscale = 0.5*min(state.n_e[i1:is]) ;relevant density scale
+
+        dn_e[i1] = dn_e[i1] + nscale*strength
+    endif
+        
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+stop
+return, {e:[0.0,de,0.0], n_e:[0.0,dn_e,0.0], v:dv}
+;This is almost a state structure, just lacks the time tag
+END

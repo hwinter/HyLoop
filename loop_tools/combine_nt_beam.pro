@@ -1,0 +1,137 @@
+;+
+; NAME:
+;	combine_nt_beam
+;
+; PURPOSE:
+;	Combine the non-thermal particle beams from multiple runs into
+;	a single beam for easier analysis
+;
+; CATEGORY:
+;	
+;
+; CALLING SEQUENCE:
+;	Result=combine_nt_beam(folder, PREFIX=PREFIX, EXT=EXT, $
+;                              FOLDER_PREFIX=FOLDER_PREFIX)
+;
+; INPUTS:
+;	Folder: The top level folder that contains the multiple run
+;	folders. 
+;	
+; KEYWORD PARAMETERS:
+;	PREFIX: The prefix of the files to restore.  If not supplied
+;	patc is the assumed prefix.
+;
+;       EXT: The extension of the files to restore.  If not supplied
+;	.loop is the assumed extension.
+;
+;       FOLDER_PREFIX:  The prefix of the run folders.  If not supplied
+;	run is the assumed prefix.
+;
+; OUTPUTS:
+;       A non-thermal particle beam structure combining all of the
+;       beams.  NB No averaging is done in this process.
+;
+; OPTIONAL OUTPUTS:
+;	
+;
+; COMMON BLOCKS:
+;	NONE.
+;
+; SIDE EFFECTS:
+;	NONE.
+;
+; RESTRICTIONS:
+;	No statistical analysis is done in this program.  Be wary on
+;	interpreting results.
+;
+;       If the run folders have different same run times
+;       (i.e. different numbers of files) then the program will stop
+;       at the smallest common time.
+;
+; PROCEDURE:
+;	
+;
+; EXAMPLE:
+;	
+;
+; MODIFICATION HISTORY:
+; 	Written by: Henry (Trae) Winter III Jan. 01, 2011	
+;-
+
+
+
+function combine_nt_beam, folder, $
+                          PREFIX=PREFIX, EXT=EXT, $
+                          FOLDER_PREFIX=FOLDER_PREFIX
+
+if size(folder , /TYPE) ne 7 then begin
+   Print, 'Combine_nt_beam requires that you pass a top level folder.'
+   Print, 'Combine_nt_beam quitting.'
+   return, -1 
+   goto, end_jump
+endif
+
+;if file_search(folder,  /TEST_DIRECTORY) eq -1 then begin
+;   Print, 'Combine_nt_beam requires that you pass a top level folder.'
+;   Print, 'The path '+folder+' is not a valid folder.'
+;   Print, 'Combine_nt_beam quitting.'
+;   return, -1
+;   goto, end_jump
+;endif
+
+if size(PREFIX , /TYPE) ne 7 then PREFIX_in='patc' else $
+   PREFIX_in=PREFIX
+if size(EXT , /TYPE) ne 7 then EXT_in='.loop' else $
+   EXT_in=EXT
+if size(FOLDER_PREFIX , /TYPE) ne 7 then FOLDER_PREFIX_in='run' else $
+   FOLDER_PREFIX_in=FOLDER_PREFIX
+
+
+run_folders=file_search(folder, FOLDER_PREFIX_in+'*', $
+                        /TEST_DIRECTORY,  /FULLY_QUALIFY_PATH, $
+                        COUNT=n_folders)
+n_folders<=63
+
+if n_folders eq -1 then begin
+   Print, 'No run folders with prefix '+' found in folder '+folder+'.'
+   Print, 'Combine_nt_beam quitting.'
+   return, -1
+   goto, end_jump
+endif
+save_folder=folder+'combined/'
+spawn, 'mkdir '+save_folder
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Find the maximum number of files we can use.
+n_files=1d6
+for i=0ul, n_folders-1ul do begin
+      files=file_search(run_folders[i],PREFIX_in+'*'+EXT_in,$
+                        COUNT=FILE_COUNT )
+      
+      n_files<=FILE_COUNT
+
+endfor
+BREAK_FILE, FILES, DISK_LOG, DIR, FILNAM, EXT, /LAST_DOT
+files=FILNAM+EXT
+For i=0ul, n_files-1 do begin
+   j=0
+   restore, run_folders[j]+'/'+files[i]
+   print,  run_folders[j]+'/'+files[i]
+   combined_beam=nt_beam
+   for j=1ul, n_folders-1 do begin
+      
+   restore, run_folders[j]+'/'+files[i]
+   print,  run_folders[j]+'/'+files[i]
+      combined_beam=concat_struct(combined_beam, nt_beam)
+   endfor; j loop
+   nt_beam=temporary(combined_beam)
+   save, nt_beam, loop, $
+         file=save_folder+files[i]
+
+endfor; i loop
+
+
+
+return, 1
+
+end_jump:
+END

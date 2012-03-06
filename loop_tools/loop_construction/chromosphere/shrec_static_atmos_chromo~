@@ -1,0 +1,41 @@
+function shrec_static_atmos_chromo, loop, T0=T0
+;need to fix the finding of indices so that it works from Z and not z_alt
+
+
+
+if not keyword_set(T0) then T0=1d4
+;Interpolate the z axis on the volume grid
+z_alt= shrec_get_s_alt(reform(loop.axis[2,*]), /GT0)
+
+ind=where(loop.s_alt le loop.depth)
+max_ind=max(ind)
+dz=z_alt[ind]-z_alt[max_ind+1]
+
+P=get_loop_pressure(loop)
+P_0=P[max_ind+1]
+
+p_chromo=P_0*(exp((-1d0*!shrec_mp*abs(loop.g[ind])*dz)/(!shrec_kB*T0)))
+
+;Remembering that n_p~n_e and P=nkT
+n_e_add=p_chromo/(2d0*!shrec_kB*T0)
+loop.state.n_e[ind]=n_e_add
+;E=3/2*n*kb*T
+loop.state.e[ind]=(3./2.) *2.*n_e_add*!shrec_kB *T0
+ 
+ind=where(max(loop.s_alt)-loop.s_alt le depth)
+
+min_ind=min(ind)
+dz=z_alt[ind]-loop.axis[2,min_ind-1]
+P_0=P[min_ind+1]
+p_chromo=P_0*(exp((-1d0*!shrec_mp*abs(loop.g[ind])*dz)/(!shrec_kB*T0)))
+;Remembering that n_p~n_e and P=nkT
+n_e_add=p_chromo/(2d0*!shrec_kB*T0) 
+loop.state.n_e[ind]=n_e_add 
+;E=3/2*n*kb*T
+loop.state.e[ind]=(3./2.) *2.*n_e_add* !shrec_kB*T0
+
+
+
+
+return, loop
+END

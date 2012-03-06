@@ -1,0 +1,171 @@
+;+
+;NAME: 
+;	loopmodel
+;PUPROSE:
+;	Front end for numerical loop model (loop6.pro). Takes
+;	an initial state and propagates forward in time.
+;	Results are saved to disk at 1s time intervals.
+;CALLING SEQUENCE:
+;	loopmodel, g, A, x, heat, interval, [, state=state, lhist=lhist, $
+;		T0=T0, outfile=outfile, /src, /fal, /uri, depth=depth]
+;INPUT PARAMETERS:
+;       g - gravitational acceleration in x direction,
+;               as a function of x (N-1 elements)
+;       A - cross-sectional area as a function of x
+;               (N-1 elements)
+;       x - array containing position values for 
+;               the boundaries between the volume elements
+;               (x has N-1 elements). The intervals
+;               should be slowly varying so as to
+;               avoid numerical complications.
+;       heat - coronal heating rate. Either constant
+;               or an array with N-2 elements (volume
+;               element grid, missing the ends).
+;	interval - amount of time (s) to run the model forward.
+;		This gets rounded to the nearest second.
+;OPTIONAL KEYWORD INPUTS:
+;	lhist - An array of state vectors giving the previous
+;		history of the loop. If lhist is specified, then
+;		the initial conditions are read from the last
+;		entry of lhist and state (if given) is ignored.
+;		On output, lhist contains a history of states.
+;	state - Initial state structure. Must be supplied if 
+;		lhist is not. On output, contains the final state.
+;		state.e - internal energy (N volume elements)
+;		state.n_e - electron density (N volume elements)
+;		state.v - velocity in x direction at the
+;		    interstices between the volume 
+;		    elements (N-1 elements)
+;		state.time - time of specified state.
+;	T0 - Temperature at the loop boundaries (chromospheric
+;		footpoints). If not specified, it is read
+;		from the zeroth volume element of the state vector.
+;	outfile - File to store results (lhist, g, A, x, heat). If
+;		the display device is set to the z-buffer, then
+;		real time graphical output is suppressed, and the
+;		present state of the system (state, g, A, x, heat)
+;		is output as a save file called outfile+'.snap'.
+;	src - optional switch to cut off radiative losses below 
+;		T=T0, thus holding the chromospheric temperature
+;		above the boundary condition temperature.
+;	depth - optional desired chromospheric depth. If this keyword
+;		is nonzero, then corrections are applied to try to
+;		maintain a chromosphere of a desired depth (add or
+;		remove mass at the 1.1*T0 isotherm, which slides
+;		the isotherm toward desired depth). If
+;		depth <= 1, then the default depth of 1e6 cm is used.
+;		If depth is greater than 1, then the value of the
+;		keyword is the desired chromospheric depth in cm.
+;	safety - timestepping safety factor; see loop6.pro.
+;OUTPUTS:
+;	lhist - array of state structures, giving the loop history
+;		as a function of time.
+;	state - final state of the loop.
+;HISTORY:
+;	1999-Feb-4 written by Charles C. Kankelborg
+;	1999-Feb-12 CCK fixed lhist append bug
+;	1999-Feb-16 CCK: depth & safety keywords (see loop6.pro)
+;	1999-Jun-27 CCK: uri & fal keywords (see loop6.pro radloss)
+;	1999-Jun-29 CCK: modified so that when 'z' buffer ia used,
+;		graphical output is suppressed and realtime info is
+;		sent to a small save file (*.snap). This is very
+;		handy for running in batch mode!
+;	1999-Aug-18 CCK: fixed crash when depth keyword not set
+;	1999-Sep-20 CCK: fixed lhist append off-by-one error
+;	1999-Dec-6 CCK: updated from loop5 to loop6.
+;-
+pro loopmodel, g, A, x, heat, interval, state=state, lhist=lhist, $
+		T0=T0, outfile=outfile, src=src, uri=uri, fal=fal, $
+                depth=depth, safety=safety
+;constants
+kB = 1.38e-16 ;Boltzmann constant (erg/K)
+mp = 1.67e-24 ;proton mass (g)
+gamma = 5.0/3.0 ;ratio of specific heats, Cp/Cv
+gs = 2.74e4 ;solar surface gravity
+
+if not keyword_set(outfile) then outfile='foo.sav' 
+	;file in which to save results
+
+;timing information
+delta_t = 1.0 ;time interval (s) between saved data
+num_iterations = long(interval+0.5)  ;round to nearest second
+
+i1 = long(n_elements(lhist)) ;where are we starting?
+if i1 ne 0 then begin ;append to existing lhist
+	if n_elements(state) ne 0 then begin
+		message,'Both lhist and state specified: ignoring state.',$
+			/informational
+	endif
+	state = lhist[i1-1]
+        lhist =[lhist,make_array(num_iterations, value=state)]
+endif else begin ;no pre-existing lhist
+	if n_elements(state) eq 0 then begin
+		print,'Hey, what are the initial conditions?'
+		message,'Neither lhist nor state was specified!'
+	endif
+	lhist = make_array(num_iterations+1, value=state)
+	;side-effect is to initialize lhist(0) to initial state.
+	i1 = 1L ;begin recording at lhist(1).
+endelse
+
+N = n_elements(state.e) ;figure out grid size
+
+if not keyword_set(T0) then T0 = state.e[0]/(3*state.n_e[0]*kB)
+	;Unless T0 is specified explicitly, just read it off
+	;of the initial state vector
+
+x_alt = [2*x[0]-x[1],(x[0:N-3]+x[1:N-2])/2.0,2*x[N-2]-x[N-3]]
+        ;x on the volume element grid (like e, n_e)
+midpt = max(x_alt)/2.0 ;find midpoint along loop
+
+dx = x[1:N-2] - x[0:N-3]
+print,'grid spacing runs from ',min(dx)/100.0,' m  to ',max(dx)/100000.0,' km.'
+if not keyword_set(depth) then depth=0 ;prevent crashes in next line!
+print,'keyword DEPTH =',depth
+if not (!d.name eq 'Z') then window, retain=2
+
+t_start = systime(1) ;initialize computer time
+t=0 ;initialize loop model time
+
+b=0.07 & c=0.03 & d=0.1 ;plot margins (relative to graphics window size)
+
+for i=i1, num_iterations-1+i1 do begin
+	wait,0.01 ;Allows graphics screen to render
+	
+;	loop6, state, g, A, x, heat, delta_t, T0=T0, $
+;        	src=src, fal=fal, uri=uri, depth=depth, safety=safety
+;The same as loop6 but without any c_code	
+	loop6a, state, g, A, x, heat, delta_t, T0=T0, $
+        	src=src, fal=fal, uri=uri, depth=depth, safety=safety
+	lhist(i) = state
+	
+        if (!d.name eq 'Z') then begin ;alternate means to monitor progress.
+        	;Save a snapshot of the present state.
+        	save, state,g,A,x,heat, filename=outfile+'.snap'
+        	goto, label 
+        endif
+	
+	stateplot, x, state, /screen
+	;plot, x,state.v,yrange=[-1e7,1e7], $
+	;	position=[0+d,0+b,0.5-c,0.5-c], $
+	;	ytitle='v (cm/s)', xtitle='x (cm)'
+	;plot, x_alt,0.666666*state.e, $
+	;	position=[0+d,0.5+c,0.5-c,1-c], $
+	;	ytitle='P (dyn/cm^2)',/noerase
+	;plot_oo, x_alt, state.e/(3.0*state.n_e*kB), $
+	;	position=[0.5+d,0+b,1-c,0.5-c], $
+	;	ytitle='T (K)',/noerase, xtitle='x(cm)', $
+	;	psym=3
+	;plot_oo, x_alt, state.n_e, $
+	;	position=[0.5+d,0.5+c,1-c,1-c], $
+	;	ytitle='n_e (cm^-3)',/noerase, $
+	;	psym=3
+	
+	label: print,'Model time: ',state.time, $
+		's    Real time: ',systime(1)-t_start,'s'
+endfor
+
+print,'Finished simulation. Saving results as ',outfile
+save, lhist, g, A, x, heat, filename=outfile
+
+end

@@ -1,0 +1,583 @@
+--------------------------------------------------------
+Running SSW, Last Updated: Wed Nov 2 22:22:51 GMT 2005
+
+IDL> ssw_path,/iii [,/remove]	        ; add and remove SSW instrument = iii
+IDL> pr_env,/xxx		        ; show environmentals/logicals xxx
+IDL> sswloc,/xxx [,outlist]		; SSW routines matching pattern xxx
+IDL> stuff=gt_tagval(xxx,/TAG)          ; extract TAG from structure array xxx
+IDL> text=get_infox(xxx,'t1,t2,t3...')  ; ascii summary of structure array xxx
+
+?? Why work with 1 FITS header when you can work with 100 FITS structures ??
+mreadfits converts vector of fits files to Structure array and 3D data
+IDL> mreadfits, FITSFILES, fitsstruct [ , data_3D, outsize=xy ]
+ 
+PROBLEMS? - e-mail TO: freeland@penumbra.nascom.nasa.gov
+--------------------------------------------------------
+IDL Version 7.0.6, Mac OS X (darwin x86_64 m64). (c) 2008, ITT Visual Information Solutions
+Installation number: 1412-1.
+Licensed for use by: High Energy Astrophysics Division
+
+Executing SSW IDL_STARTUP for: GEN
+Executing SSW IDL_STARTUP for: STEREO gen tree
+Registering DLM /proj/DataCenter/ssw/stereo/gen/exe/icy/darwin_x86_64/lib/icy.dlm
+% SET_LOGENV: setenv,SOHO_SPICE=/proj/DataCenter/sswdb/soho/gen/spice
+Executing SSW IDL_STARTUP for: TRACE
+Executing SSW IDL_STARTUP for: EIT
+executing EIT IDL_STARTUP
+Executing SSW IDL_STARTUP for: SOT
+% Compiled module: STRJUSTIFY.
+% Compiled module: UNIQ.
+% Compiled module: DEFAULT.
+% Compiled module: PRSTR.
+Including Paths:
+ --------------------------------
+| $SSW/hinode/sot/doc/demo/paris |
+| $SSW/hinode/sot/doc/demo/test  |
+| $SSW/hinode/sot/doc/demo       |
+ --------------------------------
+% SSW_PATH: Number of paths changed from 253 to 256
+Executing SSW IDL_STARTUP for: XRT
+% Compiled module: REM_ELEM.
+% Compiled module: REM_ELEM2.
+% Compiled module: GET_UNIQ.
+% Compiled module: REMOVE.
+Including Paths:
+ -----------------------------------
+| $SSW/hinode/gen/idl/pointing      |
+| $SSW/hinode/sot/idl/ct            |
+| $SSW/hinode/sot/idl/fg/cal        |
+| $SSW/hinode/sot/idl/fg/fgram      |
+| $SSW/hinode/sot/idl/fg/util       |
+| $SSW/hinode/sot/idl/sodasurf      |
+| $SSW/hinode/sot/idl/sp/util       |
+| $SSW/hinode/sot/idl/sp/util_lmsal |
+| $SSW/hinode/sot/idl/user/berger   |
+| $SSW/hinode/sot/idl/util          |
+| $SSW/hinode/sot/idl               |
+| $SSW/trace/idl/egse               |
+| $SSW/trace/idl/info               |
+| $SSW/trace/idl/ops                |
+| $SSW/trace/idl/site               |
+| $SSW/trace/idl/util               |
+| $SSW/trace/idl/wwwidl             |
+ -----------------------------------
+% SSW_PATH: Path not changed Number of paths: 256
+% SET_LOGENV: setenv,SOT_CALIBRATION=$SSW_SOT/calibration
+Executing SSW IDL_STARTUP for: EIS
+% Compiled module: LOAD_EXTERNAL.
+% Compiled module: MKLOG.
+% Compiled module: NOT_EXIST.
+% Compiled module: SSW_BIN.
+% Compiled module: BREAK_FILE.
+% Compiled module: REVERSE.
+% Compiled module: FIX_PATH.
+% Compiled module: STR_TRAIL.
+% Compiled module: GET_PATH_DELIM.
+Executing SSW IDL_STARTUP for: SECCHI
+Including Paths:
+ -----------------------------
+| $SSW/packages/mjastereo/idl |
+ -----------------------------
+% SSW_PATH: Number of paths changed from 256 to 257
+Including Paths:
+ -----------------------------------------------
+| $SSW/packages/nrl/idl/nrlgen/analysis         |
+| $SSW/packages/nrl/idl/nrlgen/dfanning         |
+| $SSW/packages/nrl/idl/nrlgen/display/diva     |
+| $SSW/packages/nrl/idl/nrlgen/display          |
+| $SSW/packages/nrl/idl/nrlgen/lascoeit         |
+| $SSW/packages/nrl/idl/nrlgen/time             |
+| $SSW/packages/nrl/idl/nrlgen/util/discri_pobj |
+| $SSW/packages/nrl/idl/nrlgen/util             |
+| $SSW/packages/nrl/idl/nrlgen/widgets          |
+ -----------------------------------------------
+% SSW_PATH: Number of paths changed from 257 to 266
+% SET_LOGENV: setenv,SECCHI_BKG=/proj/DataCenter/sswdb/stereo/secchi/background
+              s
+Executing SSW IDL_STARTUP for: CHIANTI
+% Compiled module: USE_CHIANTI.
+
+---------------------------------------------------------------
+                  Welcome to  CHIANTI
+  For current information see one of the CHIANTI WWW pages
+e.g: http://www.damtp.cam.ac.uk/user/astro/chianti/chianti.html
+If you have PROBLEMS please e-mail chianti_help@halcyon.nrl.navy.mil
+% Compiled module: DIR_EXIST.
+CHIANTI system variable !xuvtop set=/proj/DataCenter/ssw/packages/chianti/dbase
+You are using the CHIANTI database VERSION 6.0.1
+CHIANTI system variable !ioneq_file set=/proj/DataCenter/ssw/packages/chianti/dbase/ioneq/chianti.ioneq
+CHIANTI system variable !abund_file set=/proj/DataCenter/ssw/packages/chianti/dbase/abundance/sun_photospheric.abund
+% DEVICELIB: Added system variable !BCOLOR
+% DEVICELIB: Added system variable !ASPECT
+-------------------------------------------------------------------
+
+Executing SSW IDL_STARTUP for: SITE
+Including Paths:
+ ---------------------------------
+| $SSW/yohkoh/ucon/idl/acton      |
+| $SSW/yohkoh/ucon/idl/bentley    |
+| $SSW/yohkoh/ucon/idl/freeland   |
+| $SSW/yohkoh/ucon/idl/hudson     |
+| $SSW/yohkoh/ucon/idl/labonte    |
+| $SSW/yohkoh/ucon/idl/lemen      |
+| $SSW/yohkoh/ucon/idl/linford    |
+| $SSW/yohkoh/ucon/idl/mcallister |
+| $SSW/yohkoh/ucon/idl/sato       |
+| $SSW/yohkoh/ucon/idl/mctiernan  |
+| $SSW/yohkoh/ucon/idl/metcalf    |
+| $SSW/yohkoh/ucon/idl/morrison   |
+| $SSW/yohkoh/ucon/idl/sakao      |
+| $SSW/yohkoh/ucon/idl/schwartz   |
+| $SSW/yohkoh/ucon/idl/slater     |
+| $SSW/yohkoh/ucon/idl/wuelser    |
+| $SSW/yohkoh/ucon/idl/zarro      |
+ ---------------------------------
+Executing SSW IDL_STARTUP: (Personal)
+% Compiled module: SSW_PACKAGES.
+Including Paths:
+ --------------------------------------------
+| $SSW/packages/chianti/idl/continuum        |
+| $SSW/packages/chianti/idl/convert          |
+| $SSW/packages/chianti/idl/dem/low_level    |
+| $SSW/packages/chianti/idl/dem              |
+| $SSW/packages/chianti/idl/em               |
+| $SSW/packages/chianti/idl/emiss            |
+| $SSW/packages/chianti/idl/ionrec           |
+| $SSW/packages/chianti/idl/level_population |
+| $SSW/packages/chianti/idl/ratios           |
+| $SSW/packages/chianti/idl/read             |
+| $SSW/packages/chianti/idl/setup            |
+| $SSW/packages/chianti/idl/synt_spec        |
+| $SSW/packages/chianti/idl/utilities        |
+ --------------------------------------------
+% SSW_PATH: Number of paths changed from 903 to 902
+% Compiled module: SSW_SET_CHIANTI.
+
+---------------------------------------------------------------
+                  Welcome to  CHIANTI
+  For current information see one of the CHIANTI WWW pages
+e.g: http://www.damtp.cam.ac.uk/user/astro/chianti/chianti.html
+If you have PROBLEMS please e-mail chianti_help@halcyon.nrl.navy.mil
+CHIANTI system variable !xuvtop set=/proj/DataCenter/ssw/packages/chianti/dbase
+You are using the CHIANTI database VERSION 6.0.1
+CHIANTI system variable !ioneq_file set=/proj/DataCenter/ssw/packages/chianti/dbase/ioneq/chianti.ioneq
+CHIANTI system variable !abund_file set=/proj/DataCenter/ssw/packages/chianti/dbase/abundance/sun_photospheric.abund
+% DEVICELIB: Added system variable !BCOLOR
+% DEVICELIB: Added system variable !ASPECT
+-------------------------------------------------------------------
+
+% DEVICE: Unable to connect to X Windows display: :0.0
+% DEVICE: Unable to open X Windows display.
+          Is your DISPLAY environment variable set correctly?
+% Execution halted at: $MAIN$          
+% Compiled module: STRSPLIT.
+/proj/DataCenter/ssw
+Including Paths:
+ -----------------------------------
+| $SSW/hinode/gen/idl/pointing      |
+| $SSW/hinode/sot/idl/ct            |
+| $SSW/hinode/sot/idl/fg/cal        |
+| $SSW/hinode/sot/idl/fg/fgram      |
+| $SSW/hinode/sot/idl/fg/util       |
+| $SSW/hinode/sot/idl/sodasurf      |
+| $SSW/hinode/sot/idl/sp/util       |
+| $SSW/hinode/sot/idl/sp/util_lmsal |
+| $SSW/hinode/sot/idl/user/berger   |
+| $SSW/hinode/sot/idl/util          |
+| $SSW/hinode/sot/idl               |
+| $SSW/hinode/xrt/idl/info          |
+| $SSW/hinode/xrt/idl/objects       |
+| $SSW/hinode/xrt/idl/ops           |
+| $SSW/hinode/xrt/idl/response      |
+| $SSW/hinode/xrt/idl/util          |
+ -----------------------------------
+% SSW_PATH: Path not changed Number of paths: 902
+% SSW_PATH: No matches, nothing added...
+% SSW_PATH: Path not changed Number of paths: 902
+% Compiled module: SET_SHREC_SYS_VARIABLES.
+/proj/DataCenter/ssw
+% Compiled module: $MAIN$.
+% Compiled module: HYLOOP_2010_REU_FLARE_01_DC_PC.
+/proj/DataCenter/ssw
+LOOP_NUM        INT       =       34
+/Network/Servers/sdo1.cfa.harvard.edu/Users/Shared/hwinter/programs/HyLoop/experiments/2010_reu/loop_dc_
+1
+% RESTORE: Portable (XDR) SAVE/RESTORE file.
+% RESTORE: Save file written by hwinter@gray.cfa.harvard.edu, Mon Aug  2
+           13:09:37 2010.
+% RESTORE: IDL version 7.0.6 (darwin, x86_64).
+% RESTORE: Restored variable: LOOP_ENERGY.
+LOOP_ENERGY     DOUBLE    =    1.1623909e+29
+<Expression>    DOUBLE    =    1.1623909e+29
+Run started at Wed Aug 11 00:36:48 2010
+Including Paths:
+ --------------------------------------------
+| $SSW/packages/chianti/idl/continuum        |
+| $SSW/packages/chianti/idl/convert          |
+| $SSW/packages/chianti/idl/dem/low_level    |
+| $SSW/packages/chianti/idl/dem              |
+| $SSW/packages/chianti/idl/em               |
+| $SSW/packages/chianti/idl/emiss            |
+| $SSW/packages/chianti/idl/ionrec           |
+| $SSW/packages/chianti/idl/level_population |
+| $SSW/packages/chianti/idl/ratios           |
+| $SSW/packages/chianti/idl/read             |
+| $SSW/packages/chianti/idl/setup            |
+| $SSW/packages/chianti/idl/synt_spec        |
+| $SSW/packages/chianti/idl/utilities        |
+ --------------------------------------------
+% SSW_PATH: Path not changed Number of paths: 902
+
+---------------------------------------------------------------
+                  Welcome to  CHIANTI
+  For current information see one of the CHIANTI WWW pages
+e.g: http://www.damtp.cam.ac.uk/user/astro/chianti/chianti.html
+If you have PROBLEMS please e-mail chianti_help@halcyon.nrl.navy.mil
+CHIANTI system variable !xuvtop set=/proj/DataCenter/ssw/packages/chianti/dbase
+You are using the CHIANTI database VERSION 6.0.1
+CHIANTI system variable !ioneq_file set=/proj/DataCenter/ssw/packages/chianti/dbase/ioneq/chianti.ioneq
+CHIANTI system variable !abund_file set=/proj/DataCenter/ssw/packages/chianti/dbase/abundance/sun_photospheric.abund
+% DEVICELIB: Added system variable !BCOLOR
+% DEVICELIB: Added system variable !ASPECT
+-------------------------------------------------------------------
+
+Including Paths:
+ ---------------------------------------
+| $SSW/packages/xray/dbase/chianti      |
+| $SSW/packages/xray/dbase              |
+| $SSW/packages/xray/idl/brm            |
+| $SSW/packages/xray/idl/brm2           |
+| $SSW/packages/xray/idl/inversion      |
+| $SSW/packages/xray/idl/nuclear        |
+| $SSW/packages/xray/idl/regularization |
+| $SSW/packages/xray/idl                |
+ ---------------------------------------
+% SSW_PATH: Number of paths changed from 902 to 904
+starting to test
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: NT_BREMS.
+/Network/Servers/sdo1.cfa.harvard.edu/Users/Shared/hwinter/programs/HyLoop/experiments/2010_reu/loop_dc_0034/hyloop_out_
+% Compiled module: GET_LOOP_VOL.
+mkdir: /Network/Servers/sdo1.cfa.harvard.edu/Users/Shared/hwinter/programs/HyLoop/experiments/2010_reu/loop_dc_0034/: File exists
+% Compiled module: GET_P_T_LAW_FLUX.
+% Compiled module: BETA.
+% Compiled module: HYLOOP.
+/proj/DataCenter/ssw
+Number of volume grids:          849
+% Compiled module: SHREC.
+% Compiled module: GET_LOOP_TEMP.
+% Compiled module: GET_LOOP_SOUND_SPEED.
+% Compiled module: E_FLARE_NATALIE.
+% Compiled module: INT_TABULATED.
+% Compiled module: GET_P_T_LAW_CONST_FLUX_HEAT.
+% Compiled module: GET_LOOP_PRESSURE.
+% Compiled module: SHREC_DSTATE3.
+% Compiled module: SHREC_BCS.
+% Compiled module: SHREC_CONDUCTION.
+% Compiled module: SHREC_GET_TEMP.
+% Compiled module: SHREC_KAPPA.
+% Compiled module: INTERPOL.
+% Compiled module: SHREC_GET_S_ALT.
+% Compiled module: SHREC_GET_TEMP_CLS.
+% Compiled module: SHREC_GET_MFP.
+% Compiled module: SHREC_RADLOSS.
+% Compiled module: SET_CCK_RADLOSS.
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Tue Aug 10 20:36:53 2010
+Model time: 1.0000000s    Real time: 2.9710979s
+Min/Max V:  -15.513482/15.560043[km/s]
+T_max: 5.8492055MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 2.4025653e+08 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Tue Aug 10 20:37:04 2010
+Model time: 2.0000000s    Real time: 13.921842s
+Min/Max V:  -49.961228/50.505741[km/s]
+T_max: 11.432035MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 7.7129627e+08 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Tue Aug 10 20:37:37 2010
+Model time: 3.0000000s    Real time: 46.286857s
+Min/Max V:  -71.022831/72.286346[km/s]
+T_max: 15.773442MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 1.2182083e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Tue Aug 10 20:38:40 2010
+Model time: 4.0000000s    Real time: 109.83641s
+Min/Max V:  -86.027723/87.230177[km/s]
+T_max: 19.525337MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 1.6830542e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Tue Aug 10 20:40:25 2010
+Model time: 5.0000000s    Real time: 214.55453s
+Min/Max V:  -97.829017/98.986530[km/s]
+T_max: 22.952575MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 2.1523599e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Tue Aug 10 20:43:01 2010
+Model time: 6.0000000s    Real time: 370.94058s
+Min/Max V:  -107.37079/108.56338[km/s]
+T_max: 26.176215MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 2.6234218e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Tue Aug 10 20:46:37 2010
+Model time: 7.0000000s    Real time: 586.51523s
+Min/Max V:  -115.22308/116.49836[km/s]
+T_max: 29.270537MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 3.0954108e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Tue Aug 10 20:51:21 2010
+Model time: 8.0000000s    Real time: 870.60635s
+Min/Max V:  -121.65852/123.04525[km/s]
+T_max: 32.292229MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 3.5681967e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Tue Aug 10 20:57:21 2010
+Model time: 9.0000000s    Real time: 1230.9014s
+Min/Max V:  -126.75023/128.26831[km/s]
+T_max: 35.292785MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 4.0415763e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Tue Aug 10 21:04:50 2010
+Model time: 10.000000s    Real time: 1679.2475s
+Min/Max V:  -130.44314/132.11865[km/s]
+T_max: 38.326881MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 4.5153456e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Tue Aug 10 21:14:02 2010
+Model time: 11.000000s    Real time: 2231.8762s
+Min/Max V:  -133.00599/134.67825[km/s]
+T_max: 41.461252MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 4.9893761e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Tue Aug 10 21:25:18 2010
+Model time: 12.000000s    Real time: 2907.2420s
+Min/Max V:  -134.25449/136.09556[km/s]
+T_max: 44.786672MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 5.4636129e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Tue Aug 10 21:39:07 2010
+Model time: 13.000000s    Real time: 3736.8562s
+Min/Max V:  -133.92757/135.81293[km/s]
+T_max: 48.442093MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 5.9382170e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Wed Aug 11 06:20:26 2010
+Model time: 14.000000s    Real time: 35015.792s
+Min/Max V:  -684.03322/733.80261[km/s]
+T_max: 52.712111MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 6.5185040e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Thu Aug 12 02:39:50 2010
+Model time: 15.000000s    Real time: 108179.99s
+Min/Max V:  -995.39188/1001.6659[km/s]
+T_max: 58.018238MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 6.8609915e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Thu Aug 12 14:08:24 2010
+Model time: 16.000000s    Real time: 149493.17s
+Min/Max V:  -1138.0810/1145.8369[km/s]
+T_max: 63.816732MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 7.3445237e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Thu Aug 12 22:47:05 2010
+Model time: 17.000000s    Real time: 180614.26s
+Min/Max V:  -1296.4237/1304.9025[km/s]
+T_max: 69.561351MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 7.8232028e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Fri Aug 13 06:55:07 2010
+Model time: 18.000000s    Real time: 209896.64s
+Min/Max V:  -1482.3981/1492.6558[km/s]
+T_max: 74.977122MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 8.3088632e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Fri Aug 13 21:06:57 2010
+Model time: 19.000000s    Real time: 261006.44s
+Min/Max V:  -1438.4089/1455.1357[km/s]
+T_max: 79.965915MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 8.7902074e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Sat Aug 14 11:02:00 2010
+Model time: 20.000000s    Real time: 311109.70s
+Min/Max V:  -1566.4051/1585.3445[km/s]
+T_max: 84.495342MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 9.2208239e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Sat Aug 14 19:06:53 2010
+Model time: 21.000000s    Real time: 340202.78s
+Min/Max V:  -1869.2735/1778.0018[km/s]
+T_max: 87.814648MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 9.2222220e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Tue Aug 17 06:27:11 2010
+Model time: 22.000000s    Real time: 553820.39s
+Min/Max V:  -2327.7392/2318.6446[km/s]
+T_max: 89.602931MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 8.7337234e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849
+% SAVE: Undefined item not saved: NT_BEAM.
+% SAVE: Undefined item not saved: DELTA_MOMENTUM.
+Computer: SDO10
+Computer Time: Mon Aug 30 15:33:31 2010
+Model time: 23.000000s    Real time: 1709800.3s
+Min/Max V:  -2260.3115/2336.5661[km/s]
+T_max: 90.558440MK
+grid spacing runs from        1689.3407 m  to        405.22381 km.
+Flux: 8.2732710e+09 erg cm^-2 sec^-1
+keyword DEPTH = OFF
+Viscosity model  = OFF
+########################################################################
+Number of volume grids:          849

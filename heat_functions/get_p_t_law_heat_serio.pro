@@ -1,0 +1,93 @@
+
+;+
+; NAME:
+;	get_p_t_law_heat_serio
+;
+; PURPOSE:
+;	Calculate a heating rate based on Martens' power law heating functions,
+;        E_h=H*(T^alpha)*(P^beta), where the constant of proportionality, H,
+;        is not based on Martens (2007) but on the amount of energy deposited
+;        in a loop based upon Serio's scaling laws (Serio, et al.1981)
+;
+; CATEGORY:
+;      Heat_function	
+;
+; CALLING SEQUENCE:
+;	
+;
+; INPUTS:
+;	
+;
+; OPTIONAL INPUTS:
+;	
+;	
+; KEYWORD PARAMETERS:
+;	
+;
+; OUTPUTS:
+;	
+;
+; OPTIONAL OUTPUTS:
+;	
+;
+; COMMON BLOCKS:
+;	
+;
+; SIDE EFFECTS:
+;	
+;
+; RESTRICTIONS:
+;	
+;
+; PROCEDURE:
+;	
+;
+; EXAMPLE:
+;	
+;
+; MODIFICATION HISTORY:
+; 	Written by:HDWII
+;-
+
+function get_p_t_law_heat_serio, LOOP, time, dt, nt_beam, nt_brems,$
+  PATC_heating_rate, extra_flux, $
+  DELTA_MOMENTUM,flux, ne_change
+;constants
+kB = 1.38e-16 ;Boltzmann constant (erg/K)
+
+;Exponent of the temperature dependance.
+DEFSYSV, '!heat_alpha', EXISTS = test1
+;Exponent of the pressure/density dependance.
+DEFSYSV, '!heat_beta', EXISTS = test2
+
+;Heating rate to scale to.
+DEFSYSV, '!heat_rate', EXISTS = test3
+
+n_loops=n_elements(loop)-1
+n_cells=n_elements(loop[n_loops].state.n_e)
+;Default to the Joule heating case
+if test1 ne 1 then  alpha=-3d/2d $
+  else alpha=!heat_alpha
+
+;Default to no pressure dependence case
+if test2 ne 1 then  beta=0 $
+  else beta=!heat_beta
+
+;Default to heating rate of a 1d9 cm loop with 
+;  Tmax of 1d6 according to the Serio heating law. (Serio, et al. 1981)
+if test3 ne 1 then  heat_rate=0.0041976496 $
+  else heat_rate=!heat_rate
+
+volumes =get_loop_vol(loop[n_loops])
+power=total(heat_rate*volumes)
+
+T=get_loop_temp(loop[n_loops])
+
+heat=(kB^beta)*(loop[n_loops].state.n_e[1:n_cells-2]^beta) $
+     *(T^(alpha+beta))
+
+heat=power*(heat/total(heat*volumes))
+
+;stop
+return, heat
+END

@@ -1,0 +1,99 @@
+
+pro pa_plot3, nt_beam, GIF_NAME=GIF_NAME,$
+              XTITLE=XTITLE,YTITLE=YTITLE, TITLE=TITLE,$
+              CHARSIZE=charsize,CHARTHICK=charthick, $
+              BCOLOR=BCOLOR,$
+              BACKGROUND =BACKGROUND , COLOR = COLOR ,$
+             _EXTRA=EXTRA, L_ITEMS=L_ITEMS, PS=PS, $
+              NORMAL=NORMAL, L_CHARSIZE=L_CHARSIZE, $
+              L_CHARTHICK=L_CHARTHICK,PNG=PNG
+
+if not keyword_set(XTITLE) then $
+  XTITLE_in='Cosine Pitch Angle' $
+  else XTITLE_in=XTITLE
+if not keyword_set(YTITLE) then $
+  YTITLE_in= 'Number of Particles'$
+  else YTITLE_in=YTITLE
+if not keyword_set(TITLE) then $
+  TITLE_in='Pitch Angle Distribution' $
+            else TITLE_in=TITLE
+if not keyword_set(XRANGE) then $
+  XRANGE_in=[-1.0, 1.0] $
+            else XRANGE_in=XRANGE
+;TITLE_in=TITLE
+;YTITLE_in=YTITLE
+;XTITLE_in=XTITLE
+
+tvlct, [0,255,0,0], [0,0,255,0], [0,0,0,255]
+if not keyword_set(CHARTHICK) then charthick=1.1
+if not keyword_set(CHARSIZE) then charsize=1.1
+
+test=size(nt_beam, /DIMENSION) 
+if n_elements(test) gt 1 then begin
+    for i=0ul, test[1]-1ul do begin
+        if size(nt_beam_in, /TYPE) eq 0 then $
+          nt_beam_in=nt_beam[*,i] else $
+          nt_beam_in=concat_struct(nt_beam_in,nt_beam[*,i])
+        
+    endfor 
+endif else nt_beam_in=nt_beam
+  
+;good_index=where(nt_beam_in.state eq 'NT')
+;if good_index[0] ne -1 then  nt_beam_in=nt_beam_in[good_index]
+
+z=uniq(nt_beam_in.pitch_angle)
+
+
+nt_p=nt_beam_in[sort(cos(nt_beam_in.pitch_angle))]
+pa_indices=uniq(cos(nt_p.pitch_angle))
+pas=cos(nt_p[pa_indices].pitch_angle)
+
+
+min_pa=-1.0 ;min(pas)
+max_pa= 1.0 ;max(pas)
+delta=max_pa-min_pa
+step=0.01
+n_elem=long(.5+delta/step) >2
+
+pa_array=min_pa+delta*dindgen(n_elem)/(n_elem-1ul)
+n_array=dindgen(n_elem)
+
+;if good_index[0] ne -1 then begin
+    for i=0ul, n_elem-1ul do begin
+        z=where(cos(nt_beam_in.pitch_angle) le pa_array[i]+(step/2.) $
+                and $
+                cos(nt_beam_in.pitch_angle) ge pa_array[i] -(step/2.), count)
+                                ;print, z
+    ;print, count, pa_array[i]
+        if z[0] ne -1 then $
+          n_array[i]=total(nt_beam_in[z].scale_factor) $
+          else n_array[i]=0.
+                                ;stop
+    endfor
+;endif else n_array[*]=0
+
+;yrange=[0,ma
+set_plot, 'ps'
+device, landscape=1,color=8, file=ps
+if keyword_set(NORMAL) then factor=total(n_array)/100. $
+else factor=1.0
+
+hdw_plotbar,pa_array,n_array/factor, $
+            XTITLE=XTITLE_IN,YTITLE=YTITLE_IN,$
+            TITLE=TITLE_IN, $
+            CHARSIZE=charsize,CHARTHICK=charthick, $
+            BCOLOR=fsc_color('red'),BACKGROUND = fsc_color('white'),$
+            COLOR = fsc_color('black') ,$
+            font=1,  _EXTRA=EXTRA 
+
+if keyword_set(L_ITEMS) then begin
+    legend, L_ITEMS,/left, /top, FONT=0,BOX=0, CHARSIZE=L_charsize,CHARTHICK=L_charthick
+endif
+;IF KEYWORD_SET(GIF_NAME) THEN x2gif,'fig1.gif'
+;IF KEYWORD_SET(png) THEN x2png,'fig1.png'
+device,/CLOSE
+; set_plot,'x'
+;!X.CRANGE=old_x_range
+;stop
+end
+

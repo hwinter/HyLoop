@@ -1,0 +1,99 @@
+--------------------------------------------------------
+Running SSW, Last Updated: Tue Oct 18 21:21:57 GMT 2005
+
+IDL> ssw_path,/iii [,/remove]	        ; add and remove SSW instrument = iii
+IDL> pr_env,/xxx		        ; show environmentals/logicals xxx
+IDL> sswloc,/xxx [,outlist]		; SSW routines matching pattern xxx
+IDL> stuff=gt_tagval(xxx,/TAG)          ; extract TAG from structure array xxx
+IDL> text=get_infox(xxx,'t1,t2,t3...')  ; ascii summary of structure array xxx
+
+?? Why work with 1 FITS header when you can work with 100 FITS structures ??
+mreadfits converts vector of fits files to Structure array and 3D data
+IDL> mreadfits, FITSFILES, fitsstruct [ , data_3D, outsize=xy ]
+ 
+PROBLEMS? - e-mail TO: freeland@penumbra.nascom.nasa.gov
+--------------------------------------------------------
+IDL Version 6.2 (linux x86 m32). (c) 2005, Research Systems, Inc.
+Installation number: 1694-1.
+Licensed for use by: *** Physics*** DECSTATION 1200/533
+
+Executing SSW IDL_STARTUP for: GEN
+Executing SSW IDL_STARTUP for: SXT
+% Compiled module: STRJUSTIFY.
+% Compiled module: UNIQ.
+% Compiled module: PRSTR.
+Including Paths:
+ -----------------------------------
+| $SSW/yohkoh/gen/galileo/idl/lmsal |
+ -----------------------------------
+% SSW_PATH: Number of paths changed from 118 to 119
+% Compiled module: SET_LOGENV.
+% SET_LOGENV: setenv,SXT_DIR_UVDBASE=/disk/pd1/sswdb/ydb/uv_flood
+Executing SSW IDL_STARTUP for: CDS
+Executing SSW IDL_STARTUP for: TRACE
+Executing SSW IDL_STARTUP for: EIT
+executing EIT IDL_STARTUP
+Executing SSW IDL_STARTUP for: SITE
+Including Paths:
+ ---------------------------------
+| $SSW/yohkoh/ucon/idl/acton      |
+| $SSW/yohkoh/ucon/idl/bentley    |
+| $SSW/yohkoh/ucon/idl/freeland   |
+| $SSW/yohkoh/ucon/idl/hudson     |
+| $SSW/yohkoh/ucon/idl/labonte    |
+| $SSW/yohkoh/ucon/idl/lemen      |
+| $SSW/yohkoh/ucon/idl/linford    |
+| $SSW/yohkoh/ucon/idl/mcallister |
+| $SSW/yohkoh/ucon/idl/sato       |
+| $SSW/yohkoh/ucon/idl/mctiernan  |
+| $SSW/yohkoh/ucon/idl/metcalf    |
+| $SSW/yohkoh/ucon/idl/morrison   |
+| $SSW/yohkoh/ucon/idl/sakao      |
+| $SSW/yohkoh/ucon/idl/schwartz   |
+| $SSW/yohkoh/ucon/idl/slater     |
+| $SSW/yohkoh/ucon/idl/wuelser    |
+| $SSW/yohkoh/ucon/idl/zarro      |
+ ---------------------------------
+Executing SSW IDL_STARTUP: (Personal)
+% Compiled module: $MAIN$.
+the correct one
+% Compiled module: REVERSE.
+% Compiled module: CIRCLE_SYM.
+% Compiled module: LOADCT.
+% Compiled module: FILEPATH.
+% Compiled module: PATH_SEP.
+% LOADCT: Loading table B-W LINEAR
+% LOADCT: Loading table Rainbow + white
+% Compiled module: LEGEND.
+% Compiled module: PMM.
+      9994.93  1.43503e+06
+% LOADCT: Loading table B-W LINEAR
+% Compiled module: TRACE_COLORS.
+% Compiled module: IS_NUMBER2.
+% Compiled module: TRACE_T_RESP.
+% Compiled module: RESTGEN.
+% LOADCT: Loading table B-W LINEAR
+% Compiled module: X2GIF.
+% Compiled module: BREAK_FILE.
+% Compiled module: TRIM.
+% Compiled module: HAVE_WINDOWS.
+% Compiled module: SELECT_WINDOWS.
+% Compiled module: SSW_WRITE_GIF.
+% Compiled module: ALLOW_GIF.
+% Compiled module: GET_TEMP_DIR.
+% Compiled module: CURDIR.
+% Compiled module: IS_MEMBER.
+% Compiled module: MK_TEMP_FILE.
+% Compiled module: WRITE_GIF.
+% Loaded DLM: GIF.
+% OPENW: Error opening file. Unit: 100
+         File: /disk/data1/winter/PATC/2005_05_20_final_exp_loop/big_movie000
+         00.gif
+  No such file or directory
+% Error occurred at: WRITE_GIF         151
+  /usr/local/rsi/idl/lib/write_gif.pro
+%                    SSW_WRITE_GIF      82 /ssw/gen/idl/io/ssw_write_gif.pro
+%                    X2GIF             131 /ssw/gen/idl/image/x2gif.pro
+%                    $MAIN$            239
+  /disk/hl2/data/winter/data1/PATC/emission_display_2.pro
+% Execution halted at: X2GIF             131 /ssw/gen/idl/image/x2gif.pro

@@ -1,0 +1,151 @@
+;signal=patc_nt_brem(loop,BEAM_STRUCT = in_beam,$
+;   SCALE_FACTOR=beam_struct[0].SCALE_FActor,$
+;  KEV_BAND=[12,20]);, PER_vol=1)
+!p.multi=[0,0,0,0]
+if !d.name ne 'Z' then DEVICE, SET_FONT='Times', /TT_FONT  
+n_times=n_elements(beam_struct)
+loadct,3
+pixel=700d*.2*1d5
+CHARSIZE=2.7
+CHARTHICK=1.8
+lthick=3
+
+rot1=rotation(2,!dpi/2) 
+rot2=rotation(3,!dpi/2)
+
+axis=loop[0].axis
+axis=(rot2#rot1#axis)
+;axis=(rot1#axis)
+rad=loop[0].rad
+
+;volumes=get_loop_vol(loop[0].s,loop[0].a)
+;signal=0.001+dv/volumes
+
+;signal[0:loop[0].n_depth]=0
+;signal[n_elements(loop[0].s)-1-loop[0].n_depth:n_elements(loop[0].s)-2]=0
+;signal[0:45]=5*volumes[0:45]
+;signal[46:80]=100*volumes[26]
+;signal[81:120]=200*volumes[81:120]
+;show_loop_image,axis,rad,signal,pixel=pixel,win=win_num,$
+;                dxp0=dxp0, dyp0=dyp0,IMAGE_OUT=IMAGE_OUT
+;x2gif,'3d_model.gif'
+;dv_display_old, loop,dv,beam_struct[0].SCALE_FACTOR;, $
+
+em=get_loop_em(loop[n_times-1].state,loop[n_times-1].s,loop[n_times-1].a)
+max_em=max(em)
+em1=dblarr(n_times,n_elements(em))
+temp=get_loop_temp(loop[n_times-1].state)
+temp=dblarr(n_times,n_elements(temp))
+em_base=dblarr(n_times)
+em_mid=dblarr(n_times)
+em_apex=dblarr(n_times)
+
+
+temp_base=dblarr(n_times)
+temp_mid=dblarr(n_times)
+temp_apex=dblarr(n_times)
+;plot, loop[0].state.time,em,yrange=[1d20,max_em]
+
+for i=0, n_times-1 do begin
+    em1[i,*]=get_loop_em(loop[i].state,loop[i].s,loop[i].a)
+    temp[i,*]=get_loop_temp(loop[i].state)
+    em_base[i]=mean(em1[i,0:45])
+    em_mid[i]=mean(em1[i,46:80])
+    em_apex[i]=mean(em1[i,81:120])
+    
+    temp_base[i]=mean(temp[i,0:45])
+    temp_mid[i]=mean(temp[i,46:80])
+    temp_apex[i]=mean(temp[i,81:120])
+
+    
+endfor
+max=max(em1)
+window,0,xs=800,ys=800
+
+max_plot=max( [em_base,em_mid,em_apex])
+MIN_PLOT=MIN( [em_base,em_mid,em_apex])
+P_STATE=!P.MULTI
+LOADCT,0
+!P.MULTI=[0,1,3]
+
+LOADCT,0,/SILENT
+plot, loop.state.time, em_apex, TITLE='Loop Apex',$
+      ;YTITLE='Emission Measure [cm!e-3!n]',$
+      ;XTITLE='Time [seconds]',$
+      charsize=CHARSIZE,$
+      charthick=CHARTHICK, background=255,color=0,$
+      /nodata,/YLOG
+;
+tvlct,[0,255,0,0], [0,0,255,0], [0,0,0,255];defining colors
+
+oplot,  loop.state.time,em_apex,COLOR=3,thick=lthick
+
+LOADCT,0,/SILENT
+
+plot, loop.state.time, em_MID, TITLE='Mid Loop',$
+      YTITLE='Emission Measure [cm!e-3!n]',$
+      ;XTITLE='Time [seconds]',$
+      charsize=CHARSIZE,$
+      charthick=CHARTHICK, background=255,color=0,$
+      /nodata,/YLOG
+
+tvlct,[0,255,0,0], [0,0,255,0], [0,0,0,255];defining colors
+
+oplot,  loop.state.time, em_mid,COLOR=2,THICK=lthick
+
+plot, loop.state.time, em_base, $;YRANGE=[MIN_PLOT,max_plot], $
+      /YS, TITLE='Loop Base',$
+      ;YTITLE='Emission Measure [cm!e-3!n]',$
+      XTITLE='Time [seconds]',$
+      charsize=CHARSIZE,$
+      charthick=CHARTHICK, background=255,color=0,$
+      /nodata,/YLOG
+
+tvlct,[0,255,0,0], [0,0,255,0], [0,0,0,255];defining colors
+
+oplot, loop.state.time, em_base, COLOR=1,THICK=lthick
+
+x2gif,'em_plot.gif'
+
+LOADCT,0
+window,1,xs=800,ys=800
+
+plot, loop.state.time, temp_apex, TITLE='Loop Apex',$
+      ;YTITLE='Temperature [K]',$
+      ;XTITLE='Time [seconds]',$
+      charsize=CHARSIZE,$
+      charthick=CHARTHICK, background=255,color=1,$
+      /nodata;,/YLOG
+
+tvlct,[0,255,0,0], [0,0,255,0], [0,0,0,255];defining colors
+
+oplot, loop.state.time, temp_apex, COLOR=3,THICK=lthick
+LOADCT,0,/SILENT
+
+plot, loop.state.time, temp_MID, TITLE='Mid Loop',$
+      YTITLE='Temperature [K]',$
+      ;XTITLE='Time [seconds]',$
+      charsize=CHARSIZE,$
+      charthick=CHARTHICK, background=255,color=0,$
+      /nodata;,/YLOG
+
+tvlct,[0,255,0,0], [0,0,255,0], [0,0,0,255];defining colors
+
+oplot,  loop.state.time, temp_mid,COLOR=2,THICK=lthick
+
+LOADCT,0,/SILENT
+plot, loop.state.time, temp_apex, TITLE='Loop Base',$
+      ;YTITLE='Temperature [K]',$
+      XTITLE='Time [seconds]',$
+      charsize=CHARSIZE,$
+      charthick=CHARTHICK, background=255,color=2,$
+      /nodata;,/YLOG
+;
+tvlct,[0,255,0,0], [0,0,255,0], [0,0,0,255];defining colors
+
+oplot,  loop.state.time,temp_base,COLOR=1,thick=lthick
+x2gif,'temp_plot.gif'
+
+LOADCT,0
+!p.multi=p_state
+end

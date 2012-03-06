@@ -1,0 +1,48 @@
+
+function get_loop_min_cls, loop, S_COORD, grid_safety
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Define Characteristic length scales
+;cls=characteristic length scale
+;If you find any zeroes, make them a small number so that you don't
+;end up dividing by zero
+;Energy
+e_cls=get_loop_e_cls(loop,/S_GRID,/NO_ENDS);,/SMOOTH)
+;Density
+n_e_cls=get_loop_n_e_cls(loop,/S_GRID,/NO_ENDS);,/SMOOTH)
+;Temperature
+T_cls=get_loop_temp_cls(loop,/S_GRID,/NO_ENDS);,/SMOOTH)
+;Yes. I know that temperature is just a function of 
+;density and energy but I'm doing it anyway!
+;Velocity
+v_cls=get_loop_v_cls(loop,/S_GRID,/SMOOTH,/SOUND,/NO_ENDS);,/SMOOTH)
+;Magnetic field
+b_cls=get_loop_b_cls(loop,/Vol_GRID,/NO_ENDS);,/SMOOTH)
+
+index=where(abs(loop.s_alt-S_COORD) eq min(abs(loop.s_alt-S_COORD)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;For each x find the smallest characteristic length scale
+;Can this be done without the loop?
+
+;colors=dblarr(n_s)
+min_cls=min([e_cls[index],$
+             n_e_cls[index],$
+             v_cls[index],$
+             b_cls[index],$
+             t_cls[index]])
+min_cls=temporary(min_cls)/grid_safety
+
+
+;if keyword_set(showme) then begin
+;    case 1 of
+;        (min_cls[i] eq e_cls[i]):colors[i]=color_index[1]
+;        (min_cls[i] eq n_e_cls[i]):colors[i]=color_index[2]
+;        (min_cls[i] eq v_cls[i]):colors[i]=color_index[3]
+;        (min_cls[i] eq b_cls[i]):colors[i]=color_index[4]
+;        (min_cls[i] eq t_cls[i]):colors[i]=color_index[0]
+;    endcase
+;endif
+       
+return , min_cls
+ 
+END

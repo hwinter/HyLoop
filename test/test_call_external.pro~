@@ -1,0 +1,15 @@
+rona-1)
+help,b
+foo = call_external(so, $            ; The SO
+                    'bnh_splint', $  ; The entry name
+                    n_points, $   ; # of elements in x, f(x)
+                    s, $ ; x
+                    b_t, $                    ; f(x)
+                    (n_corona-1), $; # elements in thing-to-interpolate
+                    s2, $               ; thing-to-interpolate
+                    b, $                ; where the answer goes
+                    /d_value, $ 
+                    value=[1,0,0,1,0,0], $ 
+                    /auto_glue,$
+                    /cdecl,$
+                    /ignore_exist) ;, $/ignore_exist,

@@ -1,0 +1,38 @@
+pro save_loop, loop,$
+               E_H,$
+               NT_BEAM,NT_PART_FUNC,$
+               NT_BREMS,$
+               NT_DELTA_E,$
+               NT_DELTA_MOMENTUM,$, 
+               ENERGY_PD, PARTICLE_PD, $
+               MOMENTUM_PD, VOLUME_PD, $
+               ENERGY_CHANGE, $
+               MOMENTUM_CHANGE, $
+               VOLUME_CHANGE,$
+               filename=strcompress(FILE_PREFIX $
+                                    +string(loop.state.time,FORMAT='(I05)') $
+                                    +'.'+FILE_EXT,/REMOVE_ALL)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+END
+

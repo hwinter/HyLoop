@@ -1,0 +1,3 @@
+junk=execute('test_exec_a')
+
+end

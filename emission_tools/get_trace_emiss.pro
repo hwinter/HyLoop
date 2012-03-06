@@ -1,0 +1,39 @@
+;2008-APR-28 ;Changed to account for new log output of 
+;            get_loop_em.pro
+function get_trace_emiss, loop,PER_VOL=PER_VOL
+
+
+ssw_path,/TRACE
+
+volumes=get_loop_vol(loop[0])
+
+num_elements=n_elements(volumes)
+num=n_elements(loop)
+
+oa171=dblarr(num,num_elements)
+oa195=dblarr(num,num_elements)
+
+FOR n_lhist=0, num -1 DO BEGIN
+    T=get_loop_temp(loop[n_lhist])
+    em=get_loop_em(loop[n_lhist])
+
+    oa171[n_lhist,*]=(10d0)^(alog10($
+                             trace_t_resp('171oa',T[1:Num_elements],/volume)) $
+                             +em)
+    oa195[n_lhist,*]=(10d0)^(alog10($
+                             trace_t_resp('195oa',T[1:Num_elements],/volume))$
+                      +em)
+
+
+if keyword_set(PER_VOL) then begin       
+        volumes=get_loop_vol(loop[n_lhist])
+        oa171[n_lhist,*]=oa171[n_lhist,*]/volumes
+        oa195[n_lhist,*]=oa195[n_lhist,*]/volumes
+        
+    endif
+
+endfor
+
+trace_signal={oa171:oa171,oa195:oa195}
+return,trace_signal 
+END

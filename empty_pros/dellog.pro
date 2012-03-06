@@ -1,0 +1,4 @@
+pro dellog
+
+
+end

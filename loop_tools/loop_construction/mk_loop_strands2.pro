@@ -1,0 +1,250 @@
+;pro mk_loop_strands2, STR_DIAM=STR_DIAM,$
+;                      N_STRANDS=N_STRANDS,$
+;                      LOOP_DIAM=LOOP_DIAM,$
+;                      LOOP_LENGTH=LOOP_LENGTH,B=B,$
+;                      DIR=DIR
+
+skip=60
+tmax=1d7
+if keyword_set(LOOP_DIAM) ne 1 then LOOP_DIAM =(1.54d6)*(1d2)
+;[cm]
+;if keyword_set(STR_DIAM) ne 1 then  ;
+STR_loop_ratio=.35d
+delvarx, strand_struct
+;[cm]
+;[cm]
+if keyword_set(LOOP_LENGTH) ne 1 then  LOOP_LENGTH =(54d6)*(1d2)
+;[Gauss]
+loop_height=LOOP_LENGTH/!dpi
+if keyword_set(B) ne 1 then B =10D0
+
+STR_DIAM=LOOP_DIAM*STR_loop_ratio
+
+folders=getenv('DATA')+'/PATC/runs/2010_SPD/'
+
+;if keyword_set(dir) then sav_file=dir+'/strand_start' $
+;  else sav_file='./strand_start'
+sav_file=folders+'/strand_start'
+loop_radius=(.5d*LOOP_DIAM)
+strand_radius=(.5d*STR_DIAM)
+Loop_area=!dpi*(loop_radius)^2d
+
+strand_area=!dpi*(strand_radius)^2d
+xs=900
+ys=900
+window, 0,xs=xs,ys=ys
+;window, 1,xs=xs,ys=ys
+wset,0
+plot,[-1d*loop_radius,loop_radius],[-1d*loop_radius,loop_radius],/nodata,$
+  XRANGE=[-1d*loop_radius,loop_radius],YRANGE=[-1d*loop_radius,loop_radius],$
+  XSTYLE=4,YSTYLE=4, /iso
+
+draw_circle,0 ,0 , loop_radius, $
+            color=fsc_color('red'), line=2, thick=3.0
+
+N_strands=Ulong64(Loop_area/strand_area)
+strand_index=ulonarr(N_strands)
+N_rows=long64(LOOP_DIAM/STR_DIAM)+1l
+N_columns=L64INDGEN(N_rows)
+
+
+print,'N_strands',string(N_strands)
+npts=long64(1000)
+theta = lindgen(npts)*2*!pi / (npts-1l)
+
+xx = loop_radius * sin(theta); + loop_radius
+yy = loop_radius * cos(theta); + loop_radius
+strand_counter=0ul
+for i=0,N_rows-1ul do begin
+    rc_y=loop_radius-strand_radius-STR_DIAM*double(i)
+    index=where(abs(yy-rc_y) eq min(abs(yy-rc_y)))
+    ;print,string(index[0])+' index'
+    help,index
+    oplot,[-1d*loop_radius,loop_radius],[rc_y,rc_y],linestyle=1
+    plots,xx[index[0]],yy[index[0]],psym=4, color=fsc_color('blue')
+    n_columns[i]=long64(2*abs(xx[index[0]])/STR_DIAM)+1l
+;    
+    if n_columns[i] gt 0 then begin
+        for k=0,n_columns[i]-1ul do begin
+            rc_x=abs(xx[index[0]])-strand_radius-STR_DIAM*double(k)
+            plots,rc_x,rc_y,psym=4
+            ;xyouts, rc_x,rc_y, strcompress($
+            ;        STRING(strand_index[strand_counter], $
+            ;              format='(I4)'), $
+            ;         /REMOVE_ALL)
+            draw_circle,rc_x ,rc_y, strand_radius, $
+                        color=fsc_color('green'), line=0, thick=2.
+            strand_height=loop_height+rc_x
+            strand_length=2d*!dpi*strand_height
+            ;print,'rc_x'+string(rc_x)
+            ;x &y are switched in other coord.
+            strand_temp={x:rc_y,y:rc_x,$
+                         length:strand_length,$
+                         diameter:STR_DIAM}
+            if size(strand_struct,/TYPE) EQ 0 then $
+              strand_struct=strand_temp else $
+              strand_struct=[strand_struct,strand_temp]
+
+            strand_counter++
+        endfor
+    endif
+    
+endfor
+
+avg= average(strand_struct.length/loop_length) 
+strand_struct.length=$
+   strand_struct.length*(1/average(strand_struct.length/loop_length))
+;window,15
+;plot,
+save, strand_struct,$
+      file='/Users/hwinter/programs/PATC/experiments/2010_SPD/strand_info.sav'
+
+stop
+
+b=(10d*!dpi*loop_radius^2d)/(!dpi*strand_radius^2d)
+power=1d24/n_elements(strand_struct)
+print,',n_elements(strand_struct'+string(n_elements(strand_struct))
+;data_dir=
+
+;stop
+loadct, 15
+fill=143
+delvarx, loop_array
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+for i=0,n_elements(strand_struct)-1l  do begin
+    
+    alpha=-2.3+(4.6*randomu(seed))
+    alpha<=2.3
+    alpha>=-2.4
+
+    t_max=tmax-(1d6)*(4.6*randomu(seed))
+    
+    mk_semi_circular_loop,$
+       strand_struct[i].diameter,$
+       strand_struct[i].length, B_mag=B, $
+       T_max=T_max, n_depth=n_depth,$
+       /nosave, Loop=loop, $
+       Y_SHIFT=strand_struct[i].y,$
+       x_SHIFT=strand_struct[i].x,$
+       alpha=alpha, /TEST
+    
+
+    ay= 90.;-45.+45*randomu(seed)
+    ax=0.0
+    ;ax=-5.+5.0*randomu(seed)
+    ;print, ay
+                                ;ay=-89.
+    rot1=rotation(1,((!dpi*ax/180.)))
+    rot2=rotation(2,((!dpi*ay/180.)))
+    
+    rota=rot2#rot1
+    
+    axis=loop.axis
+    loop.axis[0,*]=axis[2, *]
+    loop.axis[1,*]=axis[1, *]
+    loop.axis[2,*]=axis[0, *]
+    
+    
+    loop.axis=rota#loop.axis
+    
+
+    if n_elements(loop_array) le 0 then  loop_array=loop $
+    else loop_array=[loop_array,loop]
+    help, loop_array
+
+ 
+endfor   
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+for i=0,n_elements(strand_struct)-1l  do begin
+    
+    alpha=-2.3+(4.6*randomu(seed))
+    alpha<=2.3
+    alpha>=-2.4
+
+    t_max=tmax-(1d6)*(4.6*randomu(seed))
+    
+    mk_semi_circular_loop,$
+       strand_struct[i].diameter,$
+       strand_struct[i].length, B_mag=B, $
+       T_max=T_max, n_depth=n_depth,$
+       /nosave, Loop=loop, $
+       Y_SHIFT=strand_struct[i].y,$
+       x_SHIFT=strand_struct[i].x,$
+       alpha=alpha, /TEST
+    
+
+    ay= 90.;-45.+45*randomu(seed)
+    ax=0.0
+    ;ax=-5.+5.0*randomu(seed)
+    ;print, ay
+                                ;ay=-89.
+    rot1=rotation(1,((!dpi*ax/180.)))
+    rot2=rotation(2,((!dpi*ay/180.)))
+    
+    rota=rot2#rot1
+    
+    axis=loop.axis
+    loop.axis[0,*]=axis[2, *]
+    loop.axis[1,*]=axis[1, *]
+    loop.axis[2,*]=axis[0, *]
+    
+    
+    loop.axis=rota#loop.axis
+    
+
+    if n_elements(loop_array) le 0 then  loop_array=loop $
+    else loop_array=[loop_array,loop]
+    help, loop_array
+
+ 
+endfor   
+    wset, 1
+    
+    xmx = max(loop_array.axis(0, *) ) + $
+          2*max( loop_array.rad )
+    xmn = min( loop_array.axis(0, *) ) - $
+          2*max( loop_array.rad )
+    ymx = max( loop_array.axis(1, *) ) + $
+          2*max( loop_array.rad )
+    ymn = min( loop_array.axis(1, *) ) - $
+          2*max( loop_array.rad )
+    Zmx = max( loop_array.axis(1, *) ) + $
+          2*max( loop_array.rad )
+    Zmn = min( loop_array.axis(1, *) ) - $
+          2*max( loop_array.rad )
+    
+    range=[min([xmn,ymn, zmn ]),max([xmx,ymx, zmx]) ]
+    show_loop_tactical,loop_array[0], AZ=az, ax=ax,c_skip=10, $
+      /init,XRANGE=RANGE ,YRANGE=RANGE  ,ZRANGE=RANGE  ,$
+                          C_COLOR=fsc_color('green')
+ ;   wait, 1.5
+
+    for i=0,n_elements(strand_struct)-1l  do begin
+       print, i
+       show_loop_tactical,loop_array[i], AZ=az, ax=ax,c_skip=10, $
+                          XRANGE=RANGE ,YRANGE=RANGE  ,ZRANGE=RANGE ,$
+                          C_COLOR=fsc_color('green')
+    endfor
+
+n_views=50
+
+for h=0ul, n_views-1ul do begin
+   az=90+(90/14)*h
+   ax=0
+      show_loop_tactical,loop_array[0], AZ=az, ax=ax,c_skip=10, $
+                         XRANGE=RANGE ,YRANGE=RANGE  ,ZRANGE=RANGE ,$
+                         C_COLOR=fsc_color('green'), /init
+   for i=1,n_elements(strand_struct)-1l  do begin
+      print, i
+      show_loop_tactical,loop_array[i], AZ=az, ax=ax,c_skip=10, $
+                         XRANGE=RANGE ,YRANGE=RANGE  ,ZRANGE=RANGE ,$
+                         C_COLOR=fsc_color('green')
+   endfor
+endfor
+
+
+;loop=temporary(loop_array)
+;help, loop
+;save, loop, file=folders+'strand_array.sav'
+END

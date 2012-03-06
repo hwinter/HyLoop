@@ -1,0 +1,170 @@
+pro mk_trace_movie,folder, $
+                    GIF_DIR=GIF_DIR,EXT=EXT,$
+                    FILE_PREFIX=FILE_PREFIX,$
+                    MOVIE_NAME=MOVIE_NAME,$
+                    RES=RES, STR=STR, MAP195=MAP195,$
+                    MAP171=MAP171, EXP=EXP,$
+                    CADENCE=CADENCE, $
+                    XSIZE=XSIZE, YSIZE=YSIZE
+
+IF not keyword_set(XSIZE) THEN XSIZE=600
+IF not keyword_set(YSIZE) THEN YSIZE=300
+if size(folder,/TYPE) ne 7 then folder='./'
+IF not keyword_set(FILE_PREFIX) THEN FILE_PREFIX=''
+IF not keyword_set(EXT) THEN EXT='.loop'
+IF not keyword_set(MOVIE_NAME) THEN MOVIE_NAME ='trace_movie'
+IF not keyword_set(GIF_DIR) then GIF_DIR='./'
+
+
+IF not keyword_set(res) then res=0.5d ;TRACE pixel res. arcsec
+pixel=res*700d*1d5
+
+IF not keyword_set(exp) then exp=1d
+
+
+files=file_search(folder,FILE_PREFIX+'*'+EXT, COUNT=FILE_COUNT)
+
+if FILE_count eq 0 then begin
+    MESSAGE, 'No files matching *'+ext+' were found', /CONTINUE
+    goto, end_jump
+endif
+
+start_time=systime(/julian)
+rot1=rotation(2,!dpi/2) 
+rot2=rotation(3,-1d*!dpi)
+;rot2=rotation(3,!dpi/2)
+rot3=rotation(1,!dpi)
+
+window,0,xs=400,ys=800
+window,1,xs=400,ys=800
+for i=0,FILE_COUNT-1l do begin
+    print, 'Now working on file '+files[i]
+    restore, files[i]
+    n_vol=n_elements(loop[0].state.e)-2l
+    n_x=n_elements(loop[0].s)
+
+    n_depth=loop[0].n_depth
+    if  n_depth le 0 then begin
+        t=get_loop_temp(loop[0])
+        junk=where(t le 1d5, n_depth)
+        n_depth=long(n_depth/2)
+        
+    end
+
+
+    ;axis=loop[i].axis
+    ;axis=(rot2#rot1#axis)
+    axis=loop[0].axis
+    axis[0,*]=loop[0].axis[2,*]
+    axis[1,*]=loop[0].axis[1,*]
+    axis[2,*]=loop[0].axis[0,*]
+;For the side tip
+;axis=(rot3#axis)
+    rad=loop[0].rad
+    image_171=1
+    image_195=1
+    volumes=get_loop_vol(loop[0])
+    rad=loop[0].rad
+    if max(rad) le 0 then rad=sqrt(loop[0].A/!dpi)
+    signal=get_trace_emiss(loop[0],/per)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Artificially kill the chromospheric signal;
+    signal.oa171[0:n_depth]=0d
+    signal.oa171[(n_vol-1-n_depth):n_vol-1]=0
+    signal.oa195[0:n_depth]=0d
+    signal.oa195[(n_vol-1-n_depth):n_vol-1]=0
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    wset,0
+    trace_colors,171
+    show_loop_image,axis,rad,$
+                    signal.oa171,pixel=pixel,win=win_num,$
+                    dxp0=dxp0, dyp0=dyp0,IMAGE_OUT=image_171,/NOSCALE ;,/sqrt;
+    wset,1
+    trace_colors,195
+    show_loop_image,axis,rad,signal.oa195,pixel=pixel,win=win_num,$
+                    dxp0=dxp0, dyp0=dyp0,IMAGE_OUT=image_195,/NOSCALE ;,/sqrt;
+    temp_image_struct={image_171:image_171*(pixel^2.),image_195:image_195*(pixel^2.)}
+   
+    if n_elements(image_struct) lt 1 then image_struct=temp_image_struct $
+    else image_struct=[image_struct,temp_image_struct]
+    if n_elements(time_array) lt 1  then $
+      time_array=Strcompress(string(loop[0].state.time,$
+                                    format='(g5.3)'),/remove_all) else $
+      time_array=[time_array,Strcompress(string(loop[0].state.time,$
+                                    format='(g5.3)'),/remove_all)]
+;stop
+endfor
+
+;image_struct[0].image_171[0:42]=1d6
+
+scale171=255/max(image_struct.image_171)
+scale195=255/max(image_struct.image_195)
+;stop
+animate_index=0
+gifs_171=''
+gifs_195=''
+window,0,xs=700,ys=700
+window,1,xs=700,ys=700
+for i=0,FILE_COUNT-1 do begin
+    time=' 16-JUN-2006 00:00:'+time_array[i]
+    print,'time'+time
+;anytim2cal(start_time,form=1)
+    wset,0
+    trace_colors,171
+    ;tvscl,image_struct[i].image_171*scale171
+     map={data:image_struct[i].image_171*scale171,$
+         xc:1000,yc:0,dx:.5,$    ;pix1d/(3600*700*1d5)),$
+         dy:.5,$                ;:pixel*(/(700*1d5)),$
+         time:(time),$
+         ID:'TRACE: 171'}
+     if n_elements(MAP171) lt 1 then  MAP171=map $
+     else MAP171=concat_struct(MAP171,map)
+
+plot_map,Map,XRANGE=[900,1200],YRANGE=[-250,250],$
+  /limb_plot,lmthick=1,grid=50;,/nodata;,grid=50;composite=1,/over,/average,/INTER
+;plot_map,map,XRANGE=[900,1200],YRANGE=[-250,250],/noerase;,/limb_plot
+    ;legend,'Time: '+Strcompress(string(loop[i].state.time),/remove_all), /bottom,/left,box=0
+    ;legend,'TRACE 171',center=1,/top_LEGEND,box=0
+
+    x2gif,strcompress(gif_dir+'trace_171_frame'+string(animate_index,FORMAT= $  
+                                                       '(I5.5)')+'.gif')
+    gifs_171=[gifs_171,strcompress(gif_dir+'trace_171_frame'+string(animate_index,FORMAT= $  
+                                                     '(I5.5)')+'.gif')]
+
+    WSET,1
+    trace_colors,195
+    ;tvscl,image_struct[i].image_195*scale195
+    ;Strcompress(string(loop[i].state.time),/remove_all)
+    
+     map={data:image_struct[i].image_195*scale195,$
+         xc:1000,yc:0,dx:.5,$    ;pix1d/(3600*700*1d5)),$
+         dy:.5,$                ;:pixel*(/(700*1d5)),$
+         time:(time),$
+         ID:'TRACE: 195'}
+     if n_elements(MAP195) lt 1 then  MAP1=map $
+     else MAP195=concat_struct(MAP195,map)                       
+
+ plot_map,Map,XRANGE=[900,1200],YRANGE=[-250,250],$
+  /limb_plot,lmthick=1,grid=50;,/nodata;,grid=50;composite=1,/over,/average,/INTER
+ ;plot_map,map,XRANGE=[900,1200],YRANGE=[-350,350],/noerase;,/limb_plot
+    
+   ; legend,'Time: '+Strcompress(string(loop[i].state.time),/remove_all), /bottom,/left,box=0
+    ;legend,'TRACE 195',center=1,/top_LEGEND,box=0
+         x2gif,strcompress(gif_dir+'trace_195_frame'+string(animate_index,FORMAT= $  
+                                                     '(I5.5)')+'.gif')
+          gifs_195=[gifs_195,strcompress(gif_dir+'trace_195_frame'+string(animate_index,FORMAT= $  
+                                                     '(I5.5)')+'.gif')]
+    animate_index+=1
+endfor
+;stop
+gifs_171=gifs_171[where(gifs_171 ne '')]
+image2movie,gifs_171,$
+  movie_name=strcompress(gif_dir+'TRACE_171_movie.gif',/REMOVE_ALL), $
+  gif_animate=1,loop=1
+gifs_195=gifs_195[where(gifs_195 ne '')]
+image2movie,gifs_195,$
+  movie_name=strcompress(gif_dir+'TRACE_195_movie.gif',/REMOVE_ALL), $
+  gif_animate=1,loop=1
+str=image_struct
+end_jump:
+end

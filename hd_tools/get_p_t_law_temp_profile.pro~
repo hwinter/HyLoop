@@ -1,0 +1,40 @@
+function get_p_t_law_temp_profile,s, alpha, $
+  GAMMA=GAMMA, LAMBDA=LAMBDA, TMAX=TMAX, $
+  IBETA_LAMBDA=IBETA_LAMBDA
+
+if not keyword_set(GAMMA) then $
+  GAMMA=5d-1
+
+if size(s,/TYPE) eq 0 then begin
+
+    message, 'The function get_p_t_law_temp_profile.pro ' $
+              +'requires an array of loop coordinates.' 
+    stop
+endif  
+
+length = max(s) 
+n_s=n_elements(s)   
+if size(alpha,/TYPE) eq 0 then alpha=0d0
+
+nu=alpha/3.5d0
+mu=-1*(2d0+GAMMA)/3.5d0
+
+lambda=(1d0-2*nu+mu)/(2d0*(nu-mu))
+
+index=where(abs(s-(length/2d0)) eq min(abs(s-(length/2d0))))
+
+u=findgen(N_s)/(N_s-1ul)   ; interval [0,1]
+
+IBETA_LAMBDA=ibeta( lambda+1,5d-1,u,/DOUBLE )
+t=(u)^(1d0/(2d0+gamma+alpha))
+
+t=[t,reverse(t)]
+IBETA_LAMBDA=length*[IBETA_LAMBDA/2d0,1d0-reverse(IBETA_LAMBDA/2d0)]
+;Lazy way to do this.  I should really be using inverse beta functions.  
+;Show me a reference for that.
+t=interpol(t, IBETA_LAMBDA,s)
+if keyword_set(TMAX) then $
+  t=TMAX*t
+;stop
+return , t
+END;Of main

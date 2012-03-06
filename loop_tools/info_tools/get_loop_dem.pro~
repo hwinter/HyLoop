@@ -1,0 +1,20 @@
+;get the loop DEM on the volume grid
+
+function get_loop_dem,loop	
+
+loop=loop[n_elements(loop)-1ul]
+state=loop.state
+;Constants
+kB = 1.38e-16 ;Boltzmann constant (erg/K)
+
+T = get_loop_temp(loop)
+s_alt=get_loop_s_alt(loop)
+
+dT_ds=deriv(s_alt,T)
+
+DEM=state.n_e*state.n_e/abs(dT_ds)
+
+return, dem
+
+
+end

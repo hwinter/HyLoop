@@ -1,0 +1,202 @@
+--------------------------------------------------------
+Running SSW, Last Updated: Wed Nov 2 22:22:51 GMT 2005
+ 
+PROBLEMS? - e-mail TO: freeland@penumbra.nascom.nasa.gov
+--------------------------------------------------------
+IDL Version 6.2, Solaris (sunos sparc m64). (c) 2005, Research Systems, Inc.
+Installation number: 2011-9.
+Licensed for use by: LMPARL
+
+        ****************NOTE FOR Solaris USERS********************
+        The Motif library supplied by Sun in Solaris 8
+        requires a patch, available free of charge from
+	http://www.sunsolve.sun.com, before it will work properly
+        with IDL. Without this patch, editable text and table widgets
+        may cause the IDL program to crash. The patch number is
+        108940-23, for both 32 and 64-bit Sparc platforms.
+        **********************************************************
+Executing SSW IDL_STARTUP for: GEN
+Executing SSW IDL_STARTUP for: SXT
+% Compiled module: STRJUSTIFY.
+% Compiled module: UNIQ.
+% Compiled module: PRSTR.
+Including Paths:
+ -----------------------------------
+| $SSW/yohkoh/gen/galileo/idl/lmsal |
+ -----------------------------------
+% SSW_PATH: Number of paths changed from 117 to 118
+% Compiled module: SET_LOGENV.
+% SET_LOGENV: setenv,SXT_DIR_UVDBASE=/disk/pd1/sswdb/ydb/uv_flood
+Executing SSW IDL_STARTUP for: CDS
+Executing SSW IDL_STARTUP for: TRACE
+Executing SSW IDL_STARTUP for: EIT
+executing EIT IDL_STARTUP
+Executing SSW IDL_STARTUP for: SITE
+Including Paths:
+ ---------------------------------
+| $SSW/yohkoh/ucon/idl/acton      |
+| $SSW/yohkoh/ucon/idl/bentley    |
+| $SSW/yohkoh/ucon/idl/freeland   |
+| $SSW/yohkoh/ucon/idl/hudson     |
+| $SSW/yohkoh/ucon/idl/labonte    |
+| $SSW/yohkoh/ucon/idl/lemen      |
+| $SSW/yohkoh/ucon/idl/linford    |
+| $SSW/yohkoh/ucon/idl/mcallister |
+| $SSW/yohkoh/ucon/idl/sato       |
+| $SSW/yohkoh/ucon/idl/mctiernan  |
+| $SSW/yohkoh/ucon/idl/metcalf    |
+| $SSW/yohkoh/ucon/idl/morrison   |
+| $SSW/yohkoh/ucon/idl/sakao      |
+| $SSW/yohkoh/ucon/idl/schwartz   |
+| $SSW/yohkoh/ucon/idl/slater     |
+| $SSW/yohkoh/ucon/idl/wuelser    |
+| $SSW/yohkoh/ucon/idl/zarro      |
+ ---------------------------------
+Including Paths:
+ ----------------------------
+| $SSW/trace$SSW_contributed |
+ ----------------------------
+Executing SSW IDL_STARTUP: (Personal)
+% Compiled module: $MAIN$.
+Running hydrostatic.pro
+stratified atmosphere 
+   1.1484207e+09
+% Compiled module: REGRID4.
+% Compiled module: INTERPOL.
+% Compiled module: SIZECHECK.
+saving file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test3.sav
+% Compiled module: EVOLVE_TEST.
+will save file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test3.sav
+min/max of heat function: (erg/s/cm^3)    0.0070000000/    0.0070000000
+Bad grid.  Suggest regrid3, lhist[0],g,a,x,e_h[0],/nosave
+% Compiled module: LOOP1003.
+% Compiled module: FINDEX.
+% Program caused arithmetic error: Floating overflow
+% Detected at BCS               293 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at DSTATE            326 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at DSTATE            365 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at LOOP1003          497 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at LOOP1003          498 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating overflow
+% Detected at BCS               293 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at DSTATE            326 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating divide by 0
+% Detected at FINDEX              1 /disk/hl2/data/winter/data1/PATC/findex.pro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at FINDEX             87 /disk/hl2/data/winter/data1/PATC/findex.pro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at DSTATE            365 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating divide by 0
+% Detected at FINDEX              1 /disk/hl2/data/winter/data1/PATC/findex.pro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at FINDEX             87 /disk/hl2/data/winter/data1/PATC/findex.pro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at LOOP1003          485 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at LOOP1003          486 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at DSTATE            326 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at DSTATE            334 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating divide by 0
+% Detected at FINDEX              1 /disk/hl2/data/winter/data1/PATC/findex.pro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at FINDEX             87 /disk/hl2/data/winter/data1/PATC/findex.pro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at DSTATE            365 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating divide by 0
+% Detected at FINDEX              1 /disk/hl2/data/winter/data1/PATC/findex.pro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at FINDEX             87 /disk/hl2/data/winter/data1/PATC/findex.pro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at LOOP1003          497 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at LOOP1003          498 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at LOOP1003          474 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at DSTATE            326 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at DSTATE            334 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating divide by 0
+% Detected at FINDEX              1 /disk/hl2/data/winter/data1/PATC/findex.pro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at FINDEX             87 /disk/hl2/data/winter/data1/PATC/findex.pro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at DSTATE            362 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating divide by 0
+% Detected at FINDEX              1 /disk/hl2/data/winter/data1/PATC/findex.pro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at FINDEX             87 /disk/hl2/data/winter/data1/PATC/findex.pro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at LOOP1003          485 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at LOOP1003          486 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at DSTATE            320 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at DSTATE            326 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at DSTATE            334 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating divide by 0
+% Detected at FINDEX              1 /disk/hl2/data/winter/data1/PATC/findex.pro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at FINDEX             87 /disk/hl2/data/winter/data1/PATC/findex.pro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at DSTATE            362 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating divide by 0
+% Detected at FINDEX              1 /disk/hl2/data/winter/data1/PATC/findex.pro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at FINDEX             87 /disk/hl2/data/winter/data1/PATC/findex.pro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at DSTATE            388 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at LOOP1003          497 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at LOOP1003          498 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at LOOP1003          437 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at LOOP1003          441 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Program caused arithmetic error: Floating illegal operand
+% Detected at LOOP1003          444 /disk/hl2/data/winter/data1/PATC/loop1003.p
+  ro
+% Stop encountered: LOOP1003          479 /disk/hl2/data/winter/data1/PATC/loop
+  1003.pro
+% Prematurely closing batch file: /ssw/gen/bin/idl_batch_run.pro.
+Killed

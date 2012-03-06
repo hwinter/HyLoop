@@ -1,0 +1,57 @@
+pro mk_hd_movie, folder,$
+                 GIF_DIR=GIF_DIR,EXT=EXT,$
+                 MOVIE_NAME=MOVIE_NAME,$
+                 FILE_PREFIX=FILE_PREFIX
+time=systime(1)
+if size(folder,/TYPE) ne 7 then folder='../'
+IF NOT keyword_set(GIF_DIR) then GIF_DIR='./gifs/'
+if file_test(GIF_DIR,/DIRECTORY) ne 1 then GIF_DIR= './'
+IF NOT keyword_set(EXT) THEN EXT='.loop'
+IF NOT keyword_set(MOVIE_NAME) THEN MOVIE_NAME='hd_movie.gif'
+IF NOT keyword_set(FILE_PREFIX) THEN FILE_PREFIX=''
+
+files=file_search(folder,FILE_PREFIX+'*'+EXT, COUNT=FILE_COUNT)
+
+if FILE_count eq 0 then begin
+    MESSAGE, 'No files matching *'+ext+' were found', /CONTINUE
+    goto, end_jump
+endif
+current_device=!d.name
+;set_plot,'z'
+set_plot,'x'
+window,0,xs=800,ys=800
+animate_index=1l
+gifs=''
+ for i=0l, FILE_COUNT-1l do begin
+    ; if i mod freq_out eq 0 then begin
+     print, 'working on file '+files[i]
+     print,'########################################################################'
+     restore, files[i]
+     stateplot2, loop[0].s,loop[0].state, /screen
+                                ;Old Way
+         x2gif,strcompress(gif_dir+'hd_movie'+string(animate_index,FORMAT= $  
+                                                     '(I5.5)')+'.gif')
+       ;  zbuff2file,strcompress(gif_dir+'hd_movie'+ $
+        ;                        string(animate_index,FORMAT=$
+         ;                              '(I5.5)')+'.gif')
+         gifs=[gifs,strcompress(gif_dir+'hd_movie'+$
+                                string(animate_index,FORMAT= $
+                                       '(I5.5)')+'.gif')]
+         animate_index=animate_index+1l
+;print,tresponse;
+     ;endif
+
+ endfor
+ 
+ ;gifs=findfile(strcompress(gif_dir+'*.gif'))
+gifs=gifs[where(gifs ne '')]
+
+image2movie,gifs,$
+  movie_name=strcompress(gif_dir+'/'+MOVIE_NAME,/REMOVE_ALL), $
+  gif_animate=1,loop=1
+junk=delete_file(gifs)
+set_plot,current_device
+
+print, 'Mk_hd_movie took '+string((systime(1)-time)/60.)+' minutes to run.'
+end_jump:
+end

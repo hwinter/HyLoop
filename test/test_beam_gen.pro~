@@ -1,0 +1,5 @@
+
+
+;restore, file
+
+beam=beam_generator(loop,[25,200], total_energy=1d30, SPEC_INDEX=3, time=2, delta_t=.5)

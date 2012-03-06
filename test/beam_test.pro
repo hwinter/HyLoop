@@ -1,0 +1,114 @@
+;.r beam_test
+
+start_time=systime(1)
+print, 'Run started at '+systime(/utc)
+resolve_routine, 'beam_generator',/EITHER
+folder=getenv('PATC')+'/test/loop_data/'
+start_file=folder+'gcsm_loop.sav'
+dist_alpha=-4
+old_plot_state=!D.NAME
+;Total simulation time in seconds
+loop_time=15d*60d
+delta_time=1d ;[sec]
+color_table=39
+run_folder=strcompress('./')
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Non_thermal particle properties
+;Determine the flux of of particles in each energy bin
+delta_index=4d
+energies=[25d,200d]
+;How long will the beam be injected?
+
+beam_time=02d;[sec]
+beam_dt=0.1
+defsysv, '!PATC_DT',beam_dt
+;Total beam energy in ergs
+;1d30 is the energy determined by Sui et al. 2005 for 
+; the 2002_APR_15 flare
+Flare_energy=1d+29
+
+;Number of test particles per beam.
+num_test_particles=(530d0)
+
+FRACTION_PART=1.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;End of input parameters
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Have to fix this
+;Some functions and proc's change their parameter input unexpectedly.
+dt=delta_time
+inj_time=beam_time
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;For debugging
+;!except=2
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Define the number of iterations that the code will make.
+N_interations=fix(loop_time/delta_time)
+restore,start_file
+loop.state.time=0.
+
+e_h=loop.e_h
+n_loop=n_elements(loop)
+s=loop[0].s
+volumes=get_loop_vol(loop)
+n_vol=n_elements(volumes)
+defsysv, '!patc_heat',e_h*0.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;e_h;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Generate the structure containing the injected beam
+
+;Define the number of iterations you are going to
+;   need for your electron beam.
+N_beam_iter=long(beam_time/beam_dt)
+E_min_max=[min(energies),max(energies)]
+;
+injected_beam=beam_generator(loop,E_min_max, $
+                                    total_energy=Flare_energy, $
+                                    SPEC_INDEX=delta_index, $
+                                    time=inj_time, delta_t=beam_dt,$
+                                    IP='z',n_PART=num_test_particles, $
+                                    ALPHA=dist_alpha,$
+                                    FRACTION_PART=FRACTION_PART, $
+                                    T_PROFILE='Gaussian')
+;stop
+
+help, injected_beam,/str
+t_ke=total(injected_beam.nt_beam.ke_total* $
+        injected_beam .nt_beam.scale_factor*!msul_keV_2_ergs)
+print, "Total Beam K. Energy= ",t_ke
+
+print, t_ke/(Flare_energy*FRACTION_PART)
+
+window, 0, TITLE='Energy Distribution'
+
+tvlct, [0,255,0,0], [0,0,255,0], [0,0,0,255]
+;energies=min_max[0]+abs(randomu(seed,N_PART)*one_minus_delta)^(1d0/one_minus_delta)
+plot_histo, injected_beam[*].nt_beam.ke_total ,$
+            steps, histo,DELTA=1,  /xlog, /ylog
+;e_dist_plot,
+
+plot_histo, injected_beam[i].nt_beam.ke_total ,$
+            steps, histo,DELTA=1;,  /xlog, /ylog
+es=E_min_max[0]+(E_min_max[1]-E_min_max[0])*dindgen(100)/99
+
+scale1=max(histo)
+
+f=es^(-delta_index)
+f=scale1*(f/max(f))
+oplot, es, f, thick=2, color=2
+oplot, es, f, psym=5, color=2
+
+pmm, energies
+window, 1, TITLE='Energy(time)'
+plot,injected_beam.time,  total(injected_beam.nt_beam.ke_total*injected_beam.nt_beam.scale_factor,1)*!msul_keV_2_ergs
+
+ke_total=total(injected_beam.nt_beam.ke_total*injected_beam.nt_beam.scale_factor)*!msul_keV_2_ergs
+help,ke_total  
+
+print, (ke_total)/Flare_energy
+end
+

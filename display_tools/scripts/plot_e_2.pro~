@@ -1,0 +1,49 @@
+;restore,'/Users/winter/programs/PATC/runs/2005_12_1/full_test_2.sav'
+set_plot,'x'
+;old_beam_str=beam_struct
+beam_struct=old_beam_str
+;if size(beam_struct,/type) ne 8 then $
+  restore, '/Users/winter/programs/PATC/runs/2006_AUG_17/loop_hist.sav'
+beam_struct=old_beam_str
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Define some constants
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;1 keV=1.602e-9 ergs
+; converts keV to ergs
+keV_2_ergs = 1.6022d-9
+s_alt=get_loop_s_alt(loop.s)
+s_alt=s_alt[0:n_elements(s_alt)-2]
+;if n_elements(beam_struct) ne n_elements(loop) then $
+;  beam_struct=concat_struct(beam_struct[0], beam_struct)
+;beam_struct[0].energy_profile[*]=0
+volumes=get_loop_vol(loop[0].x,loop[0].a)
+;i=0
+dt=loop[1].state.time-loop[0].state.time
+for i=0, n_elements(beam_struct) do begin
+;Cheat
+    e_dep=abs(beam_struct[i].energy_profile*kev_2_ergs) $
+          *scale_factor
+    half_index=long(n_elements(e_dep)/2)
+    e_dep=e_dep/(dt*volumes)
+    for jj=0,3 do e_dep=smooth(e_dep, 10)
+    e_dep[half_index:n_elements(e_dep)-1l]= $
+      reverse(e_dep[0:half_index-1])
+    plot, s_alt,e_dep, psym=10,$
+          TITLE='Energy Deposition',$
+          YTITLE='ergs cm!E-3!N s!E-1!N',$
+          XTITLE='Loop Coordinate [cm]',$
+          thick=2, charthick=1.9, charsize=1.9,$
+          xrange=[-1d8,8d9],/xstyle;,$
+          ;yrange=[0,
+          
+
+    legend, 'Time:'+strcompress(string(loop[i].state.time,$
+                                       format='(d5.3)'), $
+                                /remove_all),$
+            BOX=0, charthick=1.9, charsize=1.9
+    wait,5
+
+ENDFOR
+
+
+END

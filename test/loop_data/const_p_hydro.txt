@@ -1,0 +1,251 @@
+--------------------------------------------------------
+Running SSW, Last Updated: Wed Nov 2 22:22:51 GMT 2005
+
+IDL> ssw_path,/iii [,/remove]	        ; add and remove SSW instrument = iii
+IDL> pr_env,/xxx		        ; show environmentals/logicals xxx
+IDL> sswloc,/xxx [,outlist]		; SSW routines matching pattern xxx
+IDL> stuff=gt_tagval(xxx,/TAG)          ; extract TAG from structure array xxx
+IDL> text=get_infox(xxx,'t1,t2,t3...')  ; ascii summary of structure array xxx
+
+?? Why work with 1 FITS header when you can work with 100 FITS structures ??
+mreadfits converts vector of fits files to Structure array and 3D data
+IDL> mreadfits, FITSFILES, fitsstruct [ , data_3D, outsize=xy ]
+ 
+PROBLEMS? - e-mail TO: freeland@penumbra.nascom.nasa.gov
+--------------------------------------------------------
+IDL Version 6.2 (linux x86 m32). (c) 2005, Research Systems, Inc.
+Installation number: 2011-9.
+Licensed for use by: LMPARL
+
+Executing SSW IDL_STARTUP for: GEN
+Executing SSW IDL_STARTUP for: SXT
+% Compiled module: STRJUSTIFY.
+% Compiled module: UNIQ.
+% Compiled module: PRSTR.
+Including Paths:
+ -----------------------------------
+| $SSW/yohkoh/gen/galileo/idl/lmsal |
+ -----------------------------------
+% SSW_PATH: Number of paths changed from 122 to 123
+% Compiled module: SET_LOGENV.
+% SET_LOGENV: setenv,SXT_DIR_UVDBASE=/disk/pd1/sswdb/ydb/uv_flood
+Executing SSW IDL_STARTUP for: CDS
+Executing SSW IDL_STARTUP for: TRACE
+Executing SSW IDL_STARTUP for: EIT
+executing EIT IDL_STARTUP
+Executing SSW IDL_STARTUP for: SITE
+Including Paths:
+ ---------------------------------
+| $SSW/yohkoh/ucon/idl/acton      |
+| $SSW/yohkoh/ucon/idl/bentley    |
+| $SSW/yohkoh/ucon/idl/freeland   |
+| $SSW/yohkoh/ucon/idl/hudson     |
+| $SSW/yohkoh/ucon/idl/labonte    |
+| $SSW/yohkoh/ucon/idl/lemen      |
+| $SSW/yohkoh/ucon/idl/linford    |
+| $SSW/yohkoh/ucon/idl/mcallister |
+| $SSW/yohkoh/ucon/idl/sato       |
+| $SSW/yohkoh/ucon/idl/mctiernan  |
+| $SSW/yohkoh/ucon/idl/metcalf    |
+| $SSW/yohkoh/ucon/idl/morrison   |
+| $SSW/yohkoh/ucon/idl/sakao      |
+| $SSW/yohkoh/ucon/idl/schwartz   |
+| $SSW/yohkoh/ucon/idl/slater     |
+| $SSW/yohkoh/ucon/idl/wuelser    |
+| $SSW/yohkoh/ucon/idl/zarro      |
+ ---------------------------------
+Executing SSW IDL_STARTUP: (Personal)
+% Compiled module: $MAIN$.
+Running hydrostatic.pro
+constant pressure
+   1.1484205e+09
+% Compiled module: REGRID4.
+% Compiled module: INTERPOL.
+% Compiled module: SIZECHECK.
+saving file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+% Compiled module: EVOLVE_TEST.
+will save file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+min/max of heat function: (erg/s/cm^3)    0.0070000000/    0.0070000000
+Bad grid.  Suggest regrid3, lhist[0],g,a,x,e_h[0],/nosave
+% Compiled module: LOOP1003.
+% Compiled module: FINDEX.
+       0
+% SAVE: Undefined item not saved: ORIG.
+wrote file:"/disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav"
+Maximum Velocity: 3966614.0 cm/s
+saving file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+% SAVE: Undefined item not saved: L.
+% SAVE: Undefined item not saved: T_MAX.
+will save file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+min/max of heat function: (erg/s/cm^3)    0.0070000000/    0.0070000000
+       0
+% SAVE: Undefined item not saved: ORIG.
+wrote file:"/disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav"
+Maximum Velocity: 6320909.8 cm/s
+saving file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+% SAVE: Undefined item not saved: L.
+% SAVE: Undefined item not saved: T_MAX.
+will save file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+min/max of heat function: (erg/s/cm^3)    0.0070000000/    0.0070000000
+       0
+% SAVE: Undefined item not saved: ORIG.
+wrote file:"/disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav"
+Maximum Velocity: 6852628.1 cm/s
+saving file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+% SAVE: Undefined item not saved: L.
+% SAVE: Undefined item not saved: T_MAX.
+will save file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+min/max of heat function: (erg/s/cm^3)    0.0070000000/    0.0070000000
+       0
+% SAVE: Undefined item not saved: ORIG.
+wrote file:"/disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav"
+Maximum Velocity: 7115924.3 cm/s
+saving file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+% SAVE: Undefined item not saved: L.
+% SAVE: Undefined item not saved: T_MAX.
+will save file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+min/max of heat function: (erg/s/cm^3)    0.0070000000/    0.0070000000
+       0
+% SAVE: Undefined item not saved: ORIG.
+wrote file:"/disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav"
+Maximum Velocity: 7367816.3 cm/s
+saving file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+% SAVE: Undefined item not saved: L.
+% SAVE: Undefined item not saved: T_MAX.
+will save file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+min/max of heat function: (erg/s/cm^3)    0.0070000000/    0.0070000000
+       0
+% SAVE: Undefined item not saved: ORIG.
+wrote file:"/disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav"
+Maximum Velocity: 7736583.4 cm/s
+saving file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+% SAVE: Undefined item not saved: L.
+% SAVE: Undefined item not saved: T_MAX.
+will save file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+min/max of heat function: (erg/s/cm^3)    0.0070000000/    0.0070000000
+       0
+% SAVE: Undefined item not saved: ORIG.
+wrote file:"/disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav"
+Maximum Velocity: 8900371.9 cm/s
+saving file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+% SAVE: Undefined item not saved: L.
+% SAVE: Undefined item not saved: T_MAX.
+will save file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+min/max of heat function: (erg/s/cm^3)    0.0070000000/    0.0070000000
+       0
+% SAVE: Undefined item not saved: ORIG.
+wrote file:"/disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav"
+Maximum Velocity: 9563869.5 cm/s
+saving file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+% SAVE: Undefined item not saved: L.
+% SAVE: Undefined item not saved: T_MAX.
+will save file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+min/max of heat function: (erg/s/cm^3)    0.0070000000/    0.0070000000
+       0
+% SAVE: Undefined item not saved: ORIG.
+wrote file:"/disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav"
+Maximum Velocity: 10446067. cm/s
+saving file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+% SAVE: Undefined item not saved: L.
+% SAVE: Undefined item not saved: T_MAX.
+will save file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+min/max of heat function: (erg/s/cm^3)    0.0070000000/    0.0070000000
+       0
+% SAVE: Undefined item not saved: ORIG.
+wrote file:"/disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav"
+Maximum Velocity: 11478908. cm/s
+saving file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+% SAVE: Undefined item not saved: L.
+% SAVE: Undefined item not saved: T_MAX.
+will save file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+min/max of heat function: (erg/s/cm^3)    0.0070000000/    0.0070000000
+       0
+% SAVE: Undefined item not saved: ORIG.
+wrote file:"/disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav"
+Maximum Velocity: 12875377. cm/s
+saving file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+% SAVE: Undefined item not saved: L.
+% SAVE: Undefined item not saved: T_MAX.
+will save file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+min/max of heat function: (erg/s/cm^3)    0.0070000000/    0.0070000000
+       0
+% SAVE: Undefined item not saved: ORIG.
+wrote file:"/disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav"
+Maximum Velocity: 18913728. cm/s
+saving file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+% SAVE: Undefined item not saved: L.
+% SAVE: Undefined item not saved: T_MAX.
+will save file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+min/max of heat function: (erg/s/cm^3)    0.0070000000/    0.0070000000
+Bad grid.  Suggest regrid3, lhist[0],g,a,x,e_h[0],/nosave
+       0
+% SAVE: Undefined item not saved: ORIG.
+wrote file:"/disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav"
+Maximum Velocity: 23676604. cm/s
+saving file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+% SAVE: Undefined item not saved: L.
+% SAVE: Undefined item not saved: T_MAX.
+will save file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+min/max of heat function: (erg/s/cm^3)    0.0070000000/    0.0070000000
+Bad grid.  Suggest regrid3, lhist[0],g,a,x,e_h[0],/nosave
+       0
+% SAVE: Undefined item not saved: ORIG.
+wrote file:"/disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav"
+Maximum Velocity: 26300475. cm/s
+saving file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+% SAVE: Undefined item not saved: L.
+% SAVE: Undefined item not saved: T_MAX.
+will save file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+min/max of heat function: (erg/s/cm^3)    0.0070000000/    0.0070000000
+Bad grid.  Suggest regrid3, lhist[0],g,a,x,e_h[0],/nosave
+       0
+% SAVE: Undefined item not saved: ORIG.
+wrote file:"/disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav"
+Maximum Velocity: 28208649. cm/s
+saving file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+% SAVE: Undefined item not saved: L.
+% SAVE: Undefined item not saved: T_MAX.
+will save file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+min/max of heat function: (erg/s/cm^3)    0.0070000000/    0.0070000000
+Bad grid.  Suggest regrid3, lhist[0],g,a,x,e_h[0],/nosave
+       0
+% SAVE: Undefined item not saved: ORIG.
+wrote file:"/disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav"
+Maximum Velocity: 29705726. cm/s
+saving file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+% SAVE: Undefined item not saved: L.
+% SAVE: Undefined item not saved: T_MAX.
+will save file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+min/max of heat function: (erg/s/cm^3)    0.0070000000/    0.0070000000
+Bad grid.  Suggest regrid3, lhist[0],g,a,x,e_h[0],/nosave
+       0
+% SAVE: Undefined item not saved: ORIG.
+wrote file:"/disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav"
+Maximum Velocity: 30920936. cm/s
+saving file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+% SAVE: Undefined item not saved: L.
+% SAVE: Undefined item not saved: T_MAX.
+will save file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+min/max of heat function: (erg/s/cm^3)    0.0070000000/    0.0070000000
+Bad grid.  Suggest regrid3, lhist[0],g,a,x,e_h[0],/nosave
+       0
+% SAVE: Undefined item not saved: ORIG.
+wrote file:"/disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav"
+Maximum Velocity: 31970491. cm/s
+saving file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+% SAVE: Undefined item not saved: L.
+% SAVE: Undefined item not saved: T_MAX.
+will save file: /disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav
+min/max of heat function: (erg/s/cm^3)    0.0070000000/    0.0070000000
+Bad grid.  Suggest regrid3, lhist[0],g,a,x,e_h[0],/nosave
+       0
+% SAVE: Undefined item not saved: ORIG.
+wrote file:"/disk/hl2/data/winter/data1/PATC/loop_data/const_b_test4.sav"
+Maximum Velocity: 32829328. cm/s
+trouble with wonky grid spacing
+% Stop encountered: SIZECHECK          22 /disk/data1/winter/bp_sim/myprogs/siz
+  echeck.pro
+% Prematurely closing batch file: /ssw/gen/bin/idl_batch_run.pro.
+% Unable to read/modify terminal characteristics.
+  Input/output error
+IDL> Killed

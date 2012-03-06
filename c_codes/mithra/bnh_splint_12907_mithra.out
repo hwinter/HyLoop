@@ -1,0 +1,23 @@
+########################################################################
+#
+# Error output from building library
+#
+#    File Name: bnh_splint
+#    User: winter@mithra
+#    IDL Version: 6.2 (linux x86_64)
+#    Memory Bits: 64
+#    File Bits: 64
+#    Date: Thu Jun 22 18:49:24 2006
+#
+# Unix IDL executes bnh_splint_12907_mithra.sh to
+# build the sharable library. Any errors produced in that process
+# are redirected to this file. In reading this file, please be
+# aware that some loaders, such as the Solaris ld(1), will produce
+# errors for symbols not resolved while building the library. Such
+# errors are normal, as a sharable library usually cannot be
+# completely resolved until runtime, and are normally not a
+# cause for concern. The missing symbols are resolved at runtime
+# when IDL loads the library.
+#
+# Any output resulting from this process appears after the next line
+########################################################################

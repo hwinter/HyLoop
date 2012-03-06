@@ -1,0 +1,55 @@
+;get_loop_e_cls
+;
+function get_loop_e_h_cls, loop,ROOF=ROOF,S_GRID=S_GRID,$
+  VOL_GRID=VOL_GRID,SMOOTH=SMOOTH, ITER_SMOOTH=ITER_SMOOTH,$
+  NO_ENDS=NO_ENDS
+if not keyword_set(ROOF) then ROOF=1d+22
+
+q=loop.e_h
+
+grid=get_loop_s_alt(loop)
+n_s=n_elements(grid)
+grid=grid[1:n_s-2]
+n_s=n_elements(grid)
+
+;Take the derivative of the quantity with respect to 
+; distance along the loop.
+dq_dx=deriv(grid,q)
+
+;If the derivative is zero everywhere, make it a large value
+test=where(dq_dx ne 0d)
+if test[0] eq -1 then cls=dblarr(n_s)+ROOF else begin
+;Zeroes can cause problems so make zeroes small numbers
+    zeroes= where(dq_dx eq 0d)
+    if zeroes[0] ne -1 then dq_dx[zeroes]=1d-15
+    zeroes= where(q eq 0d)
+    if zeroes[0] ne -1 then q[zeroes]=1d-15
+;Define the charactersitic scale length
+    cls=abs((dq_dx/q)^(-1d))
+endelse
+
+test=where(finite(cls) ne 1)
+if test[0] ne -1 then cls[test]=roof
+;If the keyword is set then spline it to the s grid
+if keyword_set(S_GRID) then begin
+    alt_grid=loop.s
+    cls=spline(grid,cls,alt_grid)
+    if keyword_set(NO_ENDS) then $
+      cls=temporary(cls[1:n_s-2])
+endif
+
+;Smooth if desired.
+if keyword_set(SMOOTH) then begin    
+    if not keyword_set(ITER_SMOOTH) then ITER_SMOOTH=5
+    if SMOOTH eq 1 then SMOOTH=5
+    for j=0,ITER_SMOOTH do cls=smooth(cls, SMOOTH)
+
+endif
+
+
+test=where(finite(cls) ne 1)
+if test[0] ne -1 then cls[test]=roof
+return, abs(cls)
+
+
+END

@@ -1,0 +1,229 @@
+;;+
+; NAME:
+;	
+;
+; PURPOSE:
+;	produce a PostScript (tm) plot of a loop model
+;	state vector. Same as stateplot but no log-log scaling
+;	
+;
+; CATEGORY:
+;	Loop display tools
+;
+; CALLING SEQUENCE:
+;       stateplot2, x, state, fname=fname, screen=screen, verbose=verbose, $
+;	            LINESTYLE=LINESTYLE, VRANGE=VRANGE
+;
+; INPUTS:
+;	x: Array of steps on the surface grid
+;       state: loop state structure
+;
+; OPTIONAL INPUTS:
+;	
+;	
+; KEYWORD PARAMETERS:
+;	FNAME: Name of PostScript (tm) file
+;       SCREEN: Output display to screen instead of PS file
+;       LINESTYLE; Line style of loop
+;       VRANGE;  Range of velocity values
+ ;
+; OUTPUTS:
+;	NONE
+;
+; OPTIONAL OUTPUTS:
+;	NONE
+;
+; COMMON BLOCKS:
+;	NONE
+;
+; SIDE EFFECTS:
+;	None found
+;
+; RESTRICTIONS:
+;	
+;
+; PROCEDURE:
+;	
+;
+; EXAMPLE:
+;	stateplot2, loop.s, loop.state, fname=fname, 
+;                   /SCREEN, /VERBOSE, $
+;                   LINESTYLE=0
+;	
+;
+;Modified by Henry (Trae) Winter III 4/15/2003
+;	2003-APR-09 HDWIII added LINESTYLE keyword
+;       2006-***-*** HDWIII replaced statements to calculate values 
+;                    with new functions to do the same job     
+;-
+pro stateplot2, x, state, fname=fname, screen=screen, verbose=verbose, $
+                LINESTYLE=LINESTYLE, VRANGE=VRANGE, WINDOW=WINDOW,$
+                XRANGE=XRANGE,TRANGE=TRANGE, DRANGE=DRANGE,PRANGE=PRANGE ,$
+                CS=CS, MACH=MACH, FONT=FONT,XSIZE=XSIZE, YSIZE=YSIZE
+                
+ 
+compile_opt strictarr
+symsize=5
+color=1
+if not keyword_set(FONT) then begin
+    if keyword_set(SCREEN) THEN FONT=-1 else FONT=0
+endif
+if not keyword_set(XRANGE) then XRANGE=[min(x), max(x)]
+if keyword_set(CS) or  keyword_set(MACH) then BEGIN
+    CS=msu_get_sound_speed(state, /S_GRID)
+    VTITLE='Mach #'
+    
+endif ELSE BEGIN 
+        CS=1
+        VTITLE='Velocity (cm s!E-1!N)'
+    ENDELSE
+PTITLE='P (dyn cm!E-2!N)'
+TTITLE='T (K)'
+DTITLE='n_e (cm!E-3!N)'
+;figure out grid size
+CHARSIZE=1.7
+CHARTHICK=1.7
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+N = n_elements(state.v) 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;x on the volume element grid (like e, n_e)
+x_alt = msu_get_s_alt(x)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;find midpoint along loop
+midpt = max(x_alt)/2.0 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Calculate the temperature 
+T=msu_get_temp(state)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;set the old colors
+tvlct,old_r, old_g, old_b, /GET
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Set the new colors
+tvlct, [0,255,0,0], [0,0,255,0], [0,0,0,255]
+
+if not keyword_set(screen) then begin
+	prev_display = !d.name
+	set_plot,'ps'
+	if n_elements(fname) eq 0 then fname = 'stateplot.ps'
+	device, filename=fname,/COLOR,/LANDSCAPE
+    endif ELSE BEGIN
+        
+        if !d.name eq 'X' then begin 
+            device, WINDOW_STATE=WS
+            if max(ws) ne 0 then old_win=!d.window
+        endif
+        
+        case 1 of 
+            (not keyword_set(WINDOW)) and (!d.name eq 'X'):
+            (!d.name eq 'X' and  keyword_set(WINDOW)):begin
+                if ws[window] eq 1 then wset, window $
+                else window, WINDOW,TITLE=!computer+' State Plot' 
+            end
+            (!d.name eq 'X' and not  keyword_set(WINDOW)): $
+              window,TITLE=!computer+' State Plot'
+            else:
+        endcase
+                             
+    endelse
+
+
+;Plot margins (relative to graphics window size)
+;X1
+b=0.07  
+;y1=
+c=0.04 
+;x1=0+d
+d=0.12
+
+tstring = 'Elapsed time = '+string(state.time,format='(f9.2)')+' s'
+;erase
+;print,keyword_set(screen)
+if keyword_set(LINESTYLE) ne -1 then LINESTYLE=0
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Plot the Pressure
+plot_io, x_alt,0.666666*state.e, $
+         TITLE="Pressure   (a)", $
+         ytitle=PTITLE, xtitle='s (cm)', $
+         charsize=.90,LINESTYLE=LINESTYLE,  $
+         position=[0+d,0.5+c,0.5-c,1-c],  $
+         XRANGE=XRANGE, XS=1, FONT=FONT
+
+oplot,  x_alt,0.666666*state.e, psym=3, SYMSIZE=SYMSIZE, COLOR=COLOR
+;Plot the loop center
+oplot, [midpt,midpt], $
+       [-1,1d15], LINESTYLE=2
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Plot the Electron Density	
+plot_io, x_alt,state.n_e, $
+                                ; xrange=[1e5,max(x_alt)], $
+         position=[0.5+d,0.5+c,1-c,1-c], $
+         TITLE="Electron Density   (b)", $
+         ytitle=DTITLE, xtitle='s (cm)', $
+         charsize=.90, LINESTYLE=LINESTYLE ,/noerase,  $
+         XRANGE=XRANGE, YRANGE=DRANGE, XS=1,  $
+         FONT=FONT
+oplot,   x_alt,state.n_e, psym=3, SYMSIZE=SYMSIZE, COLOR=COLOR
+
+;Plot the loop center
+oplot, [midpt,midpt],[-1,1d30], LINESTYLE=2
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Plot the Velocity
+    plot, x_alt,state.v/CS, $
+          yrange=VRANGE,/YSTYLE, $
+          ytitle=VTITLE, xtitle='s (cm)', $ 
+          charsize=.9,LINESTYLE=LINESTYLE,$
+          position=[0+d,0+b,0.5-c,0.5-c]  ,/noerase ,$
+          /NODATA,  $
+          XRANGE=XRANGE, XS=1, FONT=FONT
+
+    oplot, x,state.v/cs
+
+oplot, x,state.v/cs, psym=3, SYMSIZE=SYMSIZE, COLOR=COLOR	
+;Plot the loop center
+oplot, [midpt,midpt],[-1d32,1d32], LINESTYLE=2
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;	
+;Plot the Temperature
+plot, x_alt,T, $
+      ;xrange=[1e5,max(x_alt)], $ ;yrange=[3e3,2e7],/ystyle, $
+      position=[0.5+d,0+b,1-c,0.5-c], $
+      TITLE="Temperature   (d)", $
+      ytitle=TTITLE, xtitle='s (cm)', $
+      charsize=.9,LINESTYLE=LINESTYLE ,/noerase,  $
+      XRANGE=XRANGE, YRANGE=TRANGE, $
+      XS=1, FONT=FONT
+oplot, x_alt,T, psym=3, SYMSIZE=SYMSIZE, COLOR=COLOR
+                                ;
+;Plot the loop center
+oplot, [midpt,midpt],[-1,1d15], LINESTYLE=2
+
+	
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+xyouts, 1, 1, tstring, /device,charsize=1,FONT=FONT
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+if keyword_set(verbose) then begin
+	print,'Temperature range (K):         ',minmax(T)
+	print,'Pressure range (dyne cm^-2):   ',minmax(state.e)*0.66666
+	print,'Electron density range (cm^-3):',minmax(state.n_e)
+	print,'Velocity range (cm s^-1):      ',minmax(state.v)
+endif
+if not keyword_set(screen) then begin
+	device, /CLOSE
+	set_plot, prev_display
+endif
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Reset to the old colors
+tvlct,old_r, old_g, old_b
+if size(old_win, /TYPE) ne 0 then wset, old_win
+
+END;Of stateplot2.pro
+
+
+
+
+
+
+

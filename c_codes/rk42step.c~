@@ -1,0 +1,22 @@
+
+#include <math.h>
+
+void main()
+{
+  const int n = 25;
+  int i;
+  float error, x, h, y;
+
+  x = 0.5;
+  h = 1.0;
+  printf(" i          h           y            error\n");
+  printf("-----------------------------------------------\n");
+  for (i = 1; i <= n; i++)
+  {
+    h *= 0.25;
+    y = (sin (x + h) - sin (x)) / h;
+    error = fabs(cos(x) - y);
+    printf("%d %14e %14e %14e\n", i, h, y, error);
+  }
+
+}

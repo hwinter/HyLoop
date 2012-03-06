@@ -1,0 +1,32 @@
+;
+;Calculate the mean free path of thermal Electrons via
+;  Rosner, Low, & Holzer, 1986
+;Output is in cm
+
+function get_loop_mfp, loop,T=T,S_GRID=S_GRID,$
+  VOL_GRID=VOL_GRID,$
+  NO_ENDS=NO_ENDS
+
+if not keyword_set(Z) then z=!shrec_charge_z
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+if not keyword_set(T) then T=get_loop_temp(loop)
+
+mfp=(1.1d8) $
+    *(1d8/loop.state.n_e) $
+    *((get_loop_temp(loop)/1d6)^2d0) $
+    *(20./get_loop_coulomb_log(loop))
+
+;If the keyword is set then spline it to the s grid
+if keyword_set(S_GRID) then $
+   mfp =spline(loop.s_alt,mfp,loop.s)$
+   else if  keyword_set(NO_ENDS) then begin
+    n_elem=size(mfp,/dim)
+    mfp=mfp[1:n_elem[0]-2,*]
+endif
+
+
+
+return,abs(mfp)
+
+END

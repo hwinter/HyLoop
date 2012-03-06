@@ -1,0 +1,197 @@
+
+
+function mk_loop_xrt_image,loop, $
+  RES=RES, STR=STR,$
+  FILTER_INDEX=FILTER_INDEX,$
+  Al_mesh=Al_mesh,$
+  Al_poly=Al_poly,$
+  C_poly=C_poly,$
+  Ti_poly=Ti_poly,$
+  Be_thin=Be_thin,$
+  Be_med=Be_med,$
+  Al_med=Al_med,$
+  Al_thick=Al_thick,$
+  Be_thick=Be_thick,$
+  Al_p_Al_m=Al_p_Al_m,$
+  Al_p_Ti_p=Al_p_Ti_p,$
+  Al_p_Al_t=Al_p_Al_t,$
+  Al_p_Be_t=Al_p_Be_t,$
+  C_p_Ti_p=C_p_Ti_p,$
+  C_p_Al_t=C_p_Al_t,$
+  EXP=EXP,$
+  CADENCE=CADENCE, $
+  XSIZE=XSIZE, YSIZE=YSIZE,$
+  XRANGE=XRANGE, YRANGE=YRANGE, $
+  XC=XC, YC=YC,$
+  dxp0=dxp0,dyp0=dyp0 ,$
+  NO_PSF=NO_PSF, FWHM=FWHM,PLOT=PLOT,$
+  specfile=specfile,$
+  NO_CHROMO=NO_CHROMO,$
+  NO_PAD=NO_PAD, PAD=PAD, $
+  OVER=OVER, $
+  XMN_CM=XMN_CM,XMX_CM=XMX_CM,$
+  YMN_CM=YMN_CM,YMX_CM=YMX_CM, $
+  X_CENTER=X_CENTER, Y_CENTER=Y_CENTER,$
+  OUT_CENTER_X=OUT_CENTER_X,OUT_CENTER_Y=OUT_CENTER_Y,$
+  new_xc=new_xc,new_yc=new_yc, SCREEN_IMAGE=SCREEN_IMAGE
+
+start_time=systime(/julian)
+current_device=!d.name
+set_plot,'z'
+device, set_resolution=[1000, 1000]
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Set keywords
+IF not keyword_set(XSIZE) THEN XSIZE=600
+IF not keyword_set(YSIZE) THEN YSIZE=300
+if size(folder,/TYPE) ne 7 then folder='./'
+IF not keyword_set(FILE_PREFIX) THEN FILE_PREFIX='T*'
+IF n_elements(XRANGE) ne 2 then XRANGE=[900.,1200.]
+IF n_elements(YRANGE) ne 2 then YRANGE=[-100.,100.]
+if not keyword_set(XC) then XC=0.
+if not keyword_set(YC) then YC=0.
+IF size(XC,/TYPE) eq 0 THEN XC=0.
+IF size(YC,/TYPE) THEN YC= 0.
+;Need to change
+;Default to 171
+IF not keyword_set(res) then res=1d     ;XRT pixel res. arcsec
+pixel=res*720d*1d5                      ;XRT pixel res.in cm.
+
+IF not keyword_set(exp) then exp=1d
+IF not keyword_set(FWHM) THEN FWHM=2d0
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+if keyword_set(NO_PAD) then PAD=0 else $
+    if not keyword_set(PAD) then pad=FWHM*3.*pixel
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;set the min and max scales if not set
+if not keyword_set(XMN_CM) then $
+  xmn=min( loop.axis[0, *] ) - 10.*max( loop.rad ) else $
+     xmn =XMN_CM
+if not keyword_set(XMX_CM) then $
+   xmx=max( loop.axis[0, *] ) + 10.*max( loop.rad ) else $
+      xmx=XMX_CM
+if not keyword_set(YMN_CM) then $
+   ymn=min( loop.axis[1, *] ) - 10.*max( loop.rad ) else $
+      ymn=YMN_CM
+if not keyword_set(YMX_CM) then $
+   ymx=max( loop.axis[1, *] ) + 10.*max( loop.rad ) else $
+      ymx=YMX_CM           
+
+      
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Get the xrt temperature response function
+
+defsysv, '!xrt_tresp', exists=test
+if test lt 1 then $
+  defsysv, '!xrt_tresp',CALC_XRT_TEMP_RESP( specfile=specfile)
+
+
+if not keyword_set(FILTER_INDEX) then begin
+    case 1 of
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+;Al_poly is the default
+        keyword_set(Al_poly) : filter_index=1    
+        keyword_set(Al_mesh) : filter_index=0
+        keyword_set(C_poly) :  filter_index=2
+        keyword_set(Ti_poly) : filter_index=3
+        keyword_set(Be_thin) : filter_index=4
+        keyword_set(Be_med) :  filter_index=5
+        keyword_set(Al_med) :  filter_index=6
+        keyword_set(Al_thick) : filter_index=7
+        keyword_set(Be_thick) : filter_index=8
+        keyword_set(Al_p_Al_m): filter_index=9
+        keyword_set(Al_p_Ti_p): filter_index=10
+        keyword_set(Al_p_Al_t): filter_index=11
+        keyword_set(Al_p_Be_t): filter_index=12
+        keyword_set(C_p_Ti_p): filter_index=13
+        keyword_set(C_p_Al_t): filter_index=14
+    else:filter_index=1
+endcase
+endif
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+n_loops=n_elements(loop) 
+
+for i=0UL,n_loops-1 do begin
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+    volumes=get_loop_vol(loop[i])
+    n_vol=n_elements(volumes)
+
+    em=get_loop_em(loop[i],VOL=vol, t=loop_temp)
+    loop_temp=alog10(loop_temp)
+    loop_index=sort(loop_temp,/L64)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Artificially kill the chromospheric signal if desired.;
+    if keyword_set(NO_CHROMO) then begin
+        em[0:loop.n_depth]=0d
+        em[(n_vol-1-loop.n_depth):n_vol-1]=0d
+    endif
+
+
+    resp_index=where(!xrt_tresp[1].TEMP ne 0, $
+                     resp_i_count)
+    
+    signal=dblarr(n_elements(loop_index))
+    signal[loop_index]=(10^(em[loop_index]))* $
+                       (spline(!xrt_tresp[filter_index].TEMP[resp_index],$
+                               !xrt_tresp[filter_index].TEMP_RESP[resp_index], $
+                               loop_temp[loop_index]))/(pixel^2)
+    
+    signal>=0.
+    bad_index=where(loop_temp lt min(!xrt_tresp[1].TEMP[resp_index]))
+    if bad_index[0] ne -1 then $
+          signal[bad_index]=0d0
+    
+    bad_index=where(loop_temp gt max(!xrt_tresp[1].TEMP[resp_index]))
+    if bad_index[0] ne -1 then $
+      signal[bad_index]=0d0
+    ;stop
+    show_loop_image,loop[i].axis,loop[i].rad,$
+                    signal/VOL,pixel=pixel,win=win_num,$
+                    dxp0=dxp0, dyp0=dyp0,DATA_OUT=image_temp,$
+                    /NOSCALE,PAD=PAD , OVER=OVER, $
+                    XMN_CM=XMN,XMX_CM=XMX,$
+                    YMN_CM=YMN,YMX_CM=YMX, $, 
+                    XC=OUT_CENTER_X, YC=OUT_CENTER_Y,$
+                    IMAGE_OUT=SCREEN_IMAGE
+
+    ;if (keyword_set(XMN) and keyword_set(y_CENTER)) then begin
+        arcsec_per_cm=1./(7.2d+7)
+        X_CENTER=xmn+abs((xmx-xmn)/2.)
+        Y_CENTER=ymn+abs((ymx-ymn)/2.)
+        new_xc=xc+((X_CENTER+OUT_CENTER_X)*arcsec_per_cm)
+        new_yc=yc+((Y_CENTER+OUT_CENTER_y)*arcsec_per_cm)
+   ; endif
+    
+    
+    image_temp=image_temp*pixel^2d0
+    if not keyword_set(NO_PSF) then begin
+                 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Define the PSF
+  psf = psf_Gaussian( NPIXEL=[min([10]),min([10])], FWHM=FWHM ,$
+                      /NORMALIZE) ;, ST_DEV=,  NDIMEN= ] )
+      image_temp=convol(image_temp, psf,EDGE_ZERO=1)
+
+
+
+    
+    time_array_string=Strcompress(string(loop[0].state.time,$
+                                         format='(g5.3)'),/remove_all)
+    
+    map_temp={data:image_temp,$
+              xc:new_xc,yc:new_yc,$
+              dx:res,$           
+              dy:res,$          
+              time:loop[i].state.time,$       
+              UNITS:'arcsecs'}
+    if size(map,/TYPE) eq 0 then map=map_temp $
+    else map=merge_map(map, map_temp)
+    
+endfor
+
+;map=shift_map(map, XC=XC, YC=YC)
+set_plot, current_device
+;stop
+return,map.data/exp
+end

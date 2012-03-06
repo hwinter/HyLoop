@@ -1,0 +1,298 @@
+
+;------ Thermal conductivity ---------------------------------
+;Based on Spitzer (1e-6 * T^(5/2)), with corrections inferred
+;from Fontenla, Avrett & Loeser (1990 ApJ 355:700)
+;1999-Jul-15 CCK added DISP keyword similar to radloss function
+function kappa_t, T, disp=disp,so=so
+
+;first tabulated point is a dummy point, in case T < 1e4.
+logc = [2d, 2.00d, 1.12, 0.69, 0.22, 0.13, 0.10, 0.08, 0.00, 0.00, 0.00]
+logT = [3d, 4.00d, 4.18, 4.30, 4.60, 4.78, 4.90, 5.00, 6.00, 7.00, 8.00]
+Tmin = 10^min(logT)
+Tmax = 10^max(logT)
+
+;DISP option
+if keyword_set(disp) then begin
+	plot, logT, 2.5*logT+logC-6, psym=-1, xtitle = '!6log T', $
+		ytitle = '!6Thermal conductivity, log [!7j!6T!U5/2!N]', $
+		xrange=[4,5], yrange=[4,7], symsize=!P.symsize
+		;Note that !P.symsize doesn't work unless it's
+		;hooked in manually as above!
+	oplot, logT, 2.5*logT-6, psym=-4, symsize=!P.symsize, $
+		linestyle=2
+	legend, ['New heat flux model','Spitzer (1962)'],$
+		psym=[-1,-4],linestyle=[0,2],$
+		symsize=[!P.symsize,!P.symsize], box=0
+	return, 0
+    endif
+;Got tired of the interpolators blowing a fuse randomly, 
+;so I made a look up table based on the values above.
+ 
+;logT2=[3d, $ 
+;       4.0000000, $ 
+;       4.0404040, $ 
+;       4.0808081, $ 
+;       4.1212121, $ 
+;       4.1616162, $ 
+;       4.2020202, $ 
+;       4.2424242, $ 
+;       4.2828283, $ 
+;       4.3232323, $ 
+;       4.3636364, $ 
+;       4.4040404, $ 
+;       4.4444444, $ 
+;       4.4848485, $ 
+;       4.5252525, $ 
+;       4.5656566, $ 
+;       4.6060606, $ 
+;       4.6464646, $ 
+;       4.6868687, $ 
+;       4.7272727, $ 
+;       4.7676768, $ 
+;       4.8080808, $ 
+;       4.8484848, $ 
+;       4.8888889, $ 
+;       4.9292929, $ 
+;       4.9696970, $ 
+;       5.0101010, $ 
+ ;      5.0505051, $ 
+;       5.0909091, $ 
+;       5.1313131, $ 
+;       5.1717172, $ 
+;       5.2121212, $ 
+;       5.2525253, $ 
+;       5.2929293, $ 
+;       5.3333333, $ 
+;       5.3737374, $ 
+;       5.4141414, $ 
+;       5.4545455, $ 
+;       5.4949495, $ 
+;       5.5353535, $ 
+;       5.5757576, $ 
+;       5.6161616, $ 
+;       5.6565657, $ 
+;       5.6969697, $ 
+;       5.7373737, $ 
+;       5.7777778, $ 
+;       5.8181818, $ 
+;       5.8585859, $ 
+;       5.8989899, $ 
+;       5.9393939, $ 
+;       5.9797980, $ 
+;       6.0202020, $ 
+;       6.0606061, $ 
+;       6.1010101, $ 
+;       6.1414141, $ 
+;       6.1818182, $ 
+;       6.2222222, $ 
+;       6.2626263, $ 
+;       6.3030303, $ 
+;       6.3434343, $ 
+;       6.3838384, $ 
+;       6.4242424, $ 
+;       6.4646465, $ 
+;       6.5050505, $ 
+;       6.5454545, $ 
+;       6.5858586, $ 
+;       6.6262626, $ 
+;       6.6666667, $ 
+;       6.7070707, $ 
+;       6.7474747, $ 
+;       6.7878788, $ 
+;       6.8282828, $ 
+;       6.8686869, $ 
+;       6.9090909, $ 
+;       6.9494949, $ 
+;       6.9898990, $ 
+;       7.0303030, $ 
+;       7.0707071, $ 
+;       7.1111111, $ 
+;       7.1515152, $ 
+;       7.1919192, $ 
+;       7.2323232, $ 
+;       7.2727273, $ 
+;       7.3131313, $ 
+;       7.3535354, $ 
+;       7.3939394, $ 
+;       7.4343434, $ 
+;       7.4747475, $ 
+;       7.5151515, $ 
+;       7.5555556, $ 
+;       7.5959596, $ 
+;       7.6363636, $ 
+;       7.6767677, $ 
+;       7.7171717, $ 
+;       7.7575758, $ 
+;       7.7979798, $ 
+;       7.8383838, $ 
+;       7.8787879, $ 
+;       7.9191919, $ 
+;       7.9595960, $ 
+;       8.0000000]
+
+;logc2=[2d,$
+;       2.0000000,$
+;       1.8024689,$
+;       1.6049379,$
+;       1.4074068,$
+;       1.2098758,$
+;       1.0410939,$
+;       0.89631317,$
+;       0.75153250,$
+;       0.65360296,$
+;       0.59030324,$
+;       0.52700351,$
+;       0.46370378,$
+;       0.40040405,$
+;       0.33710433,$
+;       0.27380460,$
+;       0.21696966,$
+;       0.19676765,$
+;       0.17656568,$
+;       0.15636371,$
+;       0.13616169,$
+;       0.12297985,$
+;       0.11287882,$
+;       0.10277781,$
+;       0.094141427,$
+;       0.086060609,$
+;       0.079191931,$
+;       0.075959585,$
+;       0.072727278,$
+;       0.069494933,$
+;       0.066262625,$
+;       0.063030318,$
+;       0.059797972,$
+;       0.056565665,$
+;       0.053333319,$
+;       0.050101012,$
+;       0.046868705,$
+;       0.043636359,$
+;       0.040404052,$
+;       0.037171706,$
+;       0.033939399,$
+;       0.030707053,$
+;       0.027474746,$
+;       0.024242439,$
+;       0.021010093,$
+;       0.017777786,$
+;       0.014545440,$
+;       0.011313133,$
+;       0.0080808256,$
+;       0.0048484801,$
+;       0.0016161728,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+;       0.0000000,$
+ ;      0.0000000]
+
+;logtemp = alog10(double(T)); >Tmin <Tmax))
+;n_temp=n_elements(logtemp)
+;index=lonarr(n_temp)
+;for i=0l,n_temp-1l do begin
+;    index[i]=where(abs(logtemp[i]-logT2) eq min(abs(logtemp[i]-logT2)))
+;endfor
+
+;if index[0] ne -1 then $
+;correction = 10^(logc2[index]) ; else stop
+
+;old, sluggish way
+;stop
+;print, 'Min/max of T'+string(min(alog10(t)))+' '+string(max(alog10(t)))
+logtemp = alog10(double(T >Tmin <Tmax))
+correction = 10^interpolate(logc, findex(logT, logtemp))
+;stop
+;new, zippy way
+;n_tabulated = n_elements(logT)
+;logtemp = alog10(double(T >Tmin <Tmax))
+	;new interpolator crashes if logtemp is out of range!
+;n_logtemp = n_elements(logtemp)
+;logcorr = dblarr(n_logtemp)
+
+;print,'kappa'
+;help,logcorr
+;pmm,logcorr
+;help,logtemp
+;pmm,logtemp
+;help,n_logtemp
+;help, logT
+;pmm, logT
+;help,logc
+;pmm,logc
+;help, n_tabulated
+ ;foo = call_external(so, $ ; The SO
+ ;                    'bnh_splint', $ ; The entry name
+ ;                    n_tabulated, $; # of elements in x, f(x)
+ ;                    logT, $       ; x
+ ;                    logc, $    ; f(x)
+ ;                    n_logtemp, $ ; # elements in thing-to-interpolate
+ ;                    logtemp, $ ; thing-to-interpolate
+ ;                    logcorr, $  ; where the answer goes
+ ;                    /d_value, $ 
+ ;                    value=[1,0,0,1,0,0], $ 
+ ;                   /auto_glue,/cdecl);, $/ignore_exist,
+                   ;/SHOW_ALL_OUTPUT,/VERBOSE)
+;correction=10.^logcorr
+;help,logcorr
+;pmm,logcorr
+;help,logtemp
+;pmm,logtemp
+;help,n_logtemp
+;help, logT
+;pmm, logT
+;help,logc
+;pmm,logc
+;help, n_tabulated
+;stop
+
+
+
+return, (1.0e-6)*T^(2.5)*correction
+end
+

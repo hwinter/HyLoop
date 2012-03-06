@@ -1,0 +1,216 @@
+pro test_e_flare_natalie_nt
+
+  loop_num=12
+  resolve_routine, 'e_flare_natalie_nt', /either
+;The loop number will be defined above this line.
+;No put it into a system variable
+  DEFSYSV, '!loop_num', loop_num
+  set_shrec_sys_variables
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;User Definition section
+  Out_dir_prefix= $
+     '/home/hwinter/programs/HyLoop/experiments/2010_reu_b/loop_directories/test/'
+  spawn, 'mkdir '+Out_dir_prefix
+
+;Prefix for the output file name.
+  FILE_PREFIX='hyloop_out_cc_nosat'
+;Total simulation time in seconds 
+  loop_time=50.0                 ;[sec]
+;Output time.
+  delta_time=1d                 ;[sec]
+  src=1
+  no_sat=1
+  tmax=1.5d6
+  CONSTANT_CHROMO=1
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Non_thermal particle properties
+;Determine the flux of of particles in each energy bin
+;Very hard energy spectrum here.
+  delta_index=3d
+  DEFSYSV,'!SPEC_INDEX',delta_index
+  energies=[15d,200d]
+  DEFSYSV, '!E_min_max', energies
+;How long will the beam be injected?
+;beam_time= loop_time            ;[sec]
+  beam_dt=0.1
+  defsysv, '!PATC_DT',beam_dt
+;Number of test particles per beam.
+  num_test_particles=(200d0)
+   DEFSYSV, '!N_PART',num_test_particles
+;Fraction of the energy that goes into the production of nonthermal particles   
+  FRACTION_PART=0.5
+  defsysv, '!fraction_part', FRACTION_PART
+;For the Bremsstrahlung
+  MIN_PHOTON=1                  ;keV
+  MAX_PHOTON=100                ;keV
+
+  dist_alpha=-4.
+  defsysv, '!DIST_ALPHA',dist_alpha
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  HEAT_FUNCTION='e_flare_natalie_nt'
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Define a system variable to hold the loop energy
+  path = '/home/hwinter/programs/HyLoop/experiments/2010_reu/0.1MA_5.e9lam_25.Ic_2.1e16m0_0.1rn/hyloop_input/'
+  files = find_files('*.genx',path)
+  restgen, file=files[loop_num], struct
+  loop_energy=struct.energy
+  defsysv, '!lf_loop_energy', loop_energy
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  DEFSYSV, '!heat_alpha',0.0
+  DEFSYSV, '!heat_beta',0.
+
+  print, 'Run started at '+systime(/utc)
+  old_plot_state=!D.NAME
+  set_plot,'z'
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  COMPILE_OPT STRICTARR
+;Make some settings to make use of IDL multi-threading
+;Most of the defaults are ok.
+  n_cpu=(!CPU.HW_NCPU-1)
+  n_cpu>=1
+  CPU , TPOOL_NTHREADS=n_cpu
+  SSW_PACKAGES, /chianti
+  SSW_PACKAGES, /xray
+  
+  subfolders=Out_dir_prefix
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  pattern=FILE_PREFIX+'*.loop'
+  
+  file=file_search(subfolders,pattern, count=n_files )
+  
+  if n_files ge 2 then begin
+     restore,  file[n_files-2]
+     if loop.state.time ge loop_time then goto, end_jump
+  endif else begin
+
+     pattern='2010_lf_loop_'+ $
+             strcompress(string(loop_num, FORMAT='(I04)'), /REMOVE)+$
+             '*.loop'
+     
+     file=file_search(subfolders,pattern, count=n_files )
+     
+     if n_files lt 1 then begin
+        print, 'The loop input file could not be found.'
+        print, 'Pattern:',subfolders+pattern
+        
+        stop
+     endif
+     
+;Make a pre-flare file
+     restore, file[0]
+     loop.state.time=0.
+  endelse
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  e_h=loop.e_h
+  vols=get_loop_vol(loop)
+  N_VOL=n_elements(vols)
+
+  s=loop.s
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  
+  spawn, 'mkdir '+subfolders
+  defsysv, '!patc_heat',e_h*0.
+  DEFSYSV, '!heat_Tmax',Tmax
+  constant_heat_flux=get_p_t_law_flux(loop.l, alpha,Tmax)
+  DEFSYSV, '!constant_heat_flux',constant_heat_flux
+
+  cd , subfolders
+
+  start_time=systime(1)
+  color_table=39
+  run_folder=strcompress('./')
+  n_loop=n_elements(loop)
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Temporal grid safety
+  safety=5.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  Debug=0
+  showme=0
+  quiet=0
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;End of input parameters
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Have to fix this
+;Some functions and proc's change their parameter input unexpectedly.
+  dt=delta_time
+;  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;For debugging
+;!except=2
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Define the number of iterations that the code will make.
+  N_interations=fix(loop_time/delta_time)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Have to fix this
+;Some functions and proc's change their parameter input unexpectedly.
+  dt=delta_time
+                                ;inj_time=beam_time
+
+  ph_energies=MIN_PHOTON+dindgen(MAX_PHOTON-MIN_PHOTON+1d)
+  n_ph_e_array=n_elements(ph_energies)
+  n_photons=dblarr(n_ph_e_array)
+  nt_brems={ph_energies:ph_energies,$
+            n_photons:n_photons}
+  nt_brems=replicate(nt_brems,n_vol )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;stop
+;NEED TO THINK ABOUT THIS IMPLEMENTATION LATER
+;
+  counter=0
+  sim_time=0d
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Main loop
+;This loop spans the whole loop simulation time.
+;Electron Beam injection
+;Loop cooling post beam injection.
+;Electron thermalization. etc.  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Keep the loop going until time's up
+  n_sim_iter=1ul
+  
+  save, nt_beam, loop,nt_brems, file=file_prefix+$
+        string(0, FORMAT='(I06)')+'.loop'
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+     hyloop, loop,loop_time  ,  $
+             T0=T0, FILE_PREFIX=FILE_PREFIX, $
+             FILE_EXT=FILE_EXT, src=src, uri=uri, fal=fal, $
+             depth=loop.depth, safety=safety,QUIET=QUIET, $
+;Begin regrid keywords
+             REGRID=REGRID, GRID_SAFETY=GRID_SAFETY, $
+             PERCENT_DIFFERENCE=PERCENT_DIFFERENCE, $
+             MAX_STEP=MAX_STEP, $
+             QUADRATIC=QUADRATIC, LSQUADRATIC=LSQUADRATIC, $
+             SPLINE=SPLINE, SHOWME=SHOWME,$
+             DELTA_T=DELTA_Time, DEBUG=DEBUG, $
+             HEAT_FUNCTION=HEAT_FUNCTION, $
+             WINDOW_REGRID=WINDOW_REGRID, $
+             WINDOW_STATE=WINDOW_STATE, $
+             SO=SO, E_H=E_H, $
+             novisc=1,$
+             NO_SAT=NO_SAT,$
+             NT_BEAM=NT_BEAM,$
+             NT_PART_FUNC=NT_PART_FUNC,$ ; PATC section
+             NT_BREMS=NT_BREMS,$
+             NT_DELTA_E=NT_DELTA_E,$
+             NT_DELTA_MOMENTUM=NT_DELTA_MOMENTUM ,$
+             PATC_heating_rate=PATC_heating_rate,$
+             extra_flux=extra_flux,$
+             CONSTANT_CHROMO=CONSTANT_CHROMO, $
+             SLIDE_CHROMO=SLIDE_CHROMO
+
+  print, 'This run took '+string(systime(1)-start_time)+' seconds to complete.'
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+end_jump:
+
+end 

@@ -1,0 +1,38 @@
+  pro dv_display_old, loop,dv,SCALE_FACTOR, $
+   E_BEAM=E_beam,$
+   WINDOW=WINDWOW, $
+   XSIZE=XSIZE, YSIZE=YSIZE, $
+   GIF=GIF, PLOT_TITLE=PLOT_TITLE,$
+   RUN_FOLDER=RUN_FOLDER
+ 
+;emission_display_script.pro
+IF not keyword_set(PLOT_TITLE) then plot_title='Model Loop Sim'
+;if Keyword_set(E_BEAM) then beam_struct={NT_beam:E_beam}
+res=1
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;11/3/2005
+;Get the proper path for the PATC codes.
+;Defined in .cshrc - make sure it is blah/PATC not blah/PATC/
+patc_dir=getenv('PATC')
+
+pixel=700d*res*1d5
+
+rot1=rotation(2,!dpi/2) 
+rot2=rotation(3,!dpi/2)
+
+axis=loop[0].axis
+axis=(rot2#rot1#axis)
+;axis=(rot1#axis)
+rad=loop[0].rad
+
+volumes=get_loop_vol(loop[0].s,loop[0].a)
+signal=0.0001+dv/volumes
+
+pmm,signal
+help,signal
+
+show_loop_image,axis,rad,signal,pixel=pixel,win=win_num,$
+                dxp0=dxp0, dyp0=dyp0,IMAGE_OUT=IMAGE_OUT
+        
+
+end

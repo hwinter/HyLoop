@@ -1,0 +1,88 @@
+
+
+;+
+; NAME:
+;	
+;
+; PURPOSE:
+;
+; CATEGORY:
+;	Simulation.  Flare studies
+;
+; CALLING SEQUENCE:
+;	
+;
+; INPUTS:
+;	
+;
+; OPTIONAL INPUTS:
+;	
+;	
+; KEYWORD PARAMETERS:
+;	
+;
+; OUTPUTS:
+;	
+;
+; OPTIONAL OUTPUTS:
+;	
+;
+; COMMON BLOCKS:
+;	
+;
+; SIDE EFFECTS:
+;	
+;
+; RESTRICTIONS:
+;	
+;
+; PROCEDURE:
+;	
+;
+; EXAMPLE:
+;	
+;
+; CURRENT VERSION:
+;    1.0
+; MODIFICATION HISTORY:
+; 	Written by:	Henry deG. Winter III (Trae) 08/15/2006
+;                
+;-
+
+
+function flux_dist_func, nt_particles, loop,energies, v
+nt_p=nt_particles[sort(nt_particles.ke_total)]
+e_indices=uniq(nt_p.ke_total)
+energies=nt_p[e_indices].ke_total
+n_energies=n_elements(energies)
+N_E=dblarr(n_energies)
+v=dblarr(n_energies)
+
+
+volumes=get_loop_vol(loop)
+s_alt=get_loop_s_alt(loop)
+s_alt=s_alt[1:n_elements(loop.s)-2l]
+
+
+
+for i=0ul, n_energies-1ul do begin
+    index=where(nt_p.ke_total eq energies[i])
+    v[i]=energy2vel(nt_particles[index[0]].ke_total)
+
+    position_indices=lonarr(n_elements(index))
+    for k=0ul, n_elements(index)-1ul do begin
+        position_indices[k]=where(abs(nt_particles[index[k]].x-s_alt) eq $
+                               min(abs(nt_particles[index[k]].x-s_alt)))
+        N_E[i]=N_E[i]+ $
+               nt_p[index[k]].scale_factor* $
+               v[i]/volumes[position_indices[k]]
+    endfor
+    ;help, index
+    
+
+
+endfor
+
+return, N_E
+
+end

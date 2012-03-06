@@ -1,0 +1,27 @@
+;get_loop_sound_speed
+function get_loop_sound_speed, loop, GAMMA=GAMMA, S_GRID=S_GRID,$
+  VOL_GRID=VOL_GRID, T=T
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+n_loop=n_elements(loop)-1
+;ratio of specific heats, C_P/C_V
+if not keyword_set(GAMMA) then GAMMA = !shrec_gamma
+
+if not keyword_set(T) then $
+  T = get_loop_temp(loop[n_loop])
+
+cs = sqrt(3d0*gamma*!shrec_kB*T/!shrec_mp)    ;
+
+
+if keyword_set(S_GRID) then begin
+;index of last gridpoint
+    ix = n_elements(loop[n_loop].state.e)-1ul 
+
+; Take an average to estimate the sound speed on the surface grid    
+    cs = (cs[0ul:ix-1] + cs[1ul:ix])/2d
+
+endif
+
+return, cs
+
+END; Of main

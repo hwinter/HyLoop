@@ -1,0 +1,67 @@
+;Brem_test
+set_loop_sys_variables
+n=[1d0, 1d1, 1d2, 1d3, 1d4, 1d5];, 1d6]
+n_n=n_elements(n)
+t1=dblarr(n_n)
+t2=t1
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+n_volumes=400
+n_es=dblarr(volumes)
+min=0
+max=40
+delta_t=1d-4
+v_avg=1d7
+ 
+nt_brems={ph_energies:!ph_energies,$
+          n_photons:n_photons}
+
+nt_brems=replicate(nt_brems,n_volumes)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+for i=0ul, n_n-1ul do begin
+
+   energies=200.0*dindgen(n[i])/(n[i]-1)
+   position_indices=long(randomu(seed, 2,)*(n-2))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   t1_start=systime(1)
+
+   indices=hdw_get_position_index(energies, !BREMS_PART_E_ARRAY)
+   cross_1=!BREMS_CROSS_SECTION[*,indices]
+   nt_brems[min:max]=n_photons= $
+                     total(delta_t)
+
+   t1[i]=systime(1)-t1_start
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+   t2_start=systime(1)
+   for j=0ul, n[i]-1ul do begin
+
+          Brm_BremCross,energies[j],$
+                        !ph_energies, $
+                        1.4, cross_1 
+
+   endfor
+   t2[i]=systime(1)-t2_start
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+print, t2[i]/t1[i]
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+endfor
+plot, n, t2/t1, /xlog, /ylog
+
+end
+
+
+
+
+
+
+
+
+
+

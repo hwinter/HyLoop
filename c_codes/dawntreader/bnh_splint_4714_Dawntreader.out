@@ -1,0 +1,23 @@
+########################################################################
+#
+# Error output from building library
+#
+#    File Name: bnh_splint
+#    User: winter@Dawntreader.local
+#    IDL Version: 6.2 (darwin ppc)
+#    Memory Bits: 32
+#    File Bits: 32
+#    Date: Tue Jun 13 10:03:11 2006
+#
+# Unix IDL executes bnh_splint_4714_Dawntreader.sh to
+# build the sharable library. Any errors produced in that process
+# are redirected to this file. In reading this file, please be
+# aware that some loaders, such as the Solaris ld(1), will produce
+# errors for symbols not resolved while building the library. Such
+# errors are normal, as a sharable library usually cannot be
+# completely resolved until runtime, and are normally not a
+# cause for concern. The missing symbols are resolved at runtime
+# when IDL loads the library.
+#
+# Any output resulting from this process appears after the next line
+########################################################################

@@ -1,0 +1,81 @@
+;field_line_tracer.pro
+;bx & by need work
+
+function lf_field_line_tracer, p,q,lambda,h, $
+                               delta_l, A_0=A_0, $
+                               BX=BX, BY=BY, BT=BT,$
+                               GENXFILE=GENXFILE
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Keyword check
+if not keyword_set(A_0) then A_0=1d0
+
+if size(delta_l, /TYPE) eq 0 then  delta_l=1d7 ;cm 100
+
+if keyword_set(GENXFILE) then begin
+   test=file_test(GENXFILE)
+   if test ne 1 then begin
+      message, 'No file named '+GENXFILE+' .', /CONTINUE
+      stop
+   endif
+   
+   restgen,struct=struct, file=GENXFILE
+   lambda=struct.SAVEGEN0.LAMBDA0_VALUE*struct.SAVEGEN0.LAMBDA_CRITICAL
+   A_0=struct.SAVEGEN0.A0_VALUE
+   h=struct.SAVEGEN0.H_VALUE*lambda 
+   p=struct.SAVEGEN0.P_VALUE*lambda 
+   q=struct.SAVEGEN0.Q_VALUE *lambda 
+   
+endif
+                               
+;lambda_scale=lambda
+;lambda=1
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Start on the left side, bottom.
+x_array=-lambda
+y_array=0.001d
+x=x_array
+y=y_array
+b=lin_forbes_field(x,y,p,q,lambda,h, $
+                   A_0=A_0,$
+                   B_TOTAL=B_TOTAL)
+
+bx=b[0]
+by=b[1]
+bt=B_total
+i=1ul
+while max(y_array) gt 0. do begin 
+   print, i
+   delta_x=(b[0]/B_TOTAL)*delta_l
+   delta_y=(b[1]/B_TOTAL)*delta_l
+   
+   x=x+delta_x
+   y=y+delta_y
+   x_array=[x_array, x]
+   y_array=[y_array, y]
+   
+   b=lin_forbes_field(x,y,p,q,lambda,h, $
+                      A_0=A_0,$
+                      B_TOTAL=B_TOTAL)
+   
+   bx=[bx, b[0]]
+   by=[by, b[1]]
+   bt=[bt, B_total]
+   i++
+   if i gt 10000 then begin
+      
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+      plot, x_array, y_array, back=fsc_color('white'),$
+            color=fsc_color('black')
+      oplot,x_array[0:500], y_array[0:500], psym=1,$
+            color=fsc_color('red')
+      oplot,x_array[500:*], y_array[500:*], psym=1,$
+            color=fsc_color('blue')
+      stop
+   endif
+end
+
+
+    return, [[x_array],[y_array]]
+ end; of bp_field_line_tracer

@@ -1,0 +1,45 @@
+//Include a i/o library
+#include <iostream>
+#include <math.h>
+using namespace std;
+
+double energy2gamma(double t_ke){
+  //Declare variables
+  double keV_2_ergs;
+  double e_mass_g;
+  double c_squared;
+  double gamma;
+  double E;
+  //Define constants 
+  gamma=0e+0;
+  keV_2_ergs=1.6022e-9;
+  e_mass_g= 9.1094e-28;
+  c_squared=(2.9979e+10)*(2.9979e+10);
+  
+  E=t_ke*keV_2_ergs;
+  
+  gamma=(E/(e_mass_g*c_squared))+1.0e+0;
+  
+  cout << gamma  ;
+  cout << " \n ";
+  cout << E ;
+  cout << " \n ";
+
+  return(gamma);
+
+
+}
+
+
+int main(){
+  double gamma;
+  double t_ke;
+  gamma=energy2gamma(400);
+  
+  cout << gamma  ;
+  cout << " \n ";
+  
+  return(gamma);
+}
+
+

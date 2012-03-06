@@ -1,0 +1,172 @@
+--------------------------------------------------------
+Running SSW, Last Updated: Wed Nov 2 22:22:51 GMT 2005
+
+IDL> ssw_path,/iii [,/remove]	        ; add and remove SSW instrument = iii
+IDL> pr_env,/xxx		        ; show environmentals/logicals xxx
+IDL> sswloc,/xxx [,outlist]		; SSW routines matching pattern xxx
+IDL> stuff=gt_tagval(xxx,/TAG)          ; extract TAG from structure array xxx
+IDL> text=get_infox(xxx,'t1,t2,t3...')  ; ascii summary of structure array xxx
+
+?? Why work with 1 FITS header when you can work with 100 FITS structures ??
+mreadfits converts vector of fits files to Structure array and 3D data
+IDL> mreadfits, FITSFILES, fitsstruct [ , data_3D, outsize=xy ]
+ 
+PROBLEMS? - e-mail TO: freeland@penumbra.nascom.nasa.gov
+--------------------------------------------------------
+IDL Version 7.0.6, Mac OS X (darwin x86_64 m64). (c) 2008, ITT Visual Information Solutions
+Installation number: 1412-1.
+Licensed for use by: High Energy Astrophysics Division
+
+Executing SSW IDL_STARTUP for: GEN
+Executing SSW IDL_STARTUP for: STEREO gen tree
+% SET_LOGENV: setenv,SOHO_SPICE=/proj/DataCenter/sswdb/soho/gen/spice
+Executing SSW IDL_STARTUP for: TRACE
+Executing SSW IDL_STARTUP for: EIT
+executing EIT IDL_STARTUP
+Executing SSW IDL_STARTUP for: SOT
+% Compiled module: STRJUSTIFY.
+% Compiled module: UNIQ.
+% Compiled module: DEFAULT.
+% Compiled module: PRSTR.
+Including Paths:
+ --------------------------------
+| $SSW/hinode/sot/doc/demo/paris |
+| $SSW/hinode/sot/doc/demo/test  |
+| $SSW/hinode/sot/doc/demo       |
+ --------------------------------
+% SSW_PATH: Number of paths changed from 248 to 251
+Executing SSW IDL_STARTUP for: XRT
+% Compiled module: REM_ELEM.
+% Compiled module: REM_ELEM2.
+% Compiled module: GET_UNIQ.
+% Compiled module: REMOVE.
+Including Paths:
+ -----------------------------------
+| $SSW/hinode/gen/idl/osdc          |
+| $SSW/hinode/gen/idl/pointing      |
+| $SSW/hinode/sot/idl/ct            |
+| $SSW/hinode/sot/idl/fg/cal        |
+| $SSW/hinode/sot/idl/fg/fgram      |
+| $SSW/hinode/sot/idl/fg/util       |
+| $SSW/hinode/sot/idl/sodasurf      |
+| $SSW/hinode/sot/idl/sp/util       |
+| $SSW/hinode/sot/idl/sp/util_lmsal |
+| $SSW/hinode/sot/idl/user/berger   |
+| $SSW/hinode/sot/idl/util          |
+| $SSW/hinode/sot/idl               |
+| $SSW/trace/idl/egse               |
+| $SSW/trace/idl/info               |
+| $SSW/trace/idl/ops                |
+| $SSW/trace/idl/site               |
+| $SSW/trace/idl/util               |
+| $SSW/trace/idl/wwwidl             |
+ -----------------------------------
+% SSW_PATH: Path not changed Number of paths: 251
+% SET_LOGENV: setenv,SOT_CALIBRATION=$SSW_SOT/calibration
+Executing SSW IDL_STARTUP for: EIS
+% Compiled module: LOAD_EXTERNAL.
+% Compiled module: MKLOG.
+% Compiled module: NOT_EXIST.
+% Compiled module: SSW_BIN.
+% Compiled module: BREAK_FILE.
+% Compiled module: REVERSE.
+% Compiled module: FIX_PATH.
+% Compiled module: STR_TRAIL.
+% Compiled module: GET_PATH_DELIM.
+Executing SSW IDL_STARTUP for: SECCHI
+Including Paths:
+ -----------------------------
+| $SSW/packages/mjastereo/idl |
+ -----------------------------
+% SSW_PATH: Number of paths changed from 251 to 252
+Including Paths:
+ -----------------------------------------------
+| $SSW/packages/nrl/idl/nrlgen/analysis         |
+| $SSW/packages/nrl/idl/nrlgen/dfanning         |
+| $SSW/packages/nrl/idl/nrlgen/display/diva     |
+| $SSW/packages/nrl/idl/nrlgen/display          |
+| $SSW/packages/nrl/idl/nrlgen/lascoeit         |
+| $SSW/packages/nrl/idl/nrlgen/time             |
+| $SSW/packages/nrl/idl/nrlgen/util/discri_pobj |
+| $SSW/packages/nrl/idl/nrlgen/util             |
+| $SSW/packages/nrl/idl/nrlgen/widgets          |
+ -----------------------------------------------
+% SSW_PATH: Number of paths changed from 252 to 261
+% SET_LOGENV: setenv,SECCHI_BKG=/proj/DataCenter/sswdb/stereo/secchi/background
+              s
+Executing SSW IDL_STARTUP for: CHIANTI
+% Compiled module: USE_CHIANTI.
+
+---------------------------------------------------------------
+                  Welcome to  CHIANTI
+  For current information see one of the CHIANTI WWW pages
+e.g: http://www.damtp.cam.ac.uk/user/astro/chianti/chianti.html
+If you have PROBLEMS please e-mail chianti_help@halcyon.nrl.navy.mil
+% Compiled module: DIR_EXIST.
+CHIANTI system variable !xuvtop set=/proj/DataCenter/ssw/packages/chianti/dbase
+You are using the CHIANTI database VERSION 6.0
+CHIANTI system variable !ioneq_file set=/proj/DataCenter/ssw/packages/chianti/dbase/ioneq/chianti.ioneq
+CHIANTI system variable !abund_file set=/proj/DataCenter/ssw/packages/chianti/dbase/abundance/sun_photospheric.abund
+% DEVICELIB: Added system variable !BCOLOR
+% DEVICELIB: Added system variable !ASPECT
+-------------------------------------------------------------------
+
+Executing SSW IDL_STARTUP for: SITE
+Including Paths:
+ ---------------------------------
+| $SSW/yohkoh/ucon/idl/acton      |
+| $SSW/yohkoh/ucon/idl/bentley    |
+| $SSW/yohkoh/ucon/idl/freeland   |
+| $SSW/yohkoh/ucon/idl/hudson     |
+| $SSW/yohkoh/ucon/idl/labonte    |
+| $SSW/yohkoh/ucon/idl/lemen      |
+| $SSW/yohkoh/ucon/idl/linford    |
+| $SSW/yohkoh/ucon/idl/mcallister |
+| $SSW/yohkoh/ucon/idl/sato       |
+| $SSW/yohkoh/ucon/idl/mctiernan  |
+| $SSW/yohkoh/ucon/idl/metcalf    |
+| $SSW/yohkoh/ucon/idl/morrison   |
+| $SSW/yohkoh/ucon/idl/sakao      |
+| $SSW/yohkoh/ucon/idl/schwartz   |
+| $SSW/yohkoh/ucon/idl/slater     |
+| $SSW/yohkoh/ucon/idl/wuelser    |
+| $SSW/yohkoh/ucon/idl/zarro      |
+ ---------------------------------
+Executing SSW IDL_STARTUP: (Personal)
+% Compiled module: SET_LOOP_SYS_VARIABLES.
+% Compiled module: STRSPLIT.
+% Compiled module: SSW_PACKAGES.
+Including Paths:
+ --------------------------------------------
+| $SSW/packages/chianti/idl/continuum        |
+| $SSW/packages/chianti/idl/convert          |
+| $SSW/packages/chianti/idl/dem/low_level    |
+| $SSW/packages/chianti/idl/dem              |
+| $SSW/packages/chianti/idl/em               |
+| $SSW/packages/chianti/idl/emiss            |
+| $SSW/packages/chianti/idl/ionrec           |
+| $SSW/packages/chianti/idl/level_population |
+| $SSW/packages/chianti/idl/ratios           |
+| $SSW/packages/chianti/idl/read             |
+| $SSW/packages/chianti/idl/setup            |
+| $SSW/packages/chianti/idl/synt_spec        |
+| $SSW/packages/chianti/idl/utilities        |
+ --------------------------------------------
+% SSW_PATH: Path ORDER changed Number of paths: 352
+% Compiled module: SSW_SET_CHIANTI.
+
+---------------------------------------------------------------
+                  Welcome to  CHIANTI
+  For current information see one of the CHIANTI WWW pages
+e.g: http://www.damtp.cam.ac.uk/user/astro/chianti/chianti.html
+If you have PROBLEMS please e-mail chianti_help@halcyon.nrl.navy.mil
+CHIANTI system variable !xuvtop set=/proj/DataCenter/ssw/packages/chianti/dbase
+You are using the CHIANTI database VERSION 6.0
+CHIANTI system variable !ioneq_file set=/proj/DataCenter/ssw/packages/chianti/dbase/ioneq/chianti.ioneq
+CHIANTI system variable !abund_file set=/proj/DataCenter/ssw/packages/chianti/dbase/abundance/sun_photospheric.abund
+% DEVICELIB: Added system variable !BCOLOR
+% DEVICELIB: Added system variable !ASPECT
+-------------------------------------------------------------------
+
+% Compiled module: $MAIN$.
+Killed

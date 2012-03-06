@@ -1,0 +1,646 @@
+--------------------------------------------------------
+Running SSW, Last Updated: Wed Nov 2 22:22:51 GMT 2005
+
+IDL> ssw_path,/iii [,/remove]	        ; add and remove SSW instrument = iii
+IDL> pr_env,/xxx		        ; show environmentals/logicals xxx
+IDL> sswloc,/xxx [,outlist]		; SSW routines matching pattern xxx
+IDL> stuff=gt_tagval(xxx,/TAG)          ; extract TAG from structure array xxx
+IDL> text=get_infox(xxx,'t1,t2,t3...')  ; ascii summary of structure array xxx
+
+?? Why work with 1 FITS header when you can work with 100 FITS structures ??
+mreadfits converts vector of fits files to Structure array and 3D data
+IDL> mreadfits, FITSFILES, fitsstruct [ , data_3D, outsize=xy ]
+ 
+PROBLEMS? - e-mail TO: freeland@penumbra.nascom.nasa.gov
+--------------------------------------------------------
+IDL Version 6.2 (linux x86 m32). (c) 2005, Research Systems, Inc.
+Installation number: 1694-1.
+Licensed for use by: *** Physics*** DECSTATION 1200/533
+
+Executing SSW IDL_STARTUP for: GEN
+Executing SSW IDL_STARTUP for: SXT
+% Compiled module: STRJUSTIFY.
+% Compiled module: UNIQ.
+% Compiled module: PRSTR.
+Including Paths:
+ -----------------------------------
+| $SSW/yohkoh/gen/galileo/idl/lmsal |
+ -----------------------------------
+% SSW_PATH: Number of paths changed from 121 to 122
+% Compiled module: SET_LOGENV.
+% SET_LOGENV: setenv,SXT_DIR_UVDBASE=/disk/pd1/sswdb/ydb/uv_flood
+Executing SSW IDL_STARTUP for: CDS
+Executing SSW IDL_STARTUP for: TRACE
+Executing SSW IDL_STARTUP for: EIT
+executing EIT IDL_STARTUP
+Executing SSW IDL_STARTUP for: SITE
+Including Paths:
+ ---------------------------------
+| $SSW/yohkoh/ucon/idl/acton      |
+| $SSW/yohkoh/ucon/idl/bentley    |
+| $SSW/yohkoh/ucon/idl/freeland   |
+| $SSW/yohkoh/ucon/idl/hudson     |
+| $SSW/yohkoh/ucon/idl/labonte    |
+| $SSW/yohkoh/ucon/idl/lemen      |
+| $SSW/yohkoh/ucon/idl/linford    |
+| $SSW/yohkoh/ucon/idl/mcallister |
+| $SSW/yohkoh/ucon/idl/sato       |
+| $SSW/yohkoh/ucon/idl/mctiernan  |
+| $SSW/yohkoh/ucon/idl/metcalf    |
+| $SSW/yohkoh/ucon/idl/morrison   |
+| $SSW/yohkoh/ucon/idl/sakao      |
+| $SSW/yohkoh/ucon/idl/schwartz   |
+| $SSW/yohkoh/ucon/idl/slater     |
+| $SSW/yohkoh/ucon/idl/wuelser    |
+| $SSW/yohkoh/ucon/idl/zarro      |
+ ---------------------------------
+Executing SSW IDL_STARTUP: (Personal)
+% Compiled module: $MAIN$.
+% Compiled module: GET_BNH_SO.
+% Compiled module: LOOPEQT.
+% Compiled module: REVERSE.
+grid spacing runs from        25.000000 m  to        2193.0244 km.
+% Compiled module: LOOPMODELT.
+grid spacing runs from        25.000000 m  to        2193.0244 km.
+keyword DEPTH =      200000.
+% Compiled module: LOOP6T.
+% Compiled module: KAPPA_T.
+% Compiled module: RADLOSS_T.
+% Compiled module: FINDEX.
+Model time:        1.0000000s    Real time:        2.3458700s
+Model time:        2.0000000s    Real time:        4.6218541s
+Model time:        3.0000000s    Real time:        6.8979630s
+Model time:        4.0000000s    Real time:        9.1736920s
+Model time:        5.0000000s    Real time:        11.449676s
+Model time:        6.0000000s    Real time:        13.725907s
+Model time:        7.0000000s    Real time:        16.001892s
+Model time:        8.0000000s    Real time:        18.281747s
+Model time:        9.0000000s    Real time:        20.565859s
+Model time:        10.000000s    Real time:        22.845830s
+Model time:        11.000000s    Real time:        25.125685s
+Model time:        12.000000s    Real time:        27.409792s
+Model time:        13.000000s    Real time:        29.689768s
+Model time:        14.000000s    Real time:        31.953758s
+Model time:        15.000000s    Real time:        34.237740s
+Model time:        16.000000s    Real time:        36.517844s
+Model time:        17.000000s    Real time:        38.801696s
+Model time:        18.000000s    Real time:        41.081677s
+Model time:        19.000000s    Real time:        43.361784s
+Model time:        20.000000s    Real time:        45.641765s
+Model time:        21.000000s    Real time:        47.917619s
+Model time:        22.000000s    Real time:        50.213841s
+Model time:        23.000000s    Real time:        52.497943s
+Model time:        24.000000s    Real time:        54.785920s
+Model time:        25.000000s    Real time:        57.069775s
+Model time:        26.000000s    Real time:        59.349628s
+Model time:        27.000000s    Real time:        61.633730s
+Model time:        28.000000s    Real time:        63.909713s
+Model time:        29.000000s    Real time:        66.185696s
+Model time:        30.000000s    Real time:        68.450062s
+Model time:        31.000000s    Real time:        70.733917s
+Model time:        32.000000s    Real time:        73.013898s
+Model time:        33.000000s    Real time:        75.297998s
+Model time:        34.000000s    Real time:        77.577752s
+Model time:        35.000000s    Real time:        79.853966s
+Model time:        36.000000s    Real time:        82.133819s
+Model time:        37.000000s    Real time:        84.409680s
+Model time:        38.000000s    Real time:        86.733879s
+Model time:        39.000000s    Real time:        89.014235s
+Model time:        40.000000s    Real time:        91.289970s
+Model time:        41.000000s    Real time:        93.579469s
+Model time:        42.000000s    Real time:        95.861675s
+Model time:        43.000000s    Real time:        98.154026s
+Model time:        44.000000s    Real time:        100.43775s
+Model time:        45.000000s    Real time:        102.69774s
+Model time:        46.000000s    Real time:        104.97798s
+Model time:        47.000000s    Real time:        107.28982s
+Model time:        48.000000s    Real time:        109.72983s
+Model time:        49.000000s    Real time:        112.09015s
+Model time:        50.000000s    Real time:        114.36573s
+Model time:        51.000000s    Real time:        116.65772s
+Model time:        52.000000s    Real time:        118.99792s
+Model time:        53.000000s    Real time:        121.32572s
+Model time:        54.000000s    Real time:        123.60595s
+Model time:        55.000000s    Real time:        125.89393s
+Model time:        56.000000s    Real time:        128.18615s
+Model time:        57.000000s    Real time:        130.51000s
+Model time:        58.000000s    Real time:        132.83383s
+Model time:        59.000000s    Real time:        135.19374s
+Model time:        60.000000s    Real time:        137.48571s
+Model time:        61.000000s    Real time:        139.85827s
+Model time:        62.000000s    Real time:        142.20595s
+Model time:        63.000000s    Real time:        144.48993s
+Model time:        64.000000s    Real time:        146.75792s
+Model time:        65.000000s    Real time:        149.03778s
+Model time:        66.000000s    Real time:        151.30201s
+Model time:        67.000000s    Real time:        153.61012s
+Model time:        68.000000s    Real time:        155.90183s
+Model time:        69.000000s    Real time:        158.25003s
+Model time:        70.000000s    Real time:        160.54598s
+Model time:        71.000000s    Real time:        162.87794s
+Model time:        72.000000s    Real time:        165.21015s
+Model time:        73.000000s    Real time:        167.51410s
+Model time:        74.000000s    Real time:        169.82181s
+Model time:        75.000000s    Real time:        172.09005s
+Model time:        76.000000s    Real time:        174.36991s
+Model time:        77.000000s    Real time:        176.64976s
+Model time:        78.000000s    Real time:        178.92999s
+Model time:        79.000000s    Real time:        181.20997s
+Model time:        80.000000s    Real time:        183.48995s
+Model time:        81.000000s    Real time:        185.77818s
+Model time:        82.000000s    Real time:        188.06191s
+Model time:        83.000000s    Real time:        190.38186s
+Model time:        84.000000s    Real time:        192.66585s
+Model time:        85.000000s    Real time:        194.94582s
+Model time:        86.000000s    Real time:        197.26190s
+Model time:        87.000000s    Real time:        199.55413s
+Model time:        88.000000s    Real time:        201.83798s
+Model time:        89.000000s    Real time:        204.11809s
+Model time:        90.000000s    Real time:        206.39782s
+Model time:        91.000000s    Real time:        208.68181s
+Model time:        92.000000s    Real time:        210.97428s
+Model time:        93.000000s    Real time:        213.24188s
+Model time:        94.000000s    Real time:        215.51800s
+Model time:        95.000000s    Real time:        217.80210s
+Model time:        96.000000s    Real time:        220.09819s
+Model time:        97.000000s    Real time:        222.38979s
+Model time:        98.000000s    Real time:        224.71003s
+Model time:        99.000000s    Real time:        226.99785s
+Model time:        100.00000s    Real time:        229.30593s
+Model time:        101.00000s    Real time:        231.59404s
+Model time:        102.00000s    Real time:        233.96583s
+Model time:        103.00000s    Real time:        236.25806s
+Model time:        104.00000s    Real time:        238.54616s
+Model time:        105.00000s    Real time:        240.82988s
+Model time:        106.00000s    Real time:        243.08638s
+Model time:        107.00000s    Real time:        245.36186s
+Model time:        108.00000s    Real time:        247.63797s
+Model time:        109.00000s    Real time:        249.91782s
+Model time:        110.00000s    Real time:        252.19418s
+Model time:        111.00000s    Real time:        254.47004s
+Model time:        112.00000s    Real time:        256.74992s
+Model time:        113.00000s    Real time:        259.02588s
+Model time:        114.00000s    Real time:        261.30573s
+Model time:        115.00000s    Real time:        263.58197s
+Model time:        116.00000s    Real time:        265.86595s
+Model time:        117.00000s    Real time:        268.14617s
+Model time:        118.00000s    Real time:        270.44629s
+Model time:        119.00000s    Real time:        272.86217s
+Model time:        120.00000s    Real time:        275.14627s
+Model time:        121.00000s    Real time:        277.41788s
+Model time:        122.00000s    Real time:        279.70211s
+Model time:        123.00000s    Real time:        282.02594s
+Model time:        124.00000s    Real time:        284.30605s
+Model time:        125.00000s    Real time:        286.58615s
+Model time:        126.00000s    Real time:        288.93014s
+Model time:        127.00000s    Real time:        291.29828s
+Model time:        128.00000s    Real time:        293.59000s
+Model time:        129.00000s    Real time:        295.89021s
+Model time:        130.00000s    Real time:        298.16994s
+Model time:        131.00000s    Real time:        300.44617s
+Model time:        132.00000s    Real time:        302.71803s
+Model time:        133.00000s    Real time:        304.99789s
+Model time:        134.00000s    Real time:        307.31012s
+Model time:        135.00000s    Real time:        309.69402s
+Model time:        136.00000s    Real time:        311.97824s
+Model time:        137.00000s    Real time:        314.30594s
+Model time:        138.00000s    Real time:        316.58992s
+Model time:        139.00000s    Real time:        318.87802s
+Model time:        140.00000s    Real time:        321.15789s
+Model time:        141.00000s    Real time:        323.43411s
+Model time:        142.00000s    Real time:        325.75009s
+Model time:        143.00000s    Real time:        328.04205s
+Model time:        144.00000s    Real time:        330.33002s
+Model time:        145.00000s    Real time:        332.62625s
+Model time:        146.00000s    Real time:        334.92196s
+Model time:        147.00000s    Real time:        337.20594s
+Model time:        148.00000s    Real time:        339.48605s
+Model time:        149.00000s    Real time:        341.79452s
+Model time:        150.00000s    Real time:        344.17805s
+Model time:        151.00000s    Real time:        346.46603s
+Model time:        152.00000s    Real time:        348.73813s
+Model time:        153.00000s    Real time:        351.10198s
+Model time:        154.00000s    Real time:        353.37792s
+Model time:        155.00000s    Real time:        355.72200s
+Model time:        156.00000s    Real time:        358.07805s
+Model time:        157.00000s    Real time:        360.35390s
+Model time:        158.00000s    Real time:        362.67412s
+Model time:        159.00000s    Real time:        365.03008s
+Model time:        160.00000s    Real time:        367.33014s
+Model time:        161.00000s    Real time:        369.66211s
+Model time:        162.00000s    Real time:        372.02228s
+Model time:        163.00000s    Real time:        374.31399s
+Model time:        164.00000s    Real time:        376.60222s
+Model time:        165.00000s    Real time:        378.88595s
+Model time:        166.00000s    Real time:        381.25413s
+Model time:        167.00000s    Real time:        383.52211s
+Model time:        168.00000s    Real time:        385.81009s
+Model time:        169.00000s    Real time:        388.21014s
+Model time:        170.00000s    Real time:        390.52195s
+Model time:        171.00000s    Real time:        392.87404s
+Model time:        172.00000s    Real time:        395.16212s
+Model time:        173.00000s    Real time:        397.47795s
+Model time:        174.00000s    Real time:        399.86215s
+Model time:        175.00000s    Real time:        402.15035s
+Model time:        176.00000s    Real time:        404.43819s
+Model time:        177.00000s    Real time:        406.76204s
+Model time:        178.00000s    Real time:        409.08599s
+Model time:        179.00000s    Real time:        411.36634s
+Model time:        180.00000s    Real time:        413.64619s
+Model time:        181.00000s    Real time:        415.93004s
+Model time:        182.00000s    Real time:        418.19453s
+Model time:        183.00000s    Real time:        420.53850s
+Model time:        184.00000s    Real time:        422.88207s
+Model time:        185.00000s    Real time:        425.16202s
+Model time:        186.00000s    Real time:        427.49810s
+Model time:        187.00000s    Real time:        429.78207s
+Model time:        188.00000s    Real time:        432.06605s
+Model time:        189.00000s    Real time:        434.34603s
+Model time:        190.00000s    Real time:        436.62213s
+Model time:        191.00000s    Real time:        438.90212s
+Model time:        192.00000s    Real time:        441.18234s
+Model time:        193.00000s    Real time:        443.47007s
+Model time:        194.00000s    Real time:        445.75043s
+Model time:        195.00000s    Real time:        448.03802s
+Model time:        196.00000s    Real time:        450.31801s
+Model time:        197.00000s    Real time:        452.58225s
+Model time:        198.00000s    Real time:        454.86210s
+Model time:        199.00000s    Real time:        457.14224s
+Model time:        200.00000s    Real time:        459.41832s
+Model time:        201.00000s    Real time:        461.70604s
+Model time:        202.00000s    Real time:        464.00239s
+Model time:        203.00000s    Real time:        466.27837s
+Model time:        204.00000s    Real time:        468.57010s
+Model time:        205.00000s    Real time:        470.90630s
+Model time:        206.00000s    Real time:        473.28621s
+Model time:        207.00000s    Real time:        475.55819s
+Model time:        208.00000s    Real time:        477.87028s
+Model time:        209.00000s    Real time:        480.15026s
+Model time:        210.00000s    Real time:        482.42612s
+Model time:        211.00000s    Real time:        484.69810s
+Model time:        212.00000s    Real time:        486.96210s
+Model time:        213.00000s    Real time:        489.24221s
+Model time:        214.00000s    Real time:        491.63049s
+Model time:        215.00000s    Real time:        493.92621s
+Model time:        216.00000s    Real time:        496.20219s
+Model time:        217.00000s    Real time:        498.53414s
+Model time:        218.00000s    Real time:        500.81412s
+Model time:        219.00000s    Real time:        503.08224s
+Model time:        220.00000s    Real time:        505.35010s
+Model time:        221.00000s    Real time:        507.66232s
+Model time:        222.00000s    Real time:        510.33433s
+Model time:        223.00000s    Real time:        512.65026s
+Model time:        224.00000s    Real time:        515.01831s
+Model time:        225.00000s    Real time:        517.30629s
+Model time:        226.00000s    Real time:        519.59451s
+Model time:        227.00000s    Real time:        521.86225s
+Model time:        228.00000s    Real time:        524.15410s
+Model time:        229.00000s    Real time:        526.44207s
+Model time:        230.00000s    Real time:        528.72631s
+Model time:        231.00000s    Real time:        531.03439s
+Model time:        232.00000s    Real time:        533.31824s
+Model time:        233.00000s    Real time:        535.59835s
+Model time:        234.00000s    Real time:        537.88262s
+Model time:        235.00000s    Real time:        540.32646s
+Model time:        236.00000s    Real time:        542.63030s
+Model time:        237.00000s    Real time:        544.94626s
+Model time:        238.00000s    Real time:        547.23037s
+Model time:        239.00000s    Real time:        549.51034s
+Model time:        240.00000s    Real time:        551.79044s
+Model time:        241.00000s    Real time:        554.09416s
+Model time:        242.00000s    Real time:        556.37015s
+Model time:        243.00000s    Real time:        558.63813s
+Model time:        244.00000s    Real time:        560.96773s
+Model time:        245.00000s    Real time:        563.24619s
+Model time:        246.00000s    Real time:        565.51830s
+Model time:        247.00000s    Real time:        567.79053s
+Model time:        248.00000s    Real time:        570.07026s
+Model time:        249.00000s    Real time:        572.36249s
+Model time:        250.00000s    Real time:        574.77027s
+Model time:        251.00000s    Real time:        577.18653s
+Model time:        252.00000s    Real time:        579.46614s
+Model time:        253.00000s    Real time:        581.74612s
+Model time:        254.00000s    Real time:        584.02224s
+Model time:        255.00000s    Real time:        586.31433s
+Model time:        256.00000s    Real time:        588.64630s
+Model time:        257.00000s    Real time:        590.94613s
+Model time:        258.00000s    Real time:        593.21048s
+Model time:        259.00000s    Real time:        595.48622s
+Model time:        260.00000s    Real time:        597.77833s
+Model time:        261.00000s    Real time:        600.06217s
+Model time:        262.00000s    Real time:        602.33828s
+Model time:        263.00000s    Real time:        604.64649s
+Model time:        264.00000s    Real time:        606.96221s
+Model time:        265.00000s    Real time:        609.25018s
+Model time:        266.00000s    Real time:        611.52228s
+Model time:        267.00000s    Real time:        613.79428s
+Model time:        268.00000s    Real time:        616.18231s
+Model time:        269.00000s    Real time:        618.45842s
+Model time:        270.00000s    Real time:        620.73065s
+Model time:        271.00000s    Real time:        623.00240s
+Model time:        272.00000s    Real time:        625.27813s
+Model time:        273.00000s    Real time:        627.54249s
+Model time:        274.00000s    Real time:        629.81821s
+Model time:        275.00000s    Real time:        632.10220s
+Model time:        276.00000s    Real time:        634.37830s
+Model time:        277.00000s    Real time:        636.65429s
+Model time:        278.00000s    Real time:        638.92652s
+Model time:        279.00000s    Real time:        641.19838s
+Model time:        280.00000s    Real time:        643.46637s
+Model time:        281.00000s    Real time:        645.73824s
+Model time:        282.00000s    Real time:        648.01421s
+Model time:        283.00000s    Real time:        650.29819s
+Model time:        284.00000s    Real time:        652.61240s
+Model time:        285.00000s    Real time:        655.25043s
+Model time:        286.00000s    Real time:        657.65895s
+Model time:        287.00000s    Real time:        660.03040s
+Model time:        288.00000s    Real time:        662.51461s
+Model time:        289.00000s    Real time:        664.91830s
+Model time:        290.00000s    Real time:        667.37039s
+Model time:        291.00000s    Real time:        669.81840s
+Model time:        292.00000s    Real time:        672.14234s
+Model time:        293.00000s    Real time:        674.57448s
+Model time:        294.00000s    Real time:        676.99038s
+Model time:        295.00000s    Real time:        679.42264s
+Model time:        296.00000s    Real time:        681.87402s
+Model time:        297.00000s    Real time:        684.25843s
+Model time:        298.00000s    Real time:        686.69844s
+Model time:        299.00000s    Real time:        689.52234s
+Model time:        300.00000s    Real time:        691.83829s
+Model time:        301.00000s    Real time:        694.22672s
+Model time:        302.00000s    Real time:        696.77890s
+Model time:        303.00000s    Real time:        699.11491s
+Model time:        304.00000s    Real time:        701.49888s
+Model time:        305.00000s    Real time:        703.90666s
+Model time:        306.00000s    Real time:        706.36680s
+Model time:        307.00000s    Real time:        708.79082s
+Model time:        308.00000s    Real time:        711.20066s
+Model time:        309.00000s    Real time:        713.63471s
+Model time:        310.00000s    Real time:        715.97043s
+Model time:        311.00000s    Real time:        718.43041s
+Model time:        312.00000s    Real time:        720.79046s
+Model time:        313.00000s    Real time:        723.21823s
+Model time:        314.00000s    Real time:        725.57827s
+Model time:        315.00000s    Real time:        728.02641s
+Model time:        316.00000s    Real time:        730.43443s
+Model time:        317.00000s    Real time:        732.77849s
+Model time:        318.00000s    Real time:        735.20665s
+Model time:        319.00000s    Real time:        737.57094s
+Model time:        320.00000s    Real time:        740.00933s
+Model time:        321.00000s    Real time:        742.55089s
+Model time:        322.00000s    Real time:        744.84237s
+Model time:        323.00000s    Real time:        747.36220s
+Model time:        324.00000s    Real time:        749.92227s
+Model time:        325.00000s    Real time:        752.92493s
+Model time:        326.00000s    Real time:        756.13037s
+Model time:        327.00000s    Real time:        758.59837s
+Model time:        328.00000s    Real time:        761.06233s
+Model time:        329.00000s    Real time:        763.46222s
+Model time:        330.00000s    Real time:        765.93900s
+Model time:        331.00000s    Real time:        768.41445s
+Model time:        332.00000s    Real time:        770.90922s
+Model time:        333.00000s    Real time:        773.29835s
+Model time:        334.00000s    Real time:        775.75833s
+Model time:        335.00000s    Real time:        778.12002s
+Model time:        336.00000s    Real time:        780.66259s
+Model time:        337.00000s    Real time:        783.79868s
+Model time:        338.00000s    Real time:        786.17039s
+Model time:        339.00000s    Real time:        788.60250s
+Model time:        340.00000s    Real time:        791.14085s
+Model time:        341.00000s    Real time:        793.57546s
+Model time:        342.00000s    Real time:        795.95837s
+Model time:        343.00000s    Real time:        798.39436s
+Model time:        344.00000s    Real time:        800.80299s
+Model time:        345.00000s    Real time:        803.10285s
+Model time:        346.00000s    Real time:        805.40272s
+Model time:        347.00000s    Real time:        807.70676s
+Model time:        348.00000s    Real time:        810.01475s
+Model time:        349.00000s    Real time:        812.32254s
+Model time:        350.00000s    Real time:        814.87130s
+Model time:        351.00000s    Real time:        817.31455s
+Model time:        352.00000s    Real time:        819.61851s
+Model time:        353.00000s    Real time:        821.91872s
+Model time:        354.00000s    Real time:        824.18646s
+Model time:        355.00000s    Real time:        826.46269s
+Model time:        356.00000s    Real time:        828.73855s
+Model time:        357.00000s    Real time:        831.02241s
+Model time:        358.00000s    Real time:        833.29840s
+Model time:        359.00000s    Real time:        835.57487s
+Model time:        360.00000s    Real time:        837.85850s
+Model time:        361.00000s    Real time:        840.14271s
+Model time:        362.00000s    Real time:        842.42655s
+Model time:        363.00000s    Real time:        844.70641s
+Model time:        364.00000s    Real time:        846.99053s
+Model time:        365.00000s    Real time:        849.27849s
+Model time:        366.00000s    Real time:        851.56646s
+Model time:        367.00000s    Real time:        853.85056s
+Model time:        368.00000s    Real time:        856.14266s
+Model time:        369.00000s    Real time:        858.41053s
+Model time:        370.00000s    Real time:        860.69850s
+Model time:        371.00000s    Real time:        862.97873s
+Model time:        372.00000s    Real time:        865.25847s
+Model time:        373.00000s    Real time:        867.53857s
+Model time:        374.00000s    Real time:        869.81855s
+Model time:        375.00000s    Real time:        872.09866s
+Model time:        376.00000s    Real time:        874.38251s
+Model time:        377.00000s    Real time:        876.66274s
+Model time:        378.00000s    Real time:        878.94659s
+Model time:        379.00000s    Real time:        881.23059s
+Model time:        380.00000s    Real time:        883.51867s
+Model time:        381.00000s    Real time:        885.80240s
+Model time:        382.00000s    Real time:        888.08262s
+Model time:        383.00000s    Real time:        890.37062s
+Model time:        384.00000s    Real time:        892.63474s
+Model time:        385.00000s    Real time:        894.92710s
+Model time:        386.00000s    Real time:        897.23869s
+Model time:        387.00000s    Real time:        899.59451s
+Model time:        388.00000s    Real time:        901.89084s
+Model time:        389.00000s    Real time:        904.19495s
+Model time:        390.00000s    Real time:        906.49077s
+Model time:        391.00000s    Real time:        908.78261s
+Model time:        392.00000s    Real time:        911.07461s
+Model time:        393.00000s    Real time:        913.36282s
+Model time:        394.00000s    Real time:        915.93810s
+Model time:        395.00000s    Real time:        918.51364s
+Model time:        396.00000s    Real time:        921.89491s
+Model time:        397.00000s    Real time:        924.50085s
+Model time:        398.00000s    Real time:        926.78262s
+Model time:        399.00000s    Real time:        929.05459s
+Model time:        400.00000s    Real time:        931.34320s
+Model time:        401.00000s    Real time:        933.63067s
+Model time:        402.00000s    Real time:        935.92791s
+Model time:        403.00000s    Real time:        951.06689s
+Model time:        404.00000s    Real time:        953.41483s
+Model time:        405.00000s    Real time:        955.85496s
+Model time:        406.00000s    Real time:        958.43461s
+Model time:        407.00000s    Real time:        960.75879s
+Model time:        408.00000s    Real time:        963.05450s
+Model time:        409.00000s    Real time:        965.37060s
+Model time:        410.00000s    Real time:        967.69067s
+Model time:        411.00000s    Real time:        970.00663s
+Model time:        412.00000s    Real time:        972.36646s
+Model time:        413.00000s    Real time:        974.73064s
+Model time:        414.00000s    Real time:        977.07855s
+Model time:        415.00000s    Real time:        979.49846s
+Model time:        416.00000s    Real time:        981.95045s
+Model time:        417.00000s    Real time:        984.66669s
+Model time:        418.00000s    Real time:        987.01489s
+Model time:        419.00000s    Real time:        989.36267s
+Model time:        420.00000s    Real time:        991.72676s
+Model time:        421.00000s    Real time:        994.03882s
+Model time:        422.00000s    Real time:        996.35466s
+Model time:        423.00000s    Real time:        998.65060s
+Model time:        424.00000s    Real time:        1000.9667s
+Model time:        425.00000s    Real time:        1003.5870s
+Model time:        426.00000s    Real time:        1006.8118s
+Model time:        427.00000s    Real time:        1009.8188s
+Model time:        428.00000s    Real time:        1012.1625s
+Model time:        429.00000s    Real time:        1014.6934s
+Model time:        430.00000s    Real time:        1017.0467s
+Model time:        431.00000s    Real time:        1019.4546s
+Model time:        432.00000s    Real time:        1021.8986s
+Model time:        433.00000s    Real time:        1024.9559s
+Model time:        434.00000s    Real time:        1027.2745s
+Model time:        435.00000s    Real time:        1029.6188s
+Model time:        436.00000s    Real time:        1031.9466s
+Model time:        437.00000s    Real time:        1034.2468s
+Model time:        438.00000s    Real time:        1036.5787s
+Model time:        439.00000s    Real time:        1038.9387s
+Model time:        440.00000s    Real time:        1041.8910s
+Model time:        441.00000s    Real time:        1044.1988s
+Model time:        442.00000s    Real time:        1046.8189s
+Model time:        443.00000s    Real time:        1049.1390s
+Model time:        444.00000s    Real time:        1051.4548s
+Model time:        445.00000s    Real time:        1053.7708s
+Model time:        446.00000s    Real time:        1056.0786s
+Model time:        447.00000s    Real time:        1058.4028s
+Model time:        448.00000s    Real time:        1061.3165s
+Model time:        449.00000s    Real time:        1064.1426s
+Model time:        450.00000s    Real time:        1066.4508s
+Model time:        451.00000s    Real time:        1068.7508s
+Model time:        452.00000s    Real time:        1071.0708s
+Model time:        453.00000s    Real time:        1073.7146s
+Model time:        454.00000s    Real time:        1076.0306s
+Model time:        455.00000s    Real time:        1078.3466s
+Model time:        456.00000s    Real time:        1080.6786s
+Model time:        457.00000s    Real time:        1082.9906s
+Model time:        458.00000s    Real time:        1085.3035s
+Model time:        459.00000s    Real time:        1087.6307s
+Model time:        460.00000s    Real time:        1089.9465s
+Model time:        461.00000s    Real time:        1092.2587s
+Model time:        462.00000s    Real time:        1094.5748s
+Model time:        463.00000s    Real time:        1096.8826s
+Model time:        464.00000s    Real time:        1099.1986s
+Model time:        465.00000s    Real time:        1101.5066s
+Model time:        466.00000s    Real time:        1103.7707s
+Model time:        467.00000s    Real time:        1106.0508s
+Model time:        468.00000s    Real time:        1108.5739s
+Model time:        469.00000s    Real time:        1111.2229s
+Model time:        470.00000s    Real time:        1113.6506s
+Model time:        471.00000s    Real time:        1115.9626s
+Model time:        472.00000s    Real time:        1119.0704s
+Model time:        473.00000s    Real time:        1121.3828s
+Model time:        474.00000s    Real time:        1123.7067s
+Model time:        475.00000s    Real time:        1126.2791s
+Model time:        476.00000s    Real time:        1128.7508s
+Model time:        477.00000s    Real time:        1131.1726s
+Model time:        478.00000s    Real time:        1133.5994s
+Model time:        479.00000s    Real time:        1135.9273s
+Model time:        480.00000s    Real time:        1138.3378s
+Model time:        481.00000s    Real time:        1140.7710s
+Model time:        482.00000s    Real time:        1143.1596s
+Model time:        483.00000s    Real time:        1145.5910s
+Model time:        484.00000s    Real time:        1148.0590s
+Model time:        485.00000s    Real time:        1150.4951s
+Model time:        486.00000s    Real time:        1152.8908s
+Model time:        487.00000s    Real time:        1155.4524s
+Model time:        488.00000s    Real time:        1157.8941s
+Model time:        489.00000s    Real time:        1160.2799s
+Model time:        490.00000s    Real time:        1162.8337s
+Model time:        491.00000s    Real time:        1165.2189s
+Model time:        492.00000s    Real time:        1167.9662s
+Model time:        493.00000s    Real time:        1171.3189s
+Model time:        494.00000s    Real time:        1174.3832s
+Model time:        495.00000s    Real time:        1176.8989s
+Model time:        496.00000s    Real time:        1179.3639s
+Model time:        497.00000s    Real time:        1182.7969s
+Model time:        498.00000s    Real time:        1186.0511s
+Model time:        499.00000s    Real time:        1189.1246s
+Model time:        500.00000s    Real time:        1191.5353s
+Model time:        501.00000s    Real time:        1193.9000s
+Model time:        502.00000s    Real time:        1196.2867s
+Model time:        503.00000s    Real time:        1198.6831s
+Model time:        504.00000s    Real time:        1202.0667s
+Model time:        505.00000s    Real time:        1204.4468s
+Model time:        506.00000s    Real time:        1206.8747s
+Model time:        507.00000s    Real time:        1209.2106s
+Model time:        508.00000s    Real time:        1211.7227s
+Model time:        509.00000s    Real time:        1214.0466s
+Model time:        510.00000s    Real time:        1216.5909s
+Model time:        511.00000s    Real time:        1218.9546s
+Model time:        512.00000s    Real time:        1221.3067s
+Model time:        513.00000s    Real time:        1223.6868s
+Model time:        514.00000s    Real time:        1226.0806s
+Model time:        515.00000s    Real time:        1228.4426s
+Model time:        516.00000s    Real time:        1230.8469s
+Model time:        517.00000s    Real time:        1233.2749s
+Model time:        518.00000s    Real time:        1235.6386s
+Model time:        519.00000s    Real time:        1238.6747s
+Model time:        520.00000s    Real time:        1241.0630s
+Model time:        521.00000s    Real time:        1243.4797s
+Model time:        522.00000s    Real time:        1245.8750s
+Model time:        523.00000s    Real time:        1248.2874s
+Model time:        524.00000s    Real time:        1250.6668s
+Model time:        525.00000s    Real time:        1253.0594s
+Model time:        526.00000s    Real time:        1255.4913s
+Model time:        527.00000s    Real time:        1257.9157s
+Model time:        528.00000s    Real time:        1260.3321s
+Model time:        529.00000s    Real time:        1262.7474s
+Model time:        530.00000s    Real time:        1265.1512s
+Model time:        531.00000s    Real time:        1267.5786s
+Model time:        532.00000s    Real time:        1269.9834s
+Model time:        533.00000s    Real time:        1272.3675s
+Model time:        534.00000s    Real time:        1274.8114s
+Model time:        535.00000s    Real time:        1277.2195s
+Model time:        536.00000s    Real time:        1279.6869s
+Model time:        537.00000s    Real time:        1282.1430s
+Model time:        538.00000s    Real time:        1284.4905s
+Model time:        539.00000s    Real time:        1286.8987s
+Model time:        540.00000s    Real time:        1289.2552s
+Model time:        541.00000s    Real time:        1292.3907s
+Model time:        542.00000s    Real time:        1294.7508s
+Model time:        543.00000s    Real time:        1297.1587s
+Model time:        544.00000s    Real time:        1299.5068s
+Model time:        545.00000s    Real time:        1301.8833s
+Model time:        546.00000s    Real time:        1304.3629s
+Model time:        547.00000s    Real time:        1306.7391s
+Model time:        548.00000s    Real time:        1309.0874s
+Model time:        549.00000s    Real time:        1311.4551s
+Model time:        550.00000s    Real time:        1313.7990s
+Model time:        551.00000s    Real time:        1316.3347s
+Model time:        552.00000s    Real time:        1318.6906s
+Model time:        553.00000s    Real time:        1321.0588s
+Model time:        554.00000s    Real time:        1323.3907s
+Model time:        555.00000s    Real time:        1325.7267s
+Model time:        556.00000s    Real time:        1328.0947s
+Model time:        557.00000s    Real time:        1330.4275s
+Model time:        558.00000s    Real time:        1332.8037s
+Model time:        559.00000s    Real time:        1335.1868s
+Model time:        560.00000s    Real time:        1337.5026s
+Model time:        561.00000s    Real time:        1339.8591s
+Model time:        562.00000s    Real time:        1342.2311s
+Model time:        563.00000s    Real time:        1344.5791s
+Model time:        564.00000s    Real time:        1346.9391s
+Model time:        565.00000s    Real time:        1349.3154s
+Model time:        566.00000s    Real time:        1351.7029s
+Model time:        567.00000s    Real time:        1354.0707s
+Model time:        568.00000s    Real time:        1356.4598s
+Model time:        569.00000s    Real time:        1359.3472s
+Model time:        570.00000s    Real time:        1362.0028s
+Model time:        571.00000s    Real time:        1364.3868s
+Model time:        572.00000s    Real time:        1366.7671s
+Model time:        573.00000s    Real time:        1369.2398s
+Model time:        574.00000s    Real time:        1371.6306s
+Model time:        575.00000s    Real time:        1374.0346s
+Model time:        576.00000s    Real time:        1376.4116s
+Killed

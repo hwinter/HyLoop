@@ -1,0 +1,26 @@
+;.r velocity_int
+function derivs1, t,v
+
+dvdt=v*5d0
+
+
+end
+
+interval=[0,2]
+
+
+y1=exp(5*interval[1])-exp(5*interval[0])
+
+;y2=QROMB( 'derivs1',interval[0],interval[1]   , /DOUBLE )
+dt=2
+v_0=5
+;v_1=v_0
+k1=v_0*5d0
+k2=v_0+dt*.5*k1
+k3=v_0+dt*.5*k2
+k4=v_0+dt*k3
+
+v_1=v_0+dt*(1./6.)*(k1+2*k2+2*k3+k4)
+
+
+end

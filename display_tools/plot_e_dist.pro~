@@ -1,0 +1,248 @@
+pro fit_function_edp,x,a,f,pder
+
+  dist=(X)^(-1.*(a[1]))
+  dist=dist/total(dist)
+  f=A[0]*dist
+;print, 'Idiot!'
+  pder=A[0]*A[1]*(x^(-1.0*A[1]-1.))
+
+;return, f
+end
+
+pro plot_e_dist, nt_beam, GIF_NAME=GIF_NAME,$
+                 XTITLE=XTITLE,YTITLE=YTITLE, TITLE=TITLE, $
+                 CHARSIZE=charsize,CHARTHICK=charthick, $
+                 BCOLOR=BCOLOR,XSTYLE=XSTYLE ,$
+                 BACKGROUND = BACKGROUND , COLOR = COLOR ,$
+                 PS=PS, _extra=extra, $
+                 SPEC_INDEX=SPEC_INDEX, $
+                 energy_array=energy_array, n_array=n_array, $
+                 INDEX_IN=INDEX_IN, OP=OP,$
+                 L_ITEMS=L_ITEMS  , FONT=FONT     ,$
+                 XRANGE=XRANGE, YRANGE=YRANGE, $
+                 XLOG=xlog, YLOG=ylog, CMYK=CMYK
+
+
+
+  if not keyword_set(XTITLE) then $
+     XTITLE_in='NT Particle Energy [keV]' $
+  else XTITLE_in=XTITLE
+  if not keYword_set(YTITLE) then $
+     YTITLE_in= 'Number of Non-Thermal Particles'$
+  else YTITLE_in=YTITLE
+  if not keYword_set(TITLE) then $
+     TITLE_in='Particle Energy Distribution' $
+  else TITLE_in=TITLE  
+  if keyword_set(YRANGE) then YSTYLE=1
+
+
+  if not keyword_set(CHARTHICK) then charthick=1.5
+  if not keyword_set(CHARSIZE) then charsize=1.5
+  charthick_IN=1.5              ;charthick
+  charsize_IN=1.5              ;charsize
+
+  in_beam=nt_beam
+  index=where(nt_beam.state eq 'NT')
+  if index[0] ne -1 then in_beam=in_beam[index] $
+  else begin
+     energy_array=dindgen(200)
+     n_array_T=energy_array*0
+     e_arr=energy_array
+     n_arr=n_array_T
+     min_energy=min(energy_array)
+     max_energy=max(energy_array)
+     goto, all_dead
+     
+  endelse
+  if n_elements(index) le 3 then begin
+     energy_array=dindgen(200)
+     n_array_T=energy_array*0
+     e_arr=energy_array
+     n_arr=n_array_T
+     min_energy=min(energy_array)
+     max_energy=max(energy_array)
+     goto, all_dead
+     
+  endif
+  
+
+  tvlct, [0,255,0,0], [0,0,255,0], [0,0,0,255]
+
+
+  min_energy=min(in_beam.ke_total)
+  max_energy=max(in_beam.ke_total)
+
+all_dead:
+  delta=max_energy-min_energy
+  step=.5
+  n_elem=long(.5+delta/step)
+  energy_array=min_energy+delta*dindgen(n_elem)/(n_elem-1ul)
+  n_array=dindgen(n_elem)
+
+  if keyword_set(XRANGE) then XSTYLE=1  else $
+     xrange=[min_energy, max_energy]
+  for i=0ul, n_elem-1ul do begin
+     z=where(in_beam.ke_total le energy_array[i]+(step/2.) $
+             and $
+             in_beam.ke_total ge energy_array[i] -(step/2.), count)
+     if z[0] ne -1 then $
+        n_array[i]=total(in_beam[z].scale_factor) $
+     else n_array[i]=0.
+                                ;stop
+  endfor
+  if keyword_set(PS) then begin
+     old_plot=!D.NAME
+     set_plot, 'ps'
+     device, portrait=1,color=8, file=ps, /Encapsulated, $
+             CMYK=CMYk
+     font=0
+  endif else font=-1
+
+  n_part=total(in_beam.scale_factor)
+
+
+  n_array_t=n_array
+  n_array_t>=10^0
+;PLOTBAR,energy_array,n_array_T,$
+;        XTITLE=XTITLE_IN,YTITLE=YTITLE_IN,$
+;        TITLE=TITLE_IN, $
+;        CHARSIZE=1.8,CHARTHICK=1.8, $
+;        BCOLOR=1,BACKGROUND = 255, COLOR = 0 ,$
+;        font=1 ,$
+;        _extra=extra   ,$
+;        XRANGE=[1.,200.], XSTYLE=1,$
+;        YRANGE=[1d31, 1d36], YSTYLE=1, $
+;        XLOG=xlog, YLOG=ylog
+;  XRANGE=[1.,125.]
+;xlog=1
+;ylog=1
+  MIN_VALUE=yrange[0]
+  HISTOPLOT2, Double(in_beam.ke_total),energy_array ,n_array_T, BINSIZE=double(step),$
+              AXISCOLORname="BLACK",BACKCOLORNAME="WHITE",$
+              DATACOLORNAME='gray', font=0,$
+              CHARSIZE=charsize,CHARTHICK=charthick, $
+              XTITLE=XTITLE_IN,YTITLE=YTITLE_IN,$
+              /FILLPOLYGON, POLYCOLOR="gray", $
+              MININPUT=XRANGE[0], MAXINPUT=XRANGE[1], $
+              XLOG=xlog, YLOG=ylog, /no_lines, xrange=xrange, yrange=yrange, $
+              xstyle=xstyle,  ystyle=ystyle, MIN_VALUE=MIN_VALUE, $
+              _extra=extra
+
+  IF KEYWORD_SET(GIF_NAME) THEN x2gif,'fig1.gif'
+  half=long(0.5+n_elements(energy_array)/2.0)
+
+
+;Result=poly_fit(alog(energy_array-min_energy+1), alog10(n_array_t),2, $
+                                ;            /DOUBLE, YFIT=YFIT)
+
+;ind=where(n_array eq MAX(n_array))
+;e_arr=energy_array[ind[0]:*]
+;n_arr=n_array[ind[0]:*]
+  ind=where(n_array ge 1d10)
+  e_arr=energy_array[ind]
+  n_arr=n_array[ind]
+
+
+;test=where(n_arr gt 10)
+;if test[0] ne -1 then begin
+;    e_arr=e_arr[test]
+;    n_arr=n_arr[test]
+;endif
+
+;result=comfit(e_arr-min(e_arr)+1,n_arr,$
+;              [max(n_array_t),-3, 0],$
+;               WEIGHTS=1.^(min(e_arr)/e_arr), YFIT=YFIT, /GEOMETRIC)
+
+  if keyword_set(INDEX_IN) then begin    
+     dist=(energy_array/max(energy_array))^(-1.*INDEX_IN)
+     dist=dist/total(dist)
+  endif
+
+  a=[n_part,1]
+
+  weights=dblarr(n_elements(e_arr))
+  t1=where(n_arr gt 100)
+  max_e_count=max(energy_array[t1])/2d0
+;max_e_count=20
+  test=where(energy_array le max_e_count[0])
+  if test[0] ne -1 then weights[test]=1 else weights[*]=1
+  weights[*]=1.
+;for i=0, 20 do n_array_t=smooth(n_array_t, 3)
+
+  Case 1 of
+     n_elements(index) le 2: begin
+        yfit =e_arr
+        a=[0,0]
+        status=1
+        YERROR=n_part
+     end 
+     n_elements(e_arr) le 2: begin
+        yfit =e_arr
+        a=[0,0]
+        status=1
+        YERROR=n_part
+     end
+     
+     else: begin
+                                ;weights=10^(min(e_arr)-e_arr)
+                                ;weights=(e_arr*0.)+1.0
+        weights=(n_arr/max(n_arr))
+        pmm, weights
+        yfit=curvefit(e_arr,n_arr,weights, $
+                      a, /double,$
+                      FUNCTION_NAME='fit_function_edp',$
+                      /noder,itmax=1d2, tol=1d-20, $
+                      STATUS=STATUS,YERROR=YERROR )
+     end
+  endcase
+  help, YERROR/n_part
+  result=a
+
+  SPEC_INDEX=result[1]
+  print, SPEC_INDEX
+  print, result
+  case 1 of 
+     STATUS ne 0 :  out_string='Fit !9d!3= ???' 
+     n_elements(index) le 2: out_string='Too Few Particles' 
+     
+     else: out_string='Fit !9d!3='+string(SPEC_INDEX, format='(f5.1)')
+  endcase
+  
+  if keyword_set(INDEX_IN) then begin
+     OPLOT, energy_array,$
+            dist*n_part, $
+            color=2, thick=4.5, line=3
+     
+     xyouts, .67, .80 ,'!9d!3 in='+string(INDEX_IN, format='(f5.1)'), $
+             font=font, /normal,color=2, $
+             CHARSIZE=charsize_IN,CHARTHICK=charthick_IN
+;stop
+  endif 
+
+  if keyword_set(OP) then begin
+     xyouts, .67, .75 ,out_string, $
+             font=font, color=3, /normal, CHARSIZE=charsize_IN,$
+             CHARTHICK=charthick_IN
+     xyouts, .67, .70, $
+             'Rel Err='+string(YERROR/max(n_arr), format='(g9.5)'), $
+             font=font, color=3, /normal, CHARSIZE=charsize_IN,$
+             CHARTHICK=charthick_IN
+     
+     OPLOT, energy_array, YFIT, COLOR=3, THICK=12, line=2
+  endif
+
+  if keyword_set(L_ITEMS) then $
+     xyouts, .67, .65 , [L_ITEMS],$
+             font=font, /normal, $
+             CHARSIZE=charsize_IN,CHARTHICK=charthick_IN
+
+  if keyword_set(PS) then begin
+     device,/CLOSE
+
+;Document set_plot,'x'
+;device,/CLOSE
+     set_plot,old_plot
+  endif
+;!X.CRANGE=old_x_range
+end
+

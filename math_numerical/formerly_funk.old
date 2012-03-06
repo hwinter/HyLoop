@@ -1,0 +1,9 @@
+pro funk, x, A, F, pder
+
+bx = exp(A[1]*x)
+F = A[0]*bx + A[2]
+
+IF N_PARAMS() GE 4 THEN $ 
+    pder = [[bx], [A[0] * X * bx], [replicate(1.0, N_ELEMENTS(X))]] 
+
+END

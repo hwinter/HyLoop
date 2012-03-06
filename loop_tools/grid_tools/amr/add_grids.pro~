@@ -1,0 +1,3 @@
+step=loop.s[1:n_s-1]-loop.s[0:n_s-2] 
+
+change_index=where(STEP gt MIN_CLS[0:n_s-2]/grid_safety)

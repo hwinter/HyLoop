@@ -1,0 +1,11 @@
+Serio Case
+Loop length:3.00200e+09
+TMax: 3 MK
+Q0:   0.022023201
+Power:5.1925400e+21
+
+Alpha=-2.5
+Power:5.1925400e+21
+
+Alpha=-2.0
+Power: 5.1925398e+21

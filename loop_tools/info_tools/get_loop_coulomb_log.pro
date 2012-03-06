@@ -1,0 +1,52 @@
+;
+;
+function get_loop_coulomb_log, loop,S_GRID=S_GRID,$
+  VOL_GRID=VOL_GRID,SMOOTH=SMOOTH, ITER_SMOOTH=ITER_SMOOTH,$
+  NO_ENDS=NO_ENDS,NO_LN=NO_LN, T=T
+
+if not keyword_set(Z) then z=!shrec_charge_z
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+T=get_loop_temp(loop)
+
+;From Choudhuri p. 265
+;coulomb_log=(1.5d0)*(1d0/z)*$
+;            (1d0/(!shrec_qe^2d0))* $
+;            ((!shrec_kB^3d0)*(T^3d0)*(1d0/!dpi)*(1d0/(2d*loop.state.n_e)))^5d-1
+
+;Estimation from Benz, 1993, p. 44 
+index1=where(T le 4.2d5)
+index2=where(T gt 4.2d5)
+coulomb_log=dblarr(n_elements(T))
+if index1[0] ne -1 then $
+  coulomb_log[index1]=1.24d4*(T[index1]^1.5d0)*(loop.state.n_e[index1]^(-0.5d0))
+
+if index2[0] ne -1 then $
+  coulomb_log[index2]=8.0d6*(T[index2])*(loop.state.n_e[index2]^(-0.5d0))
+
+if not keyword_set(NO_LN) then coulomb_log=alog(coulomb_log)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;These are leftovers from the get_loop_... template.  I left them 
+; in just in case.  The S_GRID could be useful.
+
+;If the keyword is set then spline it to the s grid
+if keyword_set(S_GRID) then begin
+    grid=get_loop_s_alt(loop)
+    n_s=n_elements(grid)
+
+    alt_grid=loop.s
+    coulomb_log=spline(grid,coulomb_log,alt_grid)
+endif else if keyword_set(NO_ENDS) then $
+      coulomb_log=temporary(coulomb_log[1:n_s-2])
+
+;Smooth if desired.
+if keyword_set(SMOOTH) then begin    
+    if not keyword_set(ITER_SMOOTH) then ITER_SMOOTH=5
+    if SMOOTH eq 1 then SMOOTH=5
+    for j=0,ITER_SMOOTH do coulomb_log=smooth(coulomb_log, SMOOTH)
+
+endif
+return,abs(coulomb_log)
+
+END
