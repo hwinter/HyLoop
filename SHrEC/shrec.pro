@@ -504,7 +504,7 @@ pro shrec, loop, delta_t, debug=debug, $
                                 ;  save, loops, file='shrec_loop_out.sav'
   
   n_e_change=n_e_change_in
-`;End of time stepper loop
+;End of time stepper loop
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Set the boundary conditions.
   temp_loop.state=shrec_bcs(temp_loop.state, temp_loop.g, T0, ds2, is)
@@ -523,6 +523,7 @@ pro shrec, loop, delta_t, debug=debug, $
         'SLIDING CHROMOSPHERE': print, 'SHrEC: Sliding Chromosphere Set'
         'SINGLE CELL':  print, 'SHrEC: Single Chromsphere Cell Set' 
         else:  print, 'SHrEC: Single Chromsphere Cell Set <default>' 
+     endcase
   endif
 
   E_H=temp_loop.e_h

@@ -44,7 +44,6 @@ double energy2vel(double t_ke){
   keV_2_ergs=1.6022e-9;
   e_mass_g= 9.1094e-28;
   c=2.9979e+10;
-  c_squared=(2.9979e+10)*(2.9979e+10);
   // 
   gamma=energy2gamma(t_ke);
   v_total=pow((1.0/gamma),2.0);

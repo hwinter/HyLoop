@@ -124,7 +124,7 @@ function shrec_dstate3, state, T, g, A, s, heating, dt, T0, $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Sliding Chromospheric/TR model based on McMullen 2001     
 case strupcase(CHROMO_MODEL) of     
-   'SLIDING CHROMOSPHERE'): begin
+   'SLIDING CHROMOSPHERE': begin
 ;s on the volume element grid (like e, n_e)
         s_alt = [2*s[0]-s[1],(s[0:is-2]+s[1:is-1])/2.0,2*s[is-1]-s[is-2]]
 ;Length of the loop                                

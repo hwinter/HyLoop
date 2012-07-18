@@ -5,7 +5,7 @@ function stablize_loop, old_loop,T0=T0,  src=src, uri=uri, fal=fal, $
                         MAX_STEP=MAX_STEP, FILE_EXT=FILE_EXT, $
                         grid_safety= grid_safety,$ ; ,regrid=REGRID , $
                         E_H=E_H, FILE_PREFIX=FILE_PREFIX,$
-                        NOVISC=NOVISC, T_MAX=T_MAX , CLEANUP=CLEANUP;,DEPTH=depth
+                        NOVISC=NOVISC, T_MAX=T_MAX , CLEANUP=CLEANUP,DELTA_T=DELTA_T;,DEPTH=depth
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Set keywords
@@ -19,6 +19,7 @@ function stablize_loop, old_loop,T0=T0,  src=src, uri=uri, fal=fal, $
   if size(FILE_PREFIX, /TYPE) ne 7 then OUTPUT_PREFIX='stable_' $
   else OUTPUT_PREFIX=FILE_PREFIX
 
+  if not keyword_set(DELTA_T) then DELTA_T=30d0                  ;reporting  timestep
   
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

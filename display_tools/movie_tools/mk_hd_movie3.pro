@@ -71,8 +71,8 @@ j=0ul
                    ; XRANGE=XRANGE,TRANGE=TRANGE, DRANGE=DRANGE,PRANGE=PRANGE ,$
                     FONT=FONT,XSIZE=XSIZE, YSIZE=YSIZE ,$
                     CHARSIZE=CHARSIZE, CHARTHICK=CHARTHICK,$
-                    PLOT_LINE=PLOT_LINE, TITLE=TITLE, LOG=LOG;, $
-                  ;  CS=CS
+                    PLOT_LINE=PLOT_LINE, TITLE=TITLE, LOG=LOG, $
+                    CS=CS
 ;        spawn, 'convert  '+POST+' '+gif_file
 ;        spawn, "convert  -rotate '-90' "+ $
 ;               gif_file+'  '+gif_file

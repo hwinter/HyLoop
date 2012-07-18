@@ -224,6 +224,7 @@ pro hyloop, loop, interval, $
         'SLIDING CHROMOSPHERE': print, 'SHrEC: Sliding Chromosphere Set'
         'SINGLE CELL':  print, 'SHrEC: Single Chromsphere Cell Set' 
         else:  print, 'SHrEC: Single Chromsphere Cell Set <default>' 
+     endcase
 
         
      help, nt_beam
