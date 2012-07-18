@@ -65,6 +65,8 @@ function pt_with_patc_gaussian_apex_heating, LOOP, time, dt, nt_beam, nt_brems,$
   PATC_heating_rate, extra_power, $
   DELTA_MOMENTUM,flux, n_e_change
 debug=0
+
+;Knickers
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 PATC_heating_rate=0d0
 volumes=get_loop_vol(loop)
