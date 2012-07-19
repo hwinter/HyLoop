@@ -74,7 +74,7 @@ endelse
 ;Case statement
 Case 1 of
    keyword_set(SET_SYSV): begin
-      defsysv, , [[e_h1],[e_h2]]
+      defsysv,'!chromo_e_h' , [[e_h1],[e_h2]]
    end
 
 

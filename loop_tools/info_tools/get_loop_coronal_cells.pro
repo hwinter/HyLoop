@@ -4,7 +4,8 @@
 ;
 ; PURPOSE:
 ;	Given a loop structure with an N_depth tag, return an N_depth
-;	array containing the indices of the 
+;	array containing the indices of the volume elements in the
+;	coronal portion of the loop. 
 ;
 ; CATEGORY:
 ;	HyLoop, loop, info_tools
@@ -20,19 +21,19 @@
 ;	
 ; KEYWORD PARAMETERS:
 ;	COUNT: Returns a variable with the number of coronal cells
-;       SURF: Return the indices on the volume grid instead of the
+;       SURF: Return the indices on the surface grid instead of the
 ;       default volume grid. 
 ;
 ; OUTPUTS:
-;	
-;
-; OPTIONAL OUTPUTS:
-;	Temperature along the loop (T)
-;
-; COMMON BLOCKS:
-;	 An N_depth array containing the indices of the coronal
+;	An N_depth array containing the indices of the coronal
 ;	 portion of the loop on the volume array, or on the surface
 ;	 array if the SURF keyword is set.
+;
+; OPTIONAL OUTPUTS:
+;
+;
+; COMMON BLOCKS:
+;	None 
 ;
 ; SIDE EFFECTS:
 ;	None
@@ -47,6 +48,7 @@
 ;
 ; MODIFICATION HISTORY:
 ; 	Written by:Henry "Trae" D. Winter III 2012-07-16
+;       2012-07-19 (HDWIII) Corrected typos in header.
 
 
 function get_loop_coronal_cells, loop, COUNT=COUNT, SURF=SURF
@@ -59,16 +61,16 @@ function get_loop_coronal_cells, loop, COUNT=COUNT, SURF=SURF
      end
      else: begin
         n_cells=n_elements(loop.s_alt)
-        count=n_cells-(2*loop.n_depth)
+        count=n_cells-(2*loop.n_depth)+2
         
-        coronal_id=loop.n_depth-1 + ULINDGEN(count)
+        coronal_ind=loop.n_depth-1 + ULINDGEN(count)
 
         end
 
   endcase
 
      
-  return, coronal_id
+  return, coronal_ind
   
 
 

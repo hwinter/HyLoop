@@ -43,7 +43,7 @@
 ;        L [cm] New loop length,
 ;        T_max [[K] Loops maximum temperature
 ;        orig, 
-;        n_depth depth of chomospheric penetration
+;        n_depth depth of chomosphere
 ;	
 ;
 ; OPTIONAL OUTPUTS:
@@ -68,15 +68,23 @@
 ;'
 ;-
 
-function mk_chromo_test_loop
+function mk_chromo_test_loop,  N_DEPTH=N_DEPTH,N_CELLS=N_CELLS
 
 lentgth=1d9
 diameter=1d8
 
-mk_semi_circular_loop,diameter,length, loop=loop
+if not keyword_set(N_CELLS)  then $
+   N_CELLS =ulong(300) else $
+      N_CELLS =ulong(N_CELLS)
+
+mk_semi_circular_loop,diameter,length, loop=loop,N_CELLS=N_CELLS
 
 loop.state.n_e[*]=1d9
-loop.state.e_h[*]=3.*loop.state.n_e[*]*!shrec_kB*1d6
+loop.state.e[*]=3.*loop.state.n_e[*]*!shrec_kB*1d6
+
+loop=add_loop_chromo(loop, T0=1d4, depth= 1d7, n_depth=N_DEPTH,$
+                        CHROMO_MODEL='TEST CHROMO')
 
 
-'T0 APEX P0'
+return, loop
+end

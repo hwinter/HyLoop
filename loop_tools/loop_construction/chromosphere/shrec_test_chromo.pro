@@ -1,8 +1,5 @@
-function shrec_static_pressure_chromo, loop,$
-                                    T0=T0, DS2=DS2, IS=IS
-
 ;
-function shrec_test_chormo, loop, T0=T0, DEPTH=DEPTH, N_DEPTH=N_DEPTH, $
+function shrec_test_chromo, loop, T0=T0, DEPTH=DEPTH, N_DEPTH=N_DEPTH, $
    VERSION=VERSION, STARTNAME=STARTNAME,$
    PERCENT_DIFFERENCE=PERCENT_DIFFERENCE,$
    MIN_STEP=MIN_STEP,$
@@ -48,7 +45,7 @@ CHROMO_MODEL='Test Chromo'
 ;Density at the Chromspheric apex.
   ne_Ch_apex=2d11
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  old_s=loop.s+DEPTH
+  old_s=loop.s
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Determine step size based on exponential scaling
 ;Use a root finder to get an expontially decaying step size
@@ -122,7 +119,6 @@ recompute_N_DEPTH:
   n_ds=n_elements(ds)
   ds_last=ds[n_ds-1]
 
-  ind_array=dindgen(N_DEPTH_s)
 ;Compute the percent difference of the last two coronal cells.
 ;This will provide the basis of for the size of the next step
 ;percent_difference=abs(ds[n_ds-1]-ds[n_ds-2])/ds_last
@@ -254,7 +250,6 @@ skip_second:
        n_e_add]
 ;Value of the chromospheric density at the base.
   n_e<=10d15 
-  n_e<=ne_Ch_max
   g=  [g_add1,$
        loop.g,$
        g_add2]
@@ -314,8 +309,8 @@ skip_second:
 
 
 ;Remember no endcaps
-  e_h=add_chromo_heat( LOOP,e_h,SET_SYSV=SET_SYSV, SYSV_NAME=SYSV_NAME,$
-                       /UPDATE_LOOP)
+;  e_h=add_chromo_heat( LOOP,e_h,SET_SYSV=SET_SYSV, SYSV_NAME=SYSV_NAME,$
+;                       /UPDATE_LOOP)
   print, 'shrec_test_chromo All Done'
 ;stop
   return, new_loop
