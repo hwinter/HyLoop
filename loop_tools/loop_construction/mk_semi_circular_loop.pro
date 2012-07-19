@@ -80,7 +80,6 @@
 ;                    calculated on the S grid then an average is taken  to
 ;                    put in in the volume grid.  This gets rid of a 
 ;                    Floating illegal operand error.
-;Temperature profile on the s grid
 	
 ;-
 PRO mk_semi_circular_loop,diameter,length, $
@@ -344,7 +343,7 @@ version=2.0
              NOVISC=NOVISC,DEPTH=depth, $
              NO_SAT=NO_SAT,$
              CONSTANT_CHROMO=CONSTANT_CHROMO, $
-             SLIDE_CHROMO=SLIDE_CHROMO,$
+             SLIDE_CHROMO=SLIDE_CHROMO,$'T0 APEX P0'
              CLOCK_TIME=CLOCK_TIME, PLUS_TIME=PLUS_TIME
      
      PLUS_TIME=CLOCK_TIME

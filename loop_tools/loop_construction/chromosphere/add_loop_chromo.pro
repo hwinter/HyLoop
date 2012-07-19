@@ -52,21 +52,19 @@ Case 1 of
       print, 'SHrEC: Single Chromsphere Cell Set' 
    end
 
-   strupcase(CHROMO_MODEL) eq 'SINGLE CELL': begin
-      loop.chromo_model='Single Cell'
-      loop.state=shrec_bcs(loop.state,loop.g, T0, ds2, n_surf)
-      pressure=get_loop_pressure(loop)
-      loop.P_BC[0]=pressure[0]
-      loop.P_BC[1]=pressure[n_surf]
-      print, 'SHrEC: Single Chromsphere Cell Set' 
+   strupcase(CHROMO_MODEL) eq 'TEST CHROMO': begin
+      
+      print, 'SHrEC: Test Chromo Set' 
    end
+
+   
 
    else: begin
       loop=add_constant_t_apex_pressure_chromo(loop, T0=T0, DEPTH=DEPTH, N_DEPTH=N_DEPTH, $
                                        VERSION=VERSION, STARTNAME=STARTNAME,$
                                        PERCENT_DIFFERENCE=PERCENT_DIFFERENCE,$
                                         _EXTRA=extra_keywords)
-      print, 'SHrEC: Single Chromsphere Cell Set <default>' 
+      print, 'SHrEC: T0 APEX P0 Set <default>' 
    end
    
    

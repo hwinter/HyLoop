@@ -48,11 +48,28 @@
 ; MODIFICATION HISTORY:
 ; 	Written by:Henry "Trae" D. Winter III 2012-07-16
 
-version=0.1
-;-
 
 function get_loop_coronal_cells, loop, COUNT=COUNT, SURF=SURF
 
+  version=0.1
+;-
+  case 1 of
+     keyword_set(SURF):begin
+
+     end
+     else: begin
+        n_cells=n_elements(loop.s_alt)
+        count=n_cells-(2*loop.n_depth)
+        
+        coronal_id=loop.n_depth-1 + ULINDGEN(count)
+
+        end
+
+  endcase
+
+     
+  return, coronal_id
+  
 
 
 END                             ;OF MAIN
