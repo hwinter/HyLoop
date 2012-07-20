@@ -273,9 +273,9 @@ skip_second:
 ;  for jj=0, 10ul do e=smooth(e,3)
 ;  for jj=0ul, 10ul do n_e=smooth(n_e,3)
 
-  e_h1=n_e_add[1:*]*0
+  e_h1=n_e_add*0
   e_h=[e_h1,$ 
-       loop.e_h,loop.e_h[n_elements(loop.e_h)-1],$
+       loop.e_h,$
        e_h1]
 
   state={e:double(e), n_e:double(n_e), $
