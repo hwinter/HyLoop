@@ -48,40 +48,51 @@
 ; 	Written by:HDWII 2012-07-16
 
 function add_chromo_heat, LOOP,e_h, $
-                          ;Radloss settings
+                                ;Radloss settings
                           
-                          SET_SYSV=SET_SYSV, SYSV_NAME=SYSV_NAME,$
-                          UPDATE_LOOP=UPDATE_LOOP
+                          SET_SYSV=SET_SYSV,$
+                          UPDATE_LOOP=UPDATE_LOOP, $
+                          ZERO_CORONA=ZERO_CORONA
 
-version=0.1
+  version=0.1
 ;-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Check input parameters
-if size(e_h, /TYPE) eq 0 then e_h=LOOP.e_h
+  if size(e_h, /TYPE) eq 0 then e_h_in=LOOP[0].e_h else e_h_in=e_h
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Check optional keywords
-if not keyword_set(SYSV_NAME) then SYSV_NAME_in='!chromo_e_h' $
-else begin
-   if  STRPOS( SYSV_NAME, '!') ne 0 then SYSV_NAME='!'+SYSV_NAME
-   SYSV_NAME_in=SYSV_NAME
-endelse
+  if keyword_set(ZERO_CORONA) then e_h_in*=0
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Get the indices of the chromosperic cells.
+  chrom_ind=get_loop_chromo_cells(loop, count=test_chromo_count)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Case statement
-Case 1 of
-   keyword_set(SET_SYSV): begin
-      defsysv,'!chromo_e_h' , [[e_h1],[e_h2]]
-   end
+  temp_array=!shrec_T0+dblarr(test_chromo_count)
+  Case 1 of
+     keyword_set(SET_SYSV): begin
+        defsysv, '!chromo_e_h', $
+                 [[abs(shrec_radloss(loop.state.n_e[chrom_ind[1:*,0]],$
+                                     temp_array))],$
+                  [abs(shrec_radloss(loop.state.n_e[chrom_ind[0:(test_chromo_count/2)-2,1]],$
+                                     temp_array))]]
+        
+        e_h_in[chrom_ind[1:*,0]]=!chromo_e_h[*,0]
+        e_h_in[chrom_ind[0:(test_chromo_count/2)-2,1]]=!chromo_e_h[*,1]
+        
+     end
+
+     else:begin
+        e_h_in[chrom_ind[1:*,0]]=!chromo_e_h[*,0]
+        e_h_in[chrom_ind[0:(test_chromo_count/2)-2,1]]=!chromo_e_h[*,1]      
+     end
+  endcase
 
 
-abs(shrec_radloss(n_e_add[1:*],T0+dblarr(N_DEPTH_s-1)))
-
-
-if keyword_set(UPDATE_LOOP) then loop.e_h=e_h
+  if keyword_set(UPDATE_LOOP) then loop.e_h=e_h_in
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Return the heating function array with chromo heat added
 END                             ; Of main

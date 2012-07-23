@@ -90,6 +90,9 @@ function add_constant_t_apex_pressure_chromo, loop, T0=T0, DEPTH=DEPTH, N_DEPTH=
   n_depth>=3
 
   N_DEPTH_s=N_DEPTH-1ul
+
+  loop.n_depth=N_DEPTH
+  loop.depth=DEPTH
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 CHROMO_MODEL='T0 APEX P0'
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -143,16 +146,15 @@ recompute_N_DEPTH:
   jj=0ul
   repeat begin
      if finite(c1) lt 1 then stop
-     d_step1= (A_0)*exp(-C1*ind_array/N_DEPTH_s)
-     d_step1>= MIN_STEP
-                                ;plot, d_step1
+     d_step2= (A_0)*exp(-C1*ind_array/N_DEPTH_s)
+     d_step2>= MIN_STEP
+    
      
-     y_n=total(d_step1)-(depth)
-     y_prime_n=total((-ind_array/Max(ind_array))*d_step1)
-                                ;y_prime_n=total(-d_step1)
+     y_n=total(d_step2)-(depth)
+     y_prime_n=total((-ind_array/Max(ind_array))*d_step2)
+            
+     pd_b=ABS((total(d_step2)-(depth))/(depth))
      
-     pd_b=ABS((total(d_step1)-(depth))/(depth))
-                                ;PRINT,'PD_B, C1, total(d_step1)/(depth)', PD_B, C1, total(d_step1)/(depth);;
      if y_prime_n eq 0 then y_prime_n=1d-15
      C1_new=C1-(y_n/y_prime_n)  ;
 ;Hope it never gets to the following point!
@@ -161,84 +163,19 @@ recompute_N_DEPTH:
      if finite(c1) lt 1 then stop
 
      help, pd_b
-     help, d_step1
+     help, d_step2
      help, c1
      print, ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;'
   endrep until  pd_b LT 1D-10
 
-  d_step1=d_step1*(depth/total(d_step1))
+  d_step2=d_step2*(depth/total(d_step2))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-  d_step1=reverse(d_step1)
+  d_step1=reverse(d_step2)
   s1=[0, total(d_step1[0:N_DEPTH_s-2], /CUMULATIVE)]
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   n_ds=n_elements(ds)
-  ds_last=ds[n_ds-1]
-
-  ind_array=dindgen(N_DEPTH_s)
-;Compute the percent difference of the last two coronal cells.
-;This will provide the basis of for the size of the next step
-;percent_difference=abs(ds[n_ds-1]-ds[n_ds-2])/ds_last
-;goto, skip_second
-  A_1=ds_last*(1d0-percent_difference)
-;If the number of cells is too small you can never 
-; make it to depth while maintaining the percent
-; difference of the the first step.
-
-  if A_1*(N_DEPTH_s) le depth then begin
-     N_DEPTH_s=long(depth/A_1)+10l
-     N_DEPTH_a=N_DEPTH_s+1l
-     print,'***************************'
-     print,'add_hydrostatic_and_well_chromo.pro warning!'
-     print,'Not enough cells to maintain a smooth distribution and a well.'
-     print,'Changing the number of cells to '+$
-           strcompress(string(N_DEPTH_a), /REMOVE_ALL)+'.'
-     print,'***************************'
-     if N_DEPTH_a gt N_DEPTH then begin
-        N_DEPTH=N_DEPTH_a
-        goto, recompute_N_DEPTH
-     endif else N_DEPTH=N_DEPTH_a
-  endif
-
-
-
-
-  ind_array=dindgen(N_DEPTH_s)
-;We are going to use a simple Newton Raphson method.
-;The expression is simple so we shouldn't fall into
-; any of the traps that are mentioned in NR.
-
-;Initial guess at the constant.
-  C2=.5
-
-  pd_b=1d5
-  repeat begin
-     
-     d_step2= (A_1)*exp(-C2*ind_array/N_DEPTH_s)
-                                ;plot, d_step2
-     y_n=total(d_step2)-(DEPTH)
-     y_prime_n=total((-ind_array/Max(ind_array))*d_step2)
-     
-     pd_b=ABS((total(d_step2)-(DEPTH))/(DEPTH))
-                                ;PRINT,'PD_B, C2, total(d_step1)/(DEPTH)', PD_B, C1, total(d_step2)/(DEPTH);;
-     
-     C2_new=C2-(y_n/y_prime_n) 
-;Hope it never gets to the following point!
-     if c2_new lt 0 then c2 =C2+(y_n/y_prime_n)   else c2 =c2_new
-                                ;print, 'y_prime_n',y_prime_n,(y_n/y_prime_n)
-     if finite(c2) lt 1 then stop
-
-
-     help, pd_b
-     help, d_step2
-     help, c2
-     print, ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;'
-  endrep until  pd_b LT 1D-10
-
-  d_step2=d_step2*(depth/total(d_step2))
-skip_second:
-;d_step2=reverse(d_step1)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Axis goes straight down
@@ -334,7 +271,7 @@ skip_second:
 
   e_h1=n_e_add[1:*]*0
   e_h=[e_h1,$ 
-       loop.e_h,loop.e_h[n_elements(loop.e_h)-1],$
+       loop.e_h[0],loop.e_h,loop.e_h[n_elements(loop.e_h)-1],$
        e_h1]
 
   state={e:double(e), n_e:double(n_e), $
@@ -346,9 +283,11 @@ skip_second:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   notes=loop.notes
   notes[0]+= '  . Chromosphere added by add_constant_t_apex_pressure_chromo: V'+string(version)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Make the loop structure for PaTC
+  n_depth=n_elements(n_e_add)
   new_LOOP=mk_loop_struct(STATE=state,$
                           S_ARRAY=s,$
                           B=b,G=g,$
@@ -366,10 +305,10 @@ skip_second:
                           TIME=loop.state.TIME,$
                           start_file=loop.start_file)
 
-
 ;Remember no endcaps
-  e_h=add_chromo_heat( LOOP,e_h,SET_SYSV=SET_SYSV, SYSV_NAME=SYSV_NAME,$
+  e_h=add_chromo_heat( new_LOOP,/SET_SYSV,$
                        /UPDATE_LOOP)
+
   print, 'add_constant_t_apex_pressure_chromo All Done'
 ;stop
   return, new_loop

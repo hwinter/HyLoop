@@ -65,13 +65,13 @@ function get_loop_chromo_cells, loop, COUNT=COUNT, SURF=SURF
         n_cells=n_elements(loop.s_alt)
         count=(loop.n_depth)-1
         
-        chromo_ind=[[1+ULINDGEN(count)], [n_cells-loop.n_depth+ULINDGEN(count)]]
+        chromo_ind=[[ULINDGEN(count)], [1+n_cells-loop.n_depth+ULINDGEN(count)]]
 
         end
 
   endcase
 
-     
+  count=n_elements(chromo_ind)
   return, chromo_ind
   
  
