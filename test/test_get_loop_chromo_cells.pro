@@ -9,7 +9,6 @@ pro test_get_loop_chromo_cells_run, N_CELLS, N_DEPTH, N_ERRORS
 
   test_chromo_ind=get_loop_chromo_cells(loop, count=test_chromo_count)
 
-  stop
   if actual_chromo_count ne test_chromo_count then begin
      error_text='actual_chromo_count= '+strcompress(string(actual_chromo_count, FORMAT='(I10)'), /REMOVE_ALL) $
                 +' and get_loop_chromo_cells counted '+strcompress(string(test_chromo_count, FORMAT='(I10)'), /REMOVE_ALL)+'.'
