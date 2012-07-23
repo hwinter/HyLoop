@@ -84,18 +84,19 @@ if test3 ne 1 then begin
 endif   else F_alpha=!constant_heat_flux
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-n_cells=n_elements(loop.state.n_e)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 T=get_loop_temp(loop)
 P=get_loop_pressure(loop)
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+coronal_cells=get_loop_coronal_cells(loop, count=n_corona)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;The power law which is used a couple of times
-power_law=(P[1:n_cells-2]^beta)*(T[1:n_cells-2]^alpha)
+power_law=(P[coronal_cells]^beta)*(T[coronal_cells]^alpha)
 ;Scaling factor
-H=F_alpha/int_tabulated(loop.s_alt[1:n_cells-2],power_law,/DOUBLE)
+H=F_alpha/int_tabulated(loop.s_alt[coronal_cells],power_law,/DOUBLE)
 
-heat=H*(power_law)
-
+heat=loop.e_h*0
+heat[coronal_cells]=H*(power_law)
+heat=add_chromo_heat(loop, heat)
 ;stop
 return, heat
 END
