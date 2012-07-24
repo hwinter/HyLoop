@@ -54,7 +54,7 @@ function add_chromo_heat, LOOP,e_h, $
                           UPDATE_LOOP=UPDATE_LOOP, $
                           ZERO_CORONA=ZERO_CORONA
 
-  version=0.1
+  version=0.2
 ;-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Check input parameters
@@ -71,7 +71,7 @@ function add_chromo_heat, LOOP,e_h, $
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Case statement
-  temp_array=!shrec_T0+dblarr(test_chromo_count)
+  temp_array=!shrec_T0+dblarr(test_chromo_count/2)
   Case 1 of
      keyword_set(SET_SYSV): begin
         defsysv, '!chromo_e_h', $
@@ -94,5 +94,6 @@ function add_chromo_heat, LOOP,e_h, $
 
   if keyword_set(UPDATE_LOOP) then loop.e_h=e_h_in
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;Return the heating function array with chromo heat added
+;Return the heating function array with chromospheric heat added.
+return, e_h_in
 END                             ; Of main

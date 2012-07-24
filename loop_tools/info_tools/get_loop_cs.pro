@@ -1,13 +1,12 @@
 function get_loop_cs,loop, GAMMA=GAMMA, T=T, $
                      S_GRID=S_GRID, VOL_GRID=VOL_GRID
 
-;loop=loop[n_elements(loop)-1ul]
-
 ;ratio of specific heats, C_P/C_V
 if not keyword_set(gamma) then gamma = 5d0/3.0d0 
 
-if not keyword_set(T) then T = get_loop_temp(loop)
-cs = sqrt(3.0*gamma*!shrec_kB/*!shrec_mp)*sqrt(t)
+if not keyword_set(T) then Temperature = get_loop_temp(loop) $
+                                         else Temperature=T
+cs = sqrt(3.0*gamma*!shrec_kB*Temperature/!shrec_mp)
 
 if NOT keyword_set(VOL_GRID) then begin
     new_cs=spline(loop[0].s_alt, cs[*,0], $
@@ -23,7 +22,7 @@ if NOT keyword_set(VOL_GRID) then begin
     endif
 
 
-    cs=temporary(new_cs)
+    cs=abs(temporary(new_cs))
 endif
 
 

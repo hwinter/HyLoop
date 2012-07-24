@@ -97,6 +97,9 @@ H=F_alpha/int_tabulated(loop.s_alt[coronal_cells],power_law,/DOUBLE)
 heat=loop.e_h*0
 heat[coronal_cells]=H*(power_law)
 heat=add_chromo_heat(loop, heat)
+
+if max(heat) eq 0 then stop
+
 ;stop
 return, heat
 END
