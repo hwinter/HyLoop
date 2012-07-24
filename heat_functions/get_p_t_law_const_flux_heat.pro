@@ -100,6 +100,6 @@ heat=add_chromo_heat(loop, heat)
 
 if max(heat) eq 0 then stop
 
-;stop
+
 return, heat
 END
