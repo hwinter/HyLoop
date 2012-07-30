@@ -222,8 +222,13 @@ pro hyloop, loop, interval, $
      case strupcase(loop.CHROMO_MODEL) of  
         'CONSTANT CHROMOSPHERE' : print, 'SHrEC: Constant Chromosphere Set'
         'SLIDING CHROMOSPHERE': print, 'SHrEC: Sliding Chromosphere Set'
+        'T0 APEX P0':  print, 'SHrEC: (T0 APEX P0) Constant Temperature, Apex Pressure Chromsphere Set' 
         'SINGLE CELL':  print, 'SHrEC: Single Chromsphere Cell Set' 
-        else:  print, 'SHrEC: Single Chromsphere Cell Set <default>' 
+        else: begin
+           print, 'SHrEC: Single Chromsphere Cell Set <default>' 
+           CHROMO_MODEL= 'SINGLE CELL'
+        endelse
+
      endcase
 
         

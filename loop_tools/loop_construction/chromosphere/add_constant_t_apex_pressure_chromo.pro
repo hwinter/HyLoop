@@ -239,10 +239,13 @@ recompute_N_DEPTH:
      E_add]
 
 
-
-  n_e=[reverse(n_e_add), $
+  n_e0=reverse(n_e_add)
+  n_e=[n_e0, $
        loop.state.n_e, $
        n_e_add]
+  n_e0=n_e0[0]
+;Set the boundary condition for the density
+  defsysv, '!N_E0',n_e0
 ;Value of the chromospheric density at the base.
   n_e<=10d15 
   n_e<=ne_Ch_max

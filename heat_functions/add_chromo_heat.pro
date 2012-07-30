@@ -81,9 +81,13 @@ function add_chromo_heat, LOOP,e_h, $
      
         
      end
-  
-  e_h_in[0:Max(chrom_ind[*,0])-1]=!chromo_e_h[*,0]
-  e_h_in[chrom_ind[0:(test_chromo_count/2)-2,1]]=!chromo_e_h[*,1]
+  if loop.n_depth gt 1 then begin
+     e_h_in[0:Max(chrom_ind[*,0])-1]=!chromo_e_h[*,0]
+     e_h_in[chrom_ind[0:(test_chromo_count/2)-2,1]]=!chromo_e_h[*,1]
+  endif else begin
+     e_h_in[0]=!chromo_e_h[*,0]
+     e_h_in[n_elements(e_h_in)-1]=!chromo_e_h[*,0]
+  endelse
 
   if keyword_set(UPDATE_LOOP) then loop.e_h=e_h_in
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

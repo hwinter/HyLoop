@@ -61,6 +61,9 @@ function get_loop_chromo_cells, loop, COUNT=COUNT, SURF=SURF
      keyword_set(SURF):begin
 
      end
+     loop.n_depth le 1:begin
+        chromo_ind=[[0],[n_elements(loop.s_alt)-2]]
+     end
      else: begin
         n_cells=n_elements(loop.s_alt)
         count=(loop.n_depth)-1

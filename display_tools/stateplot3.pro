@@ -82,12 +82,12 @@ if not keyword_set(XRANGE) then BEGIN
              else XRANGE=[min(loop[0].s)+1., max(loop[0].s)]
 endif
 if keyword_set(CS) or  keyword_set(MACH) then BEGIN
-    CS=get_loop_sound_speed(loop[0], /S_GRID)
+    CS_in=get_loop_sound_speed(loop[0], /S_GRID)
     if n_loops gt 1 then $
-      for i=1ul, n_loops-1ul do cs=[[cs], [get_loop_sound_speed(loop[i], /S_GRID)]]
+       for i=1ul, n_loops-1ul do cs_in=[[cs_in], [get_loop_sound_speed(loop[i], /S_GRID)]]
     VYTITLE='Mach #' 
 endif ELSE BEGIN 
-        CS=1d0+dblarr(N, n_loops)
+        CS_in=1d0+dblarr(N, n_loops)
         VYTITLE='Velocity (cm s!E-1!N)'
     ENDELSE
 if not keyword_set(CHARSIZE) then CHARSIZE_IN =1.1 else $
@@ -139,8 +139,8 @@ if not keyword_set(DRANGE) then $
   DRANGE=[min(loop.state.n_e)*.9,$
           max(loop.state.n_e)*1.1]
 if not keyword_set(VRANGE) then $
-  VRANGE=[min(loop.state.v/cs)*.9,$
-          max(loop.state.v/cs)*1.1]
+   VRANGE=[min(loop.state.v/cs_in)*.9,$
+          max(loop.state.v/cs_in)*1.1]
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Get the old colors
@@ -247,7 +247,7 @@ axis, /yaxis,  yrange=drange,/ys,ytitle=DYTITLE, $
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Plot the Velocity
-plot, loop[0].s,loop[0].state.v/CS, $
+plot, loop[0].s,loop[0].state.v/CS_in, $
       yrange=VRANGE,YSTYLE=8, $
       ytitle=VYTITLE, xtitle='s (cm)', $ 
       LINESTYLE=LINESTYLE,$
@@ -263,10 +263,10 @@ plot, loop[0].s,loop[0].state.v/CS, $
 
 for i=0ul,n_loops-1ul do begin
     if keyword_set(PLOT_LINE) then $
-      oplot, loop[i].s , loop[i].state.v/cs[*,i],COLOR=color_array[i] , $
+       oplot, loop[i].s , loop[i].state.v/cs_in[*,i],COLOR=color_array[i] , $
              LINESTYLE=LINESTYLE, thick=1.5 $
       else $
-      oplot, loop[i].s, loop[i].state.v/cs[*,i], psym=psym,$
+      oplot, loop[i].s, loop[i].state.v/cs_in[*,i], psym=psym,$
              SYMSIZE=SYMSIZE, COLOR=color_array[i]  
 endfor
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;	

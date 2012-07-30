@@ -29,7 +29,7 @@ function stablize_loop, old_loop,T0=T0,  src=src, uri=uri, fal=fal, $
 
   max_time=105d0*60d0*60d0      ;Time to allow loop to come to equilibrium
   rtime=10d0*60d0               ;Output timestep
-  DELTA_T=30d0                  ;reporting  timestep
+
 
   SHOWME=1
   NO_SAT=1

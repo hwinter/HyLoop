@@ -59,6 +59,11 @@ function get_loop_coronal_cells, loop, COUNT=COUNT, SURF=SURF
      keyword_set(SURF):begin
 
      end
+     loop.n_depth le 1:begin
+        n_cells=n_elements(loop.s_alt)-2
+        coronal_ind=1 + ULINDGEN(n_cells)
+     end
+     
      else: begin
         n_cells=n_elements(loop.s_alt)
         count=n_cells-(2*loop.n_depth)+2

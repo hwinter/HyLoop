@@ -89,7 +89,7 @@ P=get_loop_pressure(loop)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 coronal_cells=get_loop_coronal_cells(loop, count=n_corona)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;The power law which is used a couple of times
+;The power law which is used a couple of timesloop.s_alt[coronal_cells]
 power_law=(P[coronal_cells]^beta)*(T[coronal_cells]^alpha)
 ;Scaling factor
 H=F_alpha/int_tabulated(loop.s_alt[coronal_cells],power_law,/DOUBLE)

@@ -184,20 +184,10 @@ if time gt max(!injected_beam.time) then extra_power=0d0
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Begin power law heating section.
+heat=get_p_t_law_const_flux_heat(LOOP)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 n_cells=n_elements(loop.state.n_e)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;Get the strand temperature profile 
-T=get_loop_temp(loop)
-;Get the strand pressure profile 
-P=get_loop_pressure(loop)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;The power law which is used a couple of times
-power_law=(P[1:n_cells-2]^!heat_beta)*(T[1:n_cells-2]^!heat_alpha)
-;Scaling factor
-H=(!constant_heat_flux)/int_tabulated(loop.s_alt[1:n_cells-2],power_law,/DOUBLE)
-heat=H*(power_law)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 f=exp(-(((loop.s_alt[1:n_cells-2]-loop.l_half)^2.0)/(2.0*(!sigma^2.0))))
 f=f/total(f)
 thermal_flare_heating=extra_power*f
