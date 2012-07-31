@@ -166,7 +166,9 @@ pro shrec, loop, delta_t, debug=debug, $
            extra_flux=extra_flux, $
            NOVISC=NOVISC ,$
            NO_SAT=NO_SAT,$
-           N_E_CHANGE=N_E_CHANGE , DT_COND_MIN=DT_COND_MIN
+           N_E_CHANGE=N_E_CHANGE , DT_COND_MIN=DT_COND_MIN, $
+           CHROMO_MODEL=CHROMO_MODEL
+           
   
    ;        CONSTANT_CHROMO=CONSTANT_CHROMO, $
    ;        SLIDE_CHROMO=SLIDE_CHROMO
@@ -388,7 +390,8 @@ pro shrec, loop, delta_t, debug=debug, $
                          NOVISC=NOVISC,$
                          NO_SAT=NO_SAT, mu=mu, $
                          Coulomb_log=Coulomb_log, $
-                         CHROMO_MODEL=loop.CHROMO_MODEL)
+                         CHROMO_MODEL=CHROMO_MODEL,$
+                         LOOP=LOOP)
      
 ;Put back in the >0.0 ala loop1003.pro  2008/APR/1 HDWIII
      state0.e = (temp_loop.state.e + ds0.e) > 1d-6
@@ -421,7 +424,8 @@ pro shrec, loop, delta_t, debug=debug, $
                         NOVISC=NOVISC,$
                         NO_SAT=NO_SAT, mu=mu, $
                         Coulomb_log=Coulomb_log, $
-                        CHROMO_MODEL=loop.CHROMO_MODEL)
+                        CHROMO_MODEL=CHROMO_MODEL,$
+                        LOOP=LOOP)
      
 ;Put back in the >0.0 ala loop1003.pro  2008/APR/1   
      temp_loop.state.e =(temp_loop.state.e + ds.e )> 1d-6

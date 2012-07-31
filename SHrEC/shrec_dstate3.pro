@@ -23,7 +23,8 @@ function shrec_dstate3, state, T, g, A, s, heating, dt, T0, $
                         VISC0=VISC0, K2=K2,$
                         MFP=MFP,$
                         L_T=L_T, $
-                        CHROMO_MODEL=CHROMO_MODEL
+                        CHROMO_MODEL=CHROMO_MODEL,$
+                        LOOP=LOOP
   
   
   common loopmodel, ds1, ds2, A1, is
@@ -37,7 +38,7 @@ function shrec_dstate3, state, T, g, A, s, heating, dt, T0, $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Test and set keyword switches. 
   if not keyword_set(DEBUG) then DEBUG=0
-
+  if not keyword_set(CHROMO_MODEL) then CHROMO_MODEL = ''
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;useful thermodynamic quantities (e/n_e grid)
   P = (2.0/3.0)*state.e
@@ -92,7 +93,9 @@ function shrec_dstate3, state, T, g, A, s, heating, dt, T0, $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Calculate volumetric radiative losses
   radiative_loss=-shrec_radloss(state.n_e[1:is-1],T[1:is-1],T0=T0,$
-                                src=src,uri=uri,fal=fal)*dt 	
+                                src=src,uri=uri,fal=fal,$
+                                CHROMO_MODEL=CHROMO_MODEL,$
+                                LOOP=LOOP)*dt 
 
 ;viscous energy loss Mu is passed in
 ;temp1 = 2.d0*(A[1:is-1ul]*state.v[1:is-1ul] $
@@ -123,8 +126,8 @@ function shrec_dstate3, state, T, g, A, s, heating, dt, T0, $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Sliding Chromospheric/TR model based on McMullen 2001     
-case strupcase(CHROMO_MODEL) of     
-   'SLIDING CHROMOSPHERE': begin
+  case strupcase(CHROMO_MODEL) of     
+     'SLIDING CHROMOSPHERE': begin
 ;s on the volume element grid (like e, n_e)
         s_alt = [2*s[0]-s[1],(s[0:is-2]+s[1:is-1])/2.0,2*s[is-1]-s[is-2]]
 ;Length of the loop                                
@@ -135,7 +138,7 @@ case strupcase(CHROMO_MODEL) of
         i0 = ss[0]>1 & i1 = ss[n_ss-1]<(is-3)
 ;     
         strength = (1.0/safety)*((depth - s_alt[i0])/depth)^3 $
-                < 1.0/safety > (-1.0/safety) ;clamp density loss
+                   < 1.0/safety > (-1.0/safety) ;clamp density loss
 ;Relevant density scale
         nscale = 0.5*min(state.n_e[0:i0]) 
 ;Add density to the isotherm closest to the origin.
@@ -161,4 +164,4 @@ case strupcase(CHROMO_MODEL) of
 ;This is almost a state structure, just lacks the time tag
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-END ;Of MAIN
+END                             ;Of MAIN

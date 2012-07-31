@@ -183,7 +183,8 @@ pro hyloop, loop, interval, $
             NT_DELTA_E=NT_DELTA_E,$
             NT_DELTA_MOMENTUM=NT_DELTA_MOMENTUM,$ 
             PATC_heating_rate=PATC_heating_rate,$
-            extra_flux=extra_flux , DT_COND_MIN=DT_COND_MI
+            extra_flux=extra_flux , DT_COND_MIN=DT_COND_MI, $
+            CHROMO_MODEL=CHROMO_MODEL
    
                                 ;NO_V_HEAT=NO_V_HEAT
      
@@ -218,7 +219,7 @@ pro hyloop, loop, interval, $
         print,'Min/Max V:  '+strcompress(string(min(loop.state.v)/1d5),/REMOVE_ALL)+ $
               '/'+strcompress(string(max(loop.state.v)/1d5),/REMOVE_ALL)+'[km/s]'
         print, 'T_max: '+strcompress(string(loop.t_max/1d6),/REMOVE_ALL)+'MK'
-        print,'grid spacing runs from ',min(ds)/100.0,' m  to ',max(ds)/100000.0,' km.'
+        print,'grid spacing runs from ',min(ds)/1e2,' m  to ',max(ds)/1e5,' km.'
      case strupcase(loop.CHROMO_MODEL) of  
         'CONSTANT CHROMOSPHERE' : print, 'SHrEC: Constant Chromosphere Set'
         'SLIDING CHROMOSPHERE': print, 'SHrEC: Sliding Chromosphere Set'
