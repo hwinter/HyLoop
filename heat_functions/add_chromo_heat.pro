@@ -73,20 +73,28 @@ function add_chromo_heat, LOOP,e_h, $
 ;Case statement
   temp_array=!shrec_T0+dblarr(test_chromo_count)
   if keyword_set(SET_SYSV) then begin
-     defsysv, '!chromo_e_h', $
-              [[abs(shrec_radloss(loop.state.n_e[chrom_ind[1:*,0]],$
-                                  temp_array))],$
-               [abs(shrec_radloss(loop.state.n_e[chrom_ind[0:(test_chromo_count/2)-2,1]],$
-                                  temp_array))]]
-     
-        
-     end
+     e_h1=abs(shrec_radloss(loop.state.n_e[chrom_ind[1:*,0]],$
+                            temp_array))
+     e_h2=abs(shrec_radloss(loop.state.n_e[chrom_ind[0:(test_chromo_count/2)-2,1]],$
+                                  temp_array))
+
+     e_h_in[0:Max(chrom_ind[*,0])-1]=e_h1
+     e_h_in[chrom_ind[0:(test_chromo_count/2)-2,1]]=e_h2
+
+     for iii=0, 100 do e_h_in=smooth(e_h_in, 3)
+     e_h1=e_h_in[0:Max(chrom_ind[*,0])-1]
+     e_h2=e_h_in[chrom_ind[0:(test_chromo_count/2)-2,1]]
+       
+     defsysv, '!chromo_e_h',[[e_h1], [e_h2]]
+
+
+  end
   if loop.n_depth gt 1 then begin
      e_h_in[0:Max(chrom_ind[*,0])-1]=!chromo_e_h[*,0]
      e_h_in[chrom_ind[0:(test_chromo_count/2)-2,1]]=!chromo_e_h[*,1]
   endif else begin
-     e_h_in[0]=!chromo_e_h[*,0]
-     e_h_in[n_elements(e_h_in)-1]=!chromo_e_h[*,0]
+     e_h_in[0]=!chromo_e_h[0,0]
+     e_h_in[n_elements(e_h_in)-1]=!chromo_e_h[0,1]
   endelse
 
   if keyword_set(UPDATE_LOOP) then loop.e_h=e_h_in

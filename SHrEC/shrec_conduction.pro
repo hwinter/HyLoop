@@ -105,8 +105,10 @@ endif
 as=0.5*((A[0:is-2]) +(A[1:is-1]))
 temp1 =( A[0:is-2] * K2[0:is-2] * dt $
         /(ds2[0:is-2]*ds1*as))
+temp1>=0
 temp2 =(A[1:is-1] * K2[1:is-1] * dt $
        /(ds2[1:is-1]*ds1*as ))
+temp2>=0
 
 ;sub-diagonal elements of M
 sub = [0.0, -temp1, 0.0]

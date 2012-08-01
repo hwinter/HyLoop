@@ -50,7 +50,7 @@
 
 function get_p_t_law_const_flux_heat, LOOP, time, dt, $
   nt_beam, nt_brems, PATC_heating_rate, extra_flux, $
-  DELTA_MOMENTUM,flux, ne_change
+  DELTA_MOMENTUM,flux, ne_change, NO_CHROMO=NO_CHROMO
 
 
 PATC_heating_rate=0d0
@@ -96,7 +96,8 @@ H=F_alpha/int_tabulated(loop.s_alt[coronal_cells],power_law,/DOUBLE)
 
 heat=loop.e_h*0
 heat[coronal_cells]=H*(power_law)
-heat=add_chromo_heat(loop, heat)
+if not keyword_set(NO_CHROMO) then $
+   heat=add_chromo_heat(loop, heat)
 
 if max(heat) eq 0 then stop
 

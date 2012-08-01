@@ -1,3 +1,17 @@
+function get_exponential_spacing, n_depth, depth
+  
+  funct=exp(dindgen(n_depth)/(n_depth-1))
+  t_func=total(funct)
+
+  steps=depth*funct/t_func
+
+  
+
+  return,steps
+
+end
+
+
 ;+
 ; NAME:
 ;      add_constant_t_apex_pressure_chromo	
@@ -59,7 +73,7 @@ function add_constant_t_apex_pressure_chromo_set_depth, loop, T0=T0, DEPTH=DEPTH
    PERCENT_DIFFERENCE=PERCENT_DIFFERENCE,$
    MIN_STEP=MIN_STEP,$
    SET_SYSV=SET_SYSV, SYSV_NAME=SYSV_NAME
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   Version=1.0  	
 ;-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -73,7 +87,7 @@ function add_constant_t_apex_pressure_chromo_set_depth, loop, T0=T0, DEPTH=DEPTH
 
 
 ;Depth into the chromosphere  [cm]
-  if not keyword_set(DEPTH) then DEPTH=2d8; If not defined, use the whole chromosphere.
+  if not keyword_set(DEPTH) then DEPTH=2d8 ; If not defined, use the whole chromosphere.
 
 ;Number of cells for the hydrostatic atmosphere chromosphere.
   if not keyword_set(N_DEPTH) then N_DEPTH=100
@@ -82,7 +96,7 @@ function add_constant_t_apex_pressure_chromo_set_depth, loop, T0=T0, DEPTH=DEPTH
 ;Smallest step size we are going to take
   if not keyword_set(MIN_STEP) then MIN_STEP=5d4 ;500 meters or ~five football fields.
 ;
- 
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   if size(loop,/TYPE) ne 8 then $
      message, 'Argument for add_loop_chromo() must be a loop structure.'
@@ -93,8 +107,9 @@ function add_constant_t_apex_pressure_chromo_set_depth, loop, T0=T0, DEPTH=DEPTH
 
   loop.n_depth=N_DEPTH
   loop.depth=DEPTH
+  n_old_s=n_elements(loop.s)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-CHROMO_MODEL='T0 APEX P0'
+  CHROMO_MODEL='T0 APEX P0 SET DEPTH'
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Get values for the corona.
   n_e_corona=loop.state.n_e
@@ -111,69 +126,18 @@ CHROMO_MODEL='T0 APEX P0'
 ;Use a root finder to get an expontially decaying step size
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-P_Ch_apex=2*ne_Ch_apex*!shrec_kb*T0
+  P_Ch_apex=2*ne_Ch_apex*!shrec_kb*T0
 recompute_N_DEPTH:
   ds=get_loop_ds(loop)
   ds_first=ds[0]
-;Compute the percent difference of the last two coronal cells.
-;This will provide the basis of for the size of the next step
-;percent_difference=abs(ds[1]-ds[0])/ds_first
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 
-  A_0=ds_first*(1d0-percent_difference)
-;If the number of cells is too small you can never 
-; make it to depth while maintaining the percent
-; difference of the the first step.
-  if A_0*(N_DEPTH_s) le depth then begin
-     N_DEPTH_s=long(depth/A_0)+10l
-     N_DEPTH=N_DEPTH_s+1l
-     print,'***************************'
-     print,'add_loop_chromo.pro warning!'
-     print,'Not enough cells to maintain a smooth distribution.'
-     print,'Changing the number of cells to '+$
-           strcompress(string(N_DEPTH), /REMOVE_ALL)+'.'
-     print,'***************************'
-  endif
-
-  ind_array=dindgen(N_DEPTH_s)
-;We are going to use a simple Newton Raphson method.
-;The expression is simple, so we shouldn't fall into
-; any of the traps that can accompany NR.
-
-;Initial guess at the constant.
-  C1=.5
-
-  pd_b=1d5
-  jj=0ul
-  repeat begin
-     if finite(c1) lt 1 then stop
-     d_step2= (A_0)*exp(-C1*ind_array/N_DEPTH_s)
-     d_step2>= MIN_STEP
-    
-     
-     y_n=total(d_step2)-(depth)
-     y_prime_n=total((-ind_array/Max(ind_array))*d_step2)
-            
-     pd_b=ABS((total(d_step2)-(depth))/(depth))
-     
-     if y_prime_n eq 0 then y_prime_n=1d-15
-     C1_new=C1-(y_n/y_prime_n)  ;
-;Hope it never gets to the following point!
-     if c1_new lt 0 then c1 =C1+(y_n/y_prime_n)   else c1 =c1_new
-                                ;print, 'y_prime_n',y_prime_n,(y_n/y_prime_n)
-     if finite(c1) lt 1 then stop
-
-     help, pd_b
-     help, d_step2
-     help, c1
-     print, ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;'
-  endrep until  pd_b LT 1D-10
-
-  d_step2=d_step2*(depth/total(d_step2))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
+  d_step2=get_exponential_spacing(n_depth, depth)
   d_step1=reverse(d_step2)
   s1=[0, total(d_step1[0:N_DEPTH_s-2], /CUMULATIVE)]
+  s2=old_s[n_old_s-1]+total(d_step2[0:N_DEPTH_s-2], /cumulative)
+  help, s1, s2
+  ;stop
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   n_ds=n_elements(ds)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -182,9 +146,9 @@ recompute_N_DEPTH:
 ;Need to change the z_axis part at some time.  z_add1 & 
 ;  reverse(z_add2) are slightly different in symmetric cases.
 ;  (third decimal place)
-  z_add1=reverse(loop.axis[2,0]-(total(d_step1,/CUMULATIVE)))
+  z_add1=reverse(loop.axis[2,0]-(total(d_step1[0:N_DEPTH_s-1],/CUMULATIVE)))
 
-  z_add2=loop.axis[2,n_corona_surf-1]-(total(d_step2,/CUMULATIVE))
+  z_add2=loop.axis[2,n_corona_surf-1]-(total(d_step2[0:N_DEPTH_s-1],/CUMULATIVE))
   z=[z_add1, $
      reform(loop.axis[2,*]),$
      z_add2]
@@ -209,7 +173,7 @@ recompute_N_DEPTH:
 
   new_s=[s1, $
          old_s,$
-         depth+max(loop.s)+total(d_step2, /cumulative)]
+         s2]
 
   new_s=new_s-new_s[0]
   s_alt=shrec_get_s_alt(new_s)
