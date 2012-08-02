@@ -80,12 +80,17 @@ axis[2,*]=z_shift
 lhist={e:double(e), n_e:double(n_e), v:double(v), time:double(time)}
 help,lhist,/str
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-sizecheck, lhist,g,A,s, E_h
 LOOP=mk_loop_struct(lhist,s,b,g,axis, A,rad, $
                     e_h,t_max, n_depth, note,DEPTH=DEPTH,$
                     start_file=save_file)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-sizecheck, loop[0].state,loop[0].g,loop[0].a,loop[0].s,loop[0].E_h
+err_state=shrec_sizecheck( loop[0], ERROR=ERR_msg)
+
+if err_state le 0 then begin
+   for iii=0, n_elements(ERR_msg) do print, ERR_msg[iii]
+   stop
+endif
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 end_jump:
 print,'Saving file: ', save_file

@@ -402,13 +402,14 @@ pro shrec, loop, delta_t, debug=debug, $
      state0.v = temp_loop.state.v + ds0.v+ visc * 0.6 ;$
                                 ; +dv_patc*dt0
      state0.time = temp_loop.state.time + dt0
+        tloop=temp_loop
+        tloop.state=state0
+        tloop=shrec_bcs(tloop)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Maintain a chromosphere of constant depth, (depth) at a constant
 ;temperature (T0) based on the equation of state E=3/2NKT, or for our
 ;case rewritten as n_e=state.e/(3kT0)
      if  strupcase(loop.CHROMO_MODEL)  eq 'CONSTANT CHROMOSPHERE' then  begin
-        tloop=temp_loop
-        tloop.state=state0
         tloop=shrec_static_atmos_chromo(tloop, T0=T0, DS2=DS2, IS=IS)
         state0=tloop.state
         delvarx, tloop
@@ -439,6 +440,9 @@ pro shrec, loop, delta_t, debug=debug, $
      temp_loop.e_h=heating
      temp_loop.t_max=max(get_loop_temp(temp_loop))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Set the boundary conditions.
+     temp_loop=shrec_bcs(temp_loop)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
      case strupcase(loop.CHROMO_MODEL) of  
 ;Maintain a chromosphere of constant depth, (depth) at a constant
@@ -511,7 +515,7 @@ pro shrec, loop, delta_t, debug=debug, $
 ;End of time stepper loop
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Set the boundary conditions.
-  temp_loop.state=shrec_bcs(temp_loop.state, temp_loop.g, T0, ds2, is)
+  temp_loop=shrec_bcs(temp_loop)
 ;Send back the average volumetric heating rate
   temp_loop.e_h=(e_h_array/double(n_int))
 ;

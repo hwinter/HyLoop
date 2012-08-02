@@ -280,9 +280,6 @@ recompute_N_DEPTH:
   state={e:double(e), n_e:double(n_e), $
          v:double(v), time:double(loop.state.time)}
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
-;Define a system variable to hold the constant heating of the
-;chromosphere.;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   notes=loop.notes
   notes[0]+= '  . Chromosphere added by add_constant_t_apex_pressure_chromo: V'+string(version)
@@ -311,6 +308,15 @@ recompute_N_DEPTH:
 ;Remember no endcaps
   e_h=add_chromo_heat( new_LOOP,/SET_SYSV,$
                        /UPDATE_LOOP)
+  new_LOOP= shrec_bcs(new_LOOP)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Error check the size of loop elements 
+err_state=shrec_sizecheck(new_LOOP, ERROR=ERR_msg)
+
+if err_state le 0 then begin
+   stop
+endif
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
   print, 'add_constant_t_apex_pressure_chromo All Done'
 ;stop

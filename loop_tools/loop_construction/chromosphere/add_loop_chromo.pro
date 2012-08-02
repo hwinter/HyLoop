@@ -16,13 +16,16 @@ function add_loop_chromo, loop, T0=T0, DEPTH=DEPTH, N_DEPTH=N_DEPTH, $
   ds2 = [ds1[0],(ds1[0:n_surf-3] + ds1[1:n_surf-2])/2.0, ds1[n_surf-2]]
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   Case 1 of
-     size(CHROMO_MODEL, /TYPE) ne 7 :begin
-        loop.chromo_model='Single Cell'
-        loop.state=shrec_bcs(loop.state,loop.g, T0, ds2, n_surf)
-        pressure=get_loop_pressure(loop)
-        loop.P_BC[0]=pressure[0]
-        loop.P_BC[1]=pressure[n_surf]
-        print, 'SHrEC: Single Chromsphere Cell Set <default>'
+     size(CHROMO_MODEL, /TYPE) ne 7 :begin 
+        print, 'SHrEC: Single Chromsphere Cell Set <default>' 
+        CHROMO_MODEL= 'SINGLE CELL'
+        
+        loop=add_loop_chromo_single_cell(loop, T0=T0, DEPTH=DEPTH, N_DEPTH=N_DEPTH, $
+                                                           VERSION=VERSION, STARTNAME=STARTNAME,$
+                                                           PERCENT_DIFFERENCE=PERCENT_DIFFERENCE,$
+                                                           SET_SYSV=SET_SYSV, SYSV_NAME=SYSV_NAME,$
+                                                           _EXTRA=extra_keywords)
+        
         
 
      end
@@ -74,17 +77,29 @@ function add_loop_chromo, loop, T0=T0, DEPTH=DEPTH, N_DEPTH=N_DEPTH, $
      else: begin      
         print, 'SHrEC: Single Chromsphere Cell Set <default>' 
         CHROMO_MODEL= 'SINGLE CELL'
-        state= shrec_bcs(loop.state,loop.g,T0, ds2, n_surf, N_E0=1d11)
-        loop.state=state
-        loop.n_depth=1
-        loop.depth=depth
-        defsysv,'!CHROMO_E_H',[[0],[0]]
+        
+        loop=add_loop_chromo_single_cell(loop, T0=T0, DEPTH=DEPTH, N_DEPTH=N_DEPTH, $
+                                                           VERSION=VERSION, STARTNAME=STARTNAME,$
+                                                           PERCENT_DIFFERENCE=PERCENT_DIFFERENCE,$
+                                                           SET_SYSV=SET_SYSV, SYSV_NAME=SYSV_NAME,$
+                                                           _EXTRA=extra_keywords)
         
      end
      
      
   endcase
 
+
+
+  LOOP= shrec_bcs(LOOP)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Error check the size of loop elements 
+err_state=shrec_sizecheck(LOOP, ERROR=ERR_msg)
+
+if err_state le 0 then $
+   stop
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
   return, loop

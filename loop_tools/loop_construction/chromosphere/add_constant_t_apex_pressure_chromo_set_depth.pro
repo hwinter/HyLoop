@@ -275,7 +275,15 @@ recompute_N_DEPTH:
 ;Remember no endcaps
   e_h=add_chromo_heat( new_LOOP,/SET_SYSV,$
                        /UPDATE_LOOP)
+  new_LOOP= shrec_bcs(new_LOOP)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Error check the size of loop elements 
+err_state=shrec_sizecheck(new_LOOP, ERROR=ERR_msg)
 
+if err_state le 0 then begin
+   stop
+endif
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   print, 'add_constant_t_apex_pressure_chromo All Done'
 ;stop
   return, new_loop

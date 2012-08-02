@@ -49,7 +49,9 @@ function shrec_dstate3, state, T, g, A, s, heating, dt, T0, $
   rho = !shrec_mp * (state.n_e[0:is-1] + state.n_e[1:is])/2.0
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;set boundary conditions
-  state=shrec_bcs(state, g, T0, ds2, is)
+  tloop=loop
+  tloop=shrec_bcs(loop, T0=T0)
+  state=tloop.state
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Upwind differencing stuff
   vpos = float(state.v gt 0.0)
@@ -153,12 +155,6 @@ function shrec_dstate3, state, T, g, A, s, heating, dt, T0, $
      end
      else:
   endcase
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;set boundary conditions
-  state=shrec_bcs(state, g, T0, ds2, is)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   return, {e:de, n_e:dn_e, v:dv}
 ;This is almost a state structure, just lacks the time tag
