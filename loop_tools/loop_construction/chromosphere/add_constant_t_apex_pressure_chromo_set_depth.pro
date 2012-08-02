@@ -135,7 +135,7 @@ recompute_N_DEPTH:
   d_step2=get_exponential_spacing(n_depth, depth)
   d_step1=reverse(d_step2)
   s1=[0, total(d_step1[0:N_DEPTH_s-2], /CUMULATIVE)]
-  s2=old_s[n_old_s-1]+total(d_step2[0:N_DEPTH_s-2], /cumulative)
+  s2=old_s[n_old_s-1]+total(d_step2[0:N_DEPTH_s-1], /cumulative)
   help, s1, s2
   ;stop
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -233,9 +233,6 @@ recompute_N_DEPTH:
      loop.b,$ $
      loop.b[n_corona_surf-1]+dblarr(N_DEPTH_s)]
 
-;  for jj=0, 10ul do e=smooth(e,3)
-;  for jj=0ul, 10ul do n_e=smooth(n_e,3)
-
   e_h1=n_e_add[1:*]*0
   e_h=[e_h1,$ 
        loop.e_h[0],loop.e_h,loop.e_h[n_elements(loop.e_h)-1],$
@@ -249,7 +246,7 @@ recompute_N_DEPTH:
 ;chromosphere.;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   notes=loop.notes
-  notes[0]+= '  . Chromosphere added by add_constant_t_apex_pressure_chromo: V'+string(version)
+  notes[0]+= '  . Chromosphere added by add_constant_t_apex_pressure_chromo_set_depth: V'+string(version)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -272,10 +269,6 @@ recompute_N_DEPTH:
                           TIME=loop.state.TIME,$
                           start_file=loop.start_file)
 
-;Remember no endcaps
-  e_h=add_chromo_heat( new_LOOP,/SET_SYSV,$
-                       /UPDATE_LOOP)
-  new_LOOP= shrec_bcs(new_LOOP)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Error check the size of loop elements 
 err_state=shrec_sizecheck(new_LOOP, ERROR=ERR_msg)
@@ -284,6 +277,26 @@ if err_state le 0 then begin
    stop
 endif
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Smooth the distribution of ds
+new_LOOP=mk_loop_smoothed_ds(new_LOOP)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Calculate the heat
+  e_h=add_chromo_heat( new_LOOP,/SET_SYSV,$
+                       /UPDATE_LOOP)
+  new_LOOP= shrec_bcs(new_LOOP)
+
+  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Error check the size of loop elements 
+err_state=shrec_sizecheck(new_LOOP, ERROR=ERR_msg)
+
+if err_state le 0 then begin
+   stop
+endif
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
   print, 'add_constant_t_apex_pressure_chromo All Done'
 ;stop
   return, new_loop
