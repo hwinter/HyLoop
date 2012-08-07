@@ -1,6 +1,6 @@
 function get_loop_cond_cts, loop, MIN=MIN
 ;Taken from the dissertation of Henry (Trae) Winter III page 40/
-;Get the charateristic timescale of conduction along the loop.
+
 T=get_loop_temp(loop)
 ds=get_loop_ds(loop)
 

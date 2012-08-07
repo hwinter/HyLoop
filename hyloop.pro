@@ -57,7 +57,6 @@
 ;HISTORY:
 ;	1999-Feb-4 written by Charles C. Kankelborg
 ;	2009:SHreC
-;       2011-11-21-HDW III: Added CLOCK_TIME and PLUS_TIME keywords
 pro hyloop, loop, interval, $
             T0=T0, FILE_PREFIX=FILE_PREFIX, $
             FILE_EXT=FILE_EXT, src=src, uri=uri, fal=fal, $
@@ -82,12 +81,10 @@ pro hyloop, loop, interval, $
             PATC_heating_rate=PATC_heating_rate,$
             extra_flux=extra_flux,$
             NO_V_HEAT=NO_V_HEAT , DT_COND_MIN=DT_COND_MIN,$
-            CLOCK_TIME=CLOCK_TIME, PLUS_TIME=PLUS_TIME,$
-            TIME_FORMAT=TIME_FORMAT
-            
+            CONSTANT_CHROMO=CONSTANT_CHROMO, $
+            SLIDE_CHROMO=SLIDE_CHROMO
 
-
- cd, CURRENT=curr_dir 
+  
 ;if size(nt_beam, /TYPE) eq 0 then nt_beam=0d0
 ;if size(nt_brems, /TYPE) eq 0 then nt_brems=0d0
 ;if size(PATC_heating_rate, /TYPE) eq 0 then PATC_heating_rate=0d0
@@ -96,9 +93,6 @@ pro hyloop, loop, interval, $
 
   COMPILE_OPT STRICTARR
 ;initialize computer time
-  IF keyword_set(PLUS_TIME) then PLUS_TIME_in=PLUS_TIME else $
-     PLUS_TIME_in=0.0
-
   t_start = systime(1) 
 ;Initialize System variables if necessary
   defsysv, !shrec_set, exists=test_set
@@ -123,8 +117,7 @@ pro hyloop, loop, interval, $
 
   if not keyword_set(T0) then T0 = loop.state.e[0]/(3*loop.state.n_e[0]*!shrec_kB)
   if not keyword_set(REGRID) then REGRID=0
-  if not keyword_set(TIME_FORMAT) then TIME_FORMAT_in='(F010.3)' $
-     else TIME_FORMAT_in=TIME_FORMAT
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   old_loop=loop
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -169,7 +162,7 @@ pro hyloop, loop, interval, $
      ds = loop.s[1:N-2] - loop.s[0:N-3]
      
      if not keyword_set(QUIET) then Print, 'Number of volume grids: ',N
-    
+     if keyword_set(CONSTANT_CHROMO) then src=1
 ;Evolve the loop state in time 
      shrec, loop, delta_t, T0=T0, $
             src=src, fal=fal, uri=uri,$
@@ -183,9 +176,9 @@ pro hyloop, loop, interval, $
             NT_DELTA_E=NT_DELTA_E,$
             NT_DELTA_MOMENTUM=NT_DELTA_MOMENTUM,$ 
             PATC_heating_rate=PATC_heating_rate,$
-            extra_flux=extra_flux , DT_COND_MIN=DT_COND_MI, $
-            CHROMO_MODEL=CHROMO_MODEL
-   
+            extra_flux=extra_flux , DT_COND_MIN=DT_COND_MIN, $
+            CONSTANT_CHROMO=CONSTANT_CHROMO, $
+            SLIDE_CHROMO=SLIDE_CHROMO
                                 ;NO_V_HEAT=NO_V_HEAT
      
      
@@ -209,29 +202,18 @@ pro hyloop, loop, interval, $
      if keyword_set(SHOWME) then $
         stateplot2, loop.s, loop.state, /screen, WINDOW=WINDOW_STATE 
 ;stop
-     CLOCK_TIME=(systime(1)-t_start)+PLUS_TIME_in
      if not keyword_set(QUIET) then begin
         print,'Computer: ', strupcase(!computer)
         print,'Computer Time: ', systime()
         print, 'Heat Function: ',HEAT_FUNCTION
         print,'Model time: '+strcompress(string(loop.state.time),/REMOVE_ALL)+ $
-              's    Real time: '+strcompress(string(CLOCK_TIME),/REMOVE_ALL),'s'
+              's    Real time: '+strcompress(string(systime(1)-t_start),/REMOVE_ALL),'s'
         print,'Min/Max V:  '+strcompress(string(min(loop.state.v)/1d5),/REMOVE_ALL)+ $
               '/'+strcompress(string(max(loop.state.v)/1d5),/REMOVE_ALL)+'[km/s]'
         print, 'T_max: '+strcompress(string(loop.t_max/1d6),/REMOVE_ALL)+'MK'
-        print,'grid spacing runs from ',min(ds)/1e2,' m  to ',max(ds)/1e5,' km.'
-     case strupcase(loop.CHROMO_MODEL) of  
-        'CONSTANT CHROMOSPHERE' : print, 'SHrEC: Constant Chromosphere Set'
-        'SLIDING CHROMOSPHERE': print, 'SHrEC: Sliding Chromosphere Set'
-        'T0 APEX P0':  print, 'SHrEC: (T0 APEX P0) Constant Temperature, Apex Pressure Chromsphere Set' 
-        'SINGLE CELL':  print, 'SHrEC: Single Chromsphere Cell Set' 
-        else: begin
-           print, 'SHrEC: Single Chromsphere Cell Set <default>' 
-           CHROMO_MODEL= 'SINGLE CELL'
-        endelse
-
-     endcase
-
+        print,'grid spacing runs from ',min(ds)/100.0,' m  to ',max(ds)/100000.0,' km.'
+     if keyword_set(CONSTANT_CHROMO) then print, 'HyLoop: Constant Chromosphere Set'
+     if keyword_set(SLIDE_CHROMO) then print, 'HyLoop: Sliding Chromosphere Set'
         
      help, nt_beam
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -246,7 +228,7 @@ pro hyloop, loop, interval, $
         if  keyword_set(NOVISC) then $
            print,'Viscosity model  = OFF' Else $
               print,'Viscosity model = ON'
-        print, 'In Dir: '+curr_dir
+        
         print,'########################################################################'
      endif
      

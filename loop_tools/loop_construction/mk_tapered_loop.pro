@@ -16,8 +16,7 @@
 ;
 ; INPUTS: gamma
 
-;       diameter: [cm] Cross-sectional diameter of loop top. The
-;       maximum diameter
+;       diameter: [cm] Cross-sectional diameter of loop top.
 ;     
 ;       length: [cm] Length of the main loop, not the strand.  Assumed
 ;       to be semi-circular through the center.
@@ -26,6 +25,8 @@
 ;	
 ;	
 ; KEYWORD PARAMETERS:
+;	Q0: Volumetric heating rates
+;
 ;       B_mag: [Gauss] at loop apex
 ; OUTPUTS:
 ;  Loop structure containing the tags
@@ -40,6 +41,7 @@
 ;        L [cm] New loop length,
 ;        T_max [[K] Loops maximum temperature
 ;        orig, 
+;        n_depth depth of chomospheric penetration
 ;	
 ;	
 ;
@@ -76,18 +78,23 @@
 ;-
 
 function mk_tapered_loop,gamma, diameter, length, $
-                         T_MAX=T_MAX, $
+                         T_MAX=T_MAX, N_DEPTH=N_DEPTH,$
                          T0=T0,debug=debug, $
-                         B_Mag=B_Mag, OUTNAME=OUTNAME, $
-                         FILENAME=FILENAME, N_CELLS=N_CELLS,$
+                         B_Mag=B_Mag,Q0=Q0,  nosave=nosave, $
+                         outname=outname,N_CELLS=N_CELLS,$
                          X_SHIFT=X_SHIFT,Y_SHIFT=Y_SHIFT,$
                          Z_SHIFT=Z_SHIFT, LOOP=LOOP,$
+                         DEPTH=DEPTH,$
+                         ADD_CHROMO=ADD_CHROMO,$
                          SIGMA_FACTOR=SIGMA_FACTOR,$
-                         _Extra=Extra
+                         PSL=PSL, ALPHA=ALPHA, BETA=BETA,$
+                         HEAT_NAME=HEAT_NAME, NOVISC=NOVISC, $
+                         STABILIZE=STABILIZE,_Extra=Extra
 
   
 
 loop = 1
+nosave=1
 compile_opt STRICTARR
 Notes=strarr(5)
 notes[0]='Tapered loop'
@@ -102,6 +109,11 @@ notes[0]='Tapered loop'
 if size(gamma,/type) eq 0 then gamma_in=1 else gamma_in=gamma
 
 if size(t_max,/type) eq 0 then t_max=1d6
+if size(NOVISC,/type) eq 0 then  NOVISC_in=1 $
+else NOVISC_in=NOVISC
+if not keyword_set(Q0) then q0=0.0007 
+;;erg/x - number to yield t_max=9e5 K - RAM 10092002
+
 if not keyword_set(X_SHIFT) then X_SHIFT=0d $
 else X_SHIFT=double(X_SHIFT)
 if not keyword_set(Y_SHIFT)  then Y_SHIFT=0d $
@@ -116,6 +128,9 @@ else     B=B_mag                ;[Gauss]
 if not keyword_set(N_CELLS)  then $
   N_CELLS =long64(300) else $
   N_CELLS =long64(N_CELLS)
+
+IF keyword_set(outname) THEN outname=outname $
+ELSE outname='Taper_'+strcompress(string(gamma), /REMOVE)+'_Loop'+strcompress(q0,/remove_all)
 
 ;Number of surface grids
 n_surf=N_CELLS-1
@@ -212,6 +227,10 @@ s_alt=shrec_get_s_alt(s)
 ;Volume elements
 dv=shrec_get_volume(s,a)
 
+;IF n_elements(q0) eq 0 THEN BEGIN
+;    IF n_elements(power) eq 0 THEN power=1d24 ;erg/s Cargill & Klimchuck (2004)
+;    q0=power/total(dv) ;was 7.e-4 erg/cm^3/s Kankelborg&Longcope, 1999 p.71
+;ENDIF ELSE IF n_elements(power) eq 0 THEN  power=q0*total(dv)
 time=0.                         ;start time
 
 T=dblarr(N_CELLS)
@@ -282,8 +301,14 @@ sizecheck, state,g,A,s, E_h
 LOOP=mk_loop_struct(STATE=state,$
                     S_ARRAY=s,B=b,G=g,AXIS=axis,$
                     AREA=A,RAD=rad, $
-                    E_H=e_h,T_MAX=t_max,$
-                    NOTES=notes)
+                    E_H=e_h,T_MAX=t_max,N_DEPTH=n_depth,$
+                    NOTES=notes,DEPTH=DEPTH,$
+                    start_file=outname+'.sav')
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Add on the Chromosphere
+;if keyword_set(ADD_CHROMO) then $
+;   LOOP=add_loop_chromo3(loop, T0=T0, DEPTH=DEPTH, N_DEPTH=N_DEPTH)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Artificially smooth
 for j=0,10 do loop.state.e=smooth(loop.state.e,3)
@@ -293,18 +318,16 @@ for j=0,50 do loop.a=smooth(loop.a,3)
 ;Let the loop come to hydrodynamic equilibrium if desired.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+if size(outname,/type)lt 1 then outname=''
 
-Case 1 of
-   keyword_set(outname) :  Begin
-      print, 'saving file: "'+outname
-      save, file=outname,loop
-   end
-   keyword_set(FILENAME) :  Begin
-      print, 'saving file: "'+FILENAME
-      save, file=FILENAME,loop
-   end
-   else:
-endcase
+ IF keyword_set(nosave) THEN BEGIN
+  print,'not saving' 
+ ENDIF ELSE BEGIN
+     print, 'saving file: "'+outname+'.loop"'
+     
+     save, file=outname+'.loop',loop
+  
+ENDELSE
 
 
 return, loop

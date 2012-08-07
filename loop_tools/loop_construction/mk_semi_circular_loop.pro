@@ -80,6 +80,7 @@
 ;                    calculated on the S grid then an average is taken  to
 ;                    put in in the volume grid.  This gets rid of a 
 ;                    Floating illegal operand error.
+;Temperature profile on the s grid
 	
 ;-
 PRO mk_semi_circular_loop,diameter,length, $
@@ -90,11 +91,14 @@ PRO mk_semi_circular_loop,diameter,length, $
                           X_SHIFT=X_SHIFT,Y_SHIFT=Y_SHIFT,$
                           Z_SHIFT=Z_SHIFT, LOOP=LOOP,$
                           DEPTH=DEPTH,$
+                          ADD_CHROMO=ADD_CHROMO,$
                           SIGMA_FACTOR=SIGMA_FACTOR,$
                           PSL=PSL, ALPHA=ALPHA, BETA=BETA,$
                           HEAT_NAME=HEAT_NAME, TEST=TEST, $
                           NO_SAT=NO_SAT,$
-                          NOVISC=NOVISC
+                          NOVISC=NOVISC,$
+                          CONSTANT_CHROMO=CONSTANT_CHROMO, $
+                          SLIDE_CHROMO=SLIDE_CHROMO
 version=2.0	
 ;-
   compile_opt STRICTARR
@@ -121,16 +125,16 @@ version=2.0
   if size(B_mag,/TYPE) eq 0 then B=100 $
   else     B=B_mag              ;[Gauss]
 ;
-  if size(n_depth ,/TYPE) eq 0 then n_depth=0
+  if size(n_depth ,/TYPE) eq 0 then n_depth=100l
 
   if not keyword_set(N_CELLS)  then $
-     N_CELLS =ulong(300) else $
-        N_CELLS =ulong(N_CELLS)
+     N_CELLS =long64(300) else $
+        N_CELLS =long64(N_CELLS)
 
   IF keyword_set(outname) THEN outname=outname $
   ELSE outname='SC_Loop'+strcompress(q0,/remove_all)
 
-  if not keyword_set(DEPTH) then DEPTH= 0.0
+  if not keyword_set(DEPTH) then DEPTH= 2e6
 ;Number of surface grids
   n_surf=N_CELLS-1
 
@@ -139,12 +143,7 @@ version=2.0
 ;Chromospheric Temperature   
   if not keyword_set(T0) then T0=!shrec_T0
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  if !d.name eq 'X' then begin
-     window, xs=800, ys=700, /free
-     evolve_window=!D.window
-   endif  
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;Make the axis for a semi-circle coronal s grid
+;Make the axis for a semicirclecoronal s grid
   s=mk_gauss_grid( n_cells, length, DS=DS,$            
                    SIGMA_FACTOR=SIGMA_FACTOR )
 
@@ -220,9 +219,8 @@ version=2.0
 ;Made the following T calculation to get rid of a 
 ; Floating illegal operand error.
 ;Temperature profile on the s grid
-        T_s = (T_max-T0)*( 4d * s/L $
+        T_s = T_max * ( 4d * s/L $
                         * (1d - (s/L)) )^0.333333d ;CCK empirical
-        T_s+=T0
 
 
 ;Convert to the volume grid by taking a simple average.
@@ -257,9 +255,15 @@ version=2.0
                       NOTES=notes,DEPTH=DEPTH,$
                       start_file=outname+'.sav')
 ;scaling law if you have t_max
+  
+;stop
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Add on the Chromosphere
+  if keyword_set(ADD_CHROMO) then $
+     LOOP=add_loop_chromo(loop, T0=T0, DEPTH=DEPTH, N_DEPTH=N_DEPTH)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Skip the equilibrium part
-;goto, end_jump
+goto, end_jump
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;If a heating function is not listed use get_p_t_law_heat to make a
 ;constant heating function
@@ -301,6 +305,63 @@ version=2.0
   endif else $
      heat_name_in=heat_name
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  equil_counter=1
+  done=0
+  max_v=1d7
+;stop
+  max_time=1d0*60d0*60d0            ;Time to allow loop to come to equilibrium
+  rtime=5d0*60d0                    ;Output timestep
+  DELTA_T=30d0                      ;reporting  timestep
+  time=0d0                          ;The simulation start time
+  safety=5d0                        ;Number that will be divided by
+                                ;  the C. condition to determine the timestep
+  grid_safety=10d               ;Number that will be divided by
+                                ;  the minimum characterstic scale length to determine
+                                ;  the grid sizing
+
+  if keyword_set(test) then goto,end_jump 
+
+  ;stop
+  while done le 0 do begin
+
+     n_loop=n_elements(Loop)
+     temp_loop=loop[n_loop-1l]
+     hyloop ,temp_loop, $
+             rtime, $           ;
+             T0=1d4,  src=src, uri=uri, fal=fal, $
+             safety= safety , $ ;SHOWME=SHOWME, DEBUG=DEBUG   , $
+             QUIET=QUIET, HEAT_FUNCTION=heat_name_in,$
+             PERCENT_DIFFERENCE=PERCENT_DIFFERENCE, $
+             MAX_STEP=MAX_STEP, FILE_EXT='stable', $
+             grid_safety= grid_safety,$ ; ,regrid=REGRID , $
+             E_H=E_H, FILE_PREFIX=OUTPUT_PREFIX,$
+             NOVISC=NOVISC,DEPTH=depth, $
+             NO_SAT=NO_SAT,$
+             CONSTANT_CHROMO=CONSTANT_CHROMO, $
+             SLIDE_CHROMO=SLIDE_CHROMO
+     
+     loop=temp_loop
+     if !d.name eq 'X' then begin
+        wset, evolve_window
+        stateplot3, loop, /SCREEN
+     endif
+;Determine the maximum veloxity
+     max_v=max(abs(loop.state.v))
+     if max_v le 2d5  then done =1 else done =0
+
+     print, 'Min/Max velocity:'
+     pmm,abs(loop.state.v)
+     
+     if equil_counter eq 400 then done=1
+     if done le 0 then begin
+;Artificially smooth
+        for j=0,10 do loop.state.e=smooth(loop.state.e,3)    
+;Artificially kill the velocity
+        loop.state.v=0d0
+     endif
+     equil_counter +=1
+                                ;if loop.state.time gt max_time then done=1
+  endwhile
 
   loop.state.time=0d
 end_jump:

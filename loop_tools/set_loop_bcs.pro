@@ -75,13 +75,13 @@ function set_loop_bcs,  loop, T0=T0, DS2=DS2, IS=IS
 ;no flow
   loop.state.v[0] = 0.0
   loop.state.v[is_in-1] = 0.0  
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;zero force:  P0=P1
+
+;zero force
   loop.state.e[0] = loop.state.e[1] - $
                     1.5*rho[0]*loop.g[0]*ds_2[0]
   loop.state.e[is_in] = loop.state.e[is_in-1] + $
                         1.5*rho[is_in-1]*loop.g[is-1]*ds_2[is_in-1]
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;constant temperature
   loop.state.n_e[0] = loop.state.e[0]/(3.0*!shrec_kB*T_0) 
   loop.state.n_e[is_in] = loop.state.e[is_in]/(3.0*!shrec_kB*T_0)

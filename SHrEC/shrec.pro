@@ -142,10 +142,6 @@
 ;		radiative loss function. If DISP is set but not
 ;		one, then OPLOT procedure is used, and minus the
 ;		value of DISP is used for the psym keyword.
-;
-;Chromospheric Models
-;    'SLIDING CHROMOSPHERE'
-;    'CONSTANT CHROMOSPHERE'      
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -167,11 +163,8 @@ pro shrec, loop, delta_t, debug=debug, $
            NOVISC=NOVISC ,$
            NO_SAT=NO_SAT,$
            N_E_CHANGE=N_E_CHANGE , DT_COND_MIN=DT_COND_MIN, $
-           CHROMO_MODEL=CHROMO_MODEL
-           
-  
-   ;        CONSTANT_CHROMO=CONSTANT_CHROMO, $
-   ;        SLIDE_CHROMO=SLIDE_CHROMO
+           CONSTANT_CHROMO=CONSTANT_CHROMO, $
+           SLIDE_CHROMO=SLIDE_CHROMO
 
   
 
@@ -390,8 +383,8 @@ pro shrec, loop, delta_t, debug=debug, $
                          NOVISC=NOVISC,$
                          NO_SAT=NO_SAT, mu=mu, $
                          Coulomb_log=Coulomb_log, $
-                         CHROMO_MODEL=CHROMO_MODEL,$
-                         LOOP=LOOP)
+                         CONSTANT_CHROMO=CONSTANT_CHROMO, $
+                         SLIDE_CHROMO=SLIDE_CHROMO)
      
 ;Put back in the >0.0 ala loop1003.pro  2008/APR/1 HDWIII
      state0.e = (temp_loop.state.e + ds0.e) > 1d-6
@@ -402,14 +395,13 @@ pro shrec, loop, delta_t, debug=debug, $
      state0.v = temp_loop.state.v + ds0.v+ visc * 0.6 ;$
                                 ; +dv_patc*dt0
      state0.time = temp_loop.state.time + dt0
-        tloop=temp_loop
-        tloop.state=state0
-        tloop=shrec_bcs(tloop)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Maintain a chromosphere of constant depth, (depth) at a constant
 ;temperature (T0) based on the equation of state E=3/2NKT, or for our
 ;case rewritten as n_e=state.e/(3kT0)
-     if  strupcase(loop.CHROMO_MODEL)  eq 'CONSTANT CHROMOSPHERE' then  begin
+     if keyword_set(CONSTANT_CHROMO) then  begin
+        tloop=temp_loop
+        tloop.state=state0
         tloop=shrec_static_atmos_chromo(tloop, T0=T0, DS2=DS2, IS=IS)
         state0=tloop.state
         delvarx, tloop
@@ -425,8 +417,8 @@ pro shrec, loop, delta_t, debug=debug, $
                         NOVISC=NOVISC,$
                         NO_SAT=NO_SAT, mu=mu, $
                         Coulomb_log=Coulomb_log, $
-                        CHROMO_MODEL=CHROMO_MODEL,$
-                        LOOP=LOOP)
+                        CONSTANT_CHROMO=CONSTANT_CHROMO, $
+                        SLIDE_CHROMO=SLIDE_CHROMO)
      
 ;Put back in the >0.0 ala loop1003.pro  2008/APR/1   
      temp_loop.state.e =(temp_loop.state.e + ds.e )> 1d-6
@@ -440,17 +432,13 @@ pro shrec, loop, delta_t, debug=debug, $
      temp_loop.e_h=heating
      temp_loop.t_max=max(get_loop_temp(temp_loop))
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;Set the boundary conditions.
-     temp_loop=shrec_bcs(temp_loop)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-     case strupcase(loop.CHROMO_MODEL) of  
 ;Maintain a chromosphere of constant depth, (depth) at a constant
 ;temperature (T0) based on the equation of state E=3/2NKT, or for our
 ;case rewritten as n_e=state.e/(3kT0)
-     'CONSTANT CHROMOSPHERE' :  temp_loop=shrec_static_atmos_chromo(temp_loop, T0=T0, DS2=DS2, IS=IS)
-     else:
-  endcase
+     if keyword_set(CONSTANT_CHROMO) then  $
+        temp_loop=shrec_static_atmos_chromo(temp_loop, T0=T0, DS2=DS2, IS=IS)
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -483,7 +471,7 @@ pro shrec, loop, delta_t, debug=debug, $
               save, /all, file='shrec_loop.debug.sav'
               debug_ticker=0
            endif else debug_ticker++
-           if strupcase(!d.name) eq 'X' then begin 
+           if strupcase(!d.name) eq'X' then begin 
               window,0
               stateplot3, temp_loop, /screen, WINDOW=WINDOW_STATE
               
@@ -515,23 +503,18 @@ pro shrec, loop, delta_t, debug=debug, $
 ;End of time stepper loop
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Set the boundary conditions.
-  temp_loop=shrec_bcs(temp_loop)
+  temp_loop.state=shrec_bcs(temp_loop.state, temp_loop.g, T0, ds2, is)
 ;Send back the average volumetric heating rate
-  temp_loop.e_h=(e_h_array/double(n_int))
+  temp_loop.e_h=abs(e_h_array/double(n_int))
 ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   if debug gt 0 then begin
      print,'Model time (s): ',temp_loop.state.time,' Number of intervals: ',n_int
      print,'Total number of electrons:',total(temp_loop.state.n_e[1:is-1]*A1*ds1)
      print, 'Avg Courant dt: '+STRCOMPRESS(mean(avg_courant,/DOUBLE),/REMOVE_ALL)
-
-     case strupcase(loop.CHROMO_MODEL) of  
-        'STRATIFIED ATMOSPHERE':  print, 'SHrEC: Stratified Atmosphere Chromosphere Set'
-        'CONSTANT CHROMOSPHERE' : print, 'SHrEC: Constant Chromosphere Set'
-        'SLIDING CHROMOSPHERE': print, 'SHrEC: Sliding Chromosphere Set'
-        'SINGLE CELL':  print, 'SHrEC: Single Chromsphere Cell Set' 
-        else:  print, 'SHrEC: Single Chromsphere Cell Set <default>' 
-     endcase
+     if keyword_set(CONSTANT_CHROMO) then print, 'SHrEC: Constant Chromosphere Set'
+     if keyword_set(SLIDE_CHROMO) then print, 'SHrEC: Sliding Chromosphere Set'
+     
   endif
 
   E_H=temp_loop.e_h
@@ -539,6 +522,8 @@ pro shrec, loop, delta_t, debug=debug, $
 ;Need to reinstate later
 ;temp_loop.notes[3]='Avg Courant dt: '+STRCOMPRESS(mean(avg_courant,/DOUBLE),/REMOVE_ALL)
 
+  if keyword_set(CONSTANT_CHROMO) then print, 'SHrEC: Constant Chromosphere Set'
+  if keyword_set(SLIDE_CHROMO) then print, 'SHrEC: Sliding Chromosphere Set'
   if not  keyword_set(OUT_LOOP) then loop=(temp_loop) $
   else OUT_LOOP=(temp_loop)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

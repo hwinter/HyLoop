@@ -9,7 +9,7 @@
 pro set_shrec_sys_variables
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Constants
-;Boltzmann constant [erg/K]
+;Boltzmann constant (erg/K)
 defsysv,'!shrec_kB', 1.3807d-16 
 ;Boltzmann's constant in Joules/[K]
 defsysv,'!k_boltz_joules',1.3807d-23 

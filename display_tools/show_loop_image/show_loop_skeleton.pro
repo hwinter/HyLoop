@@ -3,7 +3,7 @@
 ; NAME:
 ;      show_loop_skeleton
 ; PURPOSE
-;      given a field line and a set of radii, draw a skeleton
+;      given a field line and a set of radii, draw a sekeloon
 ;      consisting of rings around each point in the field line
 ; USAGE:
 ;      show_loop_skeleton, fl, rad
@@ -12,11 +12,6 @@
 ;             structure view.
 ;      threed: show field line in 3d
 ;      skip=skip: if set then only every skip ribs are rendered. [1]
-;Restrictions: Requires FSC_color
-;
-;2012-01-20  HDW; Changed the colors to
-;the FSC_color system.  That will break some code. Also added a color
-;keyword to the c_struct structure
 ;-
 
 PRO show_loop_skeleton, fl, rad, threed=threed, view=view, $
@@ -28,10 +23,6 @@ PRO show_loop_skeleton, fl, rad, threed=threed, view=view, $
 IF( NOT keyword_set(skip) ) THEN skip = 1
 IF( NOT keyword_set(nth) ) THEN nth = 41
 IF( NOT keyword_set(LINESTYLE)) THEN LINESTYLE=0
-IF NOT keyword_set(C_COLOR) THEN begin
-   if !p.background ne 0 then C_COLOR_in='black' $
-   else  C_COLOR_in='white'
-endif else C_COLOR_in=C_COLOR
 ;axis, zaxis=-1, xaxis=-1, yaxis=-1
 nfl =  n_elements( fl(0, *) )
 ;Create an array that will define a 2d circle in a 3d plane
@@ -60,16 +51,16 @@ FOR i=0, nfl-1, skip DO BEGIN
         IF( n_elements( view ) GT 0 ) THEN fl_view_xform, circ, view
         IF( keyword_set( threed ) ) THEN $
           plots, circ(0, *), circ(1, *), circ(2, *), $
-                 /t3d ,LINESTYLE=LINESTYLE,COLOR=fsc_color(C_COLOR_in),$
+                 /t3d ,LINESTYLE=LINESTYLE,COLOR=C_COLOR,$
                  THICK=C_THICK $
           ELSE BEGIN
             oplot, circ(0, *), circ(1, *),LINESTYLE=LINESTYLE,$
-                   COLOR=fsc_color(C_COLOR_in), THICK=C_THICK
+                   COLOR=C_COLOR, THICK=C_THICK
         ENDELSE
     endif
     if size(c_struct, /TYPE) ne 8 then  $
-      c_struct={circ:circ, color:C_COLOR_in} else $
-      c_struct=concat_struct(c_struct, {circ:circ, color:C_COLOR_in})
+      c_struct={circ:circ} else $
+      c_struct=concat_struct(c_struct, {circ:circ})
 ENDFOR
 
 return

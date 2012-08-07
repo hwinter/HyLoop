@@ -114,7 +114,7 @@ while not done do begin
         exp_time+=loop.state.time
         i+=1
         if i gt n_loops-1ul then begin
-           ; print, i
+            print, i
             done2=1 
             done=1 
         endif

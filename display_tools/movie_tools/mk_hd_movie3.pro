@@ -7,16 +7,16 @@ pro mk_hd_movie3, folder,$
                   CS=CS, JAVA=JAVA,$; GIF=GIF,$
                   MPEG=MPEG,LOOP=LOOP, $
                   TITLE=TITLE, MOVIE_DIR=MOVIE_DIR, $
-                  VRANGE=VRANGE, MAX_FILES=MAX_FILES, $
-                  STILLS_ONLY=STILLS_ONLY
+                  VRANGE=VRANGE, MAX_FILES=MAX_FILES
 
 
 IF  keyword_set(LOUD) then time=systime(1)
 if size(folder,/TYPE) ne 7 then folder='./'
+IF NOT keyword_set(GIF_DIR) then GIF_DIR='./gifs/'
+if file_test(GIF_DIR,/DIRECTORY) ne 1 then GIF_DIR= './'
 IF NOT keyword_set(MOVIE_DIR) then MOVIE_DIR='./movies/'
 if file_test(MOVIE_DIR,/DIRECTORY) ne 1 then MOVIE_DIR= './'
-if not keyword_set(GIF_DIR) then GIF_DIR_in='./' else $
-   GIF_DIR_in=GIF_DIR
+
 IF NOT keyword_set(EXT) THEN EXT='.loop'
 IF NOT keyword_set(MOVIE_NAME) THEN MOVIE_NAME='hd_movie'
 IF NOT keyword_set(FILE_PREFIX) THEN FILE_PREFIX=''
@@ -60,12 +60,10 @@ j=0ul
          
         index_string= string(j,FORMAT= $  
                     '(I5.5)')
-        POST=gif_dir_in+'hd_plot'+ $
+        POST=gif_dir+'hd_plot'+ $
              '_'+index_string+'.ps'
-        gif_file=gif_dir_in+'hd_plot'+ $
+        gif_file=gif_dir+'hd_plot'+ $
                  '_'+index_string+'.gif'
-        png_file=gif_dir_in+'hd_plot'+ $
-                 '_'+index_string+'.png'
         stateplot3, loop, fname=POST,  verbose=verbose, $
                     LINESTYLE=LINESTYLE, VRANGE=VRANGE,$
                    ; XRANGE=XRANGE,TRANGE=TRANGE, DRANGE=DRANGE,PRANGE=PRANGE ,$
@@ -73,10 +71,10 @@ j=0ul
                     CHARSIZE=CHARSIZE, CHARTHICK=CHARTHICK,$
                     PLOT_LINE=PLOT_LINE, TITLE=TITLE, LOG=LOG, $
                     CS=CS
-;        spawn, 'convert  '+POST+' '+gif_file
-;        spawn, "convert  -rotate '-90' "+ $
-;               gif_file+'  '+gif_file
-        spawn, 'convert -flatten -rotate -90 -density 150 '+POST+' '+ png_file
+        spawn, 'convert  '+POST+' '+gif_file
+        spawn, "convert  -rotate '-90' "+ $
+               gif_file+'  '+gif_file
+        
         
         ps_files=[ps_files, POST]
         gif_files=[ gif_files,gif_file]
@@ -85,35 +83,32 @@ j=0ul
 
 
 ;image2movie,plot_array,r,g,b, $
-;  movie_name=strcompress(gif_dir_in+'/'+MOVIE_NAME,/REMOVE_ALL), $
-;  scratchdir=gif_dir_in,gif_animate=1,loop=1
+;  movie_name=strcompress(gif_dir+'/'+MOVIE_NAME,/REMOVE_ALL), $
+;  scratchdir=gif_dir,gif_animate=1,loop=1
 
- if not keyword_set(STILLS_ONLY) then begin
-    
+
     n_files=n_elements(ps_files)
     ps_files=ps_files[1:n_files-1ul]
     gif_files=gif_files[1:n_files-1ul]
     image2movie,gif_files, $
                 movie_name=movie_dir+movie_name,$
-                /mpeg,$           ;/java,$
-                scratchdir=gif_dir_in ; ,$;nothumbnail=1,$
-                                ;              /nodelete
-                                ;  image2movie,gif_files, $
-                                ;              movie_name=movie_dir+movie_name,$
-                                ;              /java,$
-                                ;              scratchdir=gif_dir_in ,$ ;nothumbnail=1,$
-                                ;              /nodelete
+                /mpeg,$         ;/java,$
+                scratchdir=gif_dir; ,$;nothumbnail=1,$
+  ;              /nodelete
+  ;  image2movie,gif_files, $
+  ;              movie_name=movie_dir+movie_name,$
+  ;              /java,$
+  ;              scratchdir=gif_dir ,$ ;nothumbnail=1,$
+  ;              /nodelete
     ;Remove these unwanted thumbnails.
-    spawn,'rm -f  '+gif_dir_in+'*micon* *mthumb*'
+    spawn,'rm -f  '+gif_dir+'*micon* *mthumb*'
+        
     
- endif
-
- 
- set_plot,current_device
+set_plot,current_device
 
 ;Reset to the old colors
- tvlct,old_r, old_g, old_b
- IF  keyword_set(LOUD) then $
-    print, 'Mk_hd_movie took '+string((systime(1)-time)/60.)+' minutes to run.'
+tvlct,old_r, old_g, old_b
+IF  keyword_set(LOUD) then $
+  print, 'Mk_hd_movie took '+string((systime(1)-time)/60.)+' minutes to run.'
 end_jump:
 end

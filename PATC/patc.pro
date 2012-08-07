@@ -423,8 +423,8 @@ TEST:
            nt_particles[j].x le min(s_alt2):  begin
               index3=0
               nt_particles[j].state='LF'
-              delta_e[INDEX3:(loop.n_depth-1ul>0)]=$
-                 delta_e[INDEX3:(loop.n_depth-1ul>0)] $
+              delta_e[INDEX3:loop.n_depth-1ul]=$
+                 delta_e[INDEX3:loop.n_depth-1ul] $
                  +((nt_particles[j].ke_total) $
                    *nt_particles[j].scale_factor/loop.n_depth)
                                 ;   delta_e[INDEX3:loop.n_depth]=delta_e[INDEX3] $
@@ -434,10 +434,10 @@ TEST:
               
               nt_particles[j].x=s_alt2[INDEX3]
 
-              N_E_CHANGE[INDEX3:(loop.n_depth-1ul>0)]= $
-                 N_E_CHANGE[INDEX3:(loop.n_depth-1ul>0)] +$
+              N_E_CHANGE[INDEX3:loop.n_depth-1ul]= $
+                 N_E_CHANGE[INDEX3:loop.n_depth-1ul] +$
                  abs((nt_particles[j].scale_factor/loop.n_depth)$
-                     /volumes[INDEX3:(loop.n_depth-1ul>0)])
+                     /volumes[INDEX3:loop.n_depth-1ul])
                                 ;  N_E_CHANGE[INDEX3]= $
                                 ;    N_E_CHANGE[INDEX3] +$
                                 ;    abs((nt_particles[j].scale_factor)$
@@ -472,7 +472,7 @@ TEST:
                  
 ;Calculate the number of photons produced
 ;Spread it out over the chromosphere.
-                 nt_brems[INDEX3:(loop.n_depth-1ul>0)].n_photons=$
+                 nt_brems[INDEX3:loop.n_depth-1ul].n_photons=$
                     delta_t*loop.state.n_e[position_index_vol[0]]* $
                     abs(v_avg*cross_1)* $
                     nt_particles[j].scale_factor/loop.n_depth

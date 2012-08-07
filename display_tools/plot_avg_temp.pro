@@ -65,8 +65,7 @@ pro plot_avg_temp, loop, fname=fname, screen=screen, verbose=verbose, $
                    FONT=FONT,XSIZE=XSIZE, YSIZE=YSIZE ,$
                    CHARSIZE=CHARSIZE, CHARTHICK=CHARTHICK,$
                    PLOT_LINE=PLOT_LINE, TITLE=TITLE, LOG=LOG,$
-                   THICK=THICK, gpp=gpp, No_time=no_time,$
-                   Ytitle=ytitle
+                   THICK=THICK
                 
  
 compile_opt strictarr
@@ -89,8 +88,7 @@ if not keyword_set(CHARSIZE) then CHARSIZE =1.1
 if not keyword_set(CHARTHICK) then CHARTHICK=1.1
 if not keyword_set(THICK) then THICK=1.5
 
-if not keyword_set(Ytitle) then TYTITLE='T (K)' else $
-   TYTITLE=Ytitle
+TYTITLE='T (K)'
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;set the old colors
@@ -104,16 +102,17 @@ colors=[1,2,3]
 if keyword_set(Eps) or  keyword_set(PS) then $
   colors=[colors, 4] else  colors=[colors, 255]
 ;Linestyles
-
+lines=[0,2,3,4,5]
 n_colors=n_elements(colors)
-
+n_lines=n_elements(lines)
 
 color_array=colors[0]
+lines_array=lines[0]
 if keyword_set(PSYM) then psym_array=psym[0]
 
 for i=1, n_loops-1 do begin
     color_array=[color_array,colors[i mod n_colors]]
- 
+    lines_array=[lines_array, lines[fix(i/n_colors)]]
     if keyword_set(PSYM) then $
       psym_array=[psym_array, PSYM[fix(i/n_colors)]]
 endfor
@@ -162,17 +161,17 @@ if not keyword_set(screen) then begin
 
 
 tstring = 'Elapsed time = '+string(loop[0].state.time,format='(f9.2)')+' s'
-;erase
+erase
 ;print,keyword_set(screen)
 if keyword_set(LINESTYLE) ne -1 then LINESTYLE=0
-;extra=gang_plot_pos(2,2,0)
+extra=gang_plot_pos(2,2,0)
 
 
 i=0
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;	
 ;Plot the Temperature
 plot, loop[0].s_alt,T, $
-      YTITLE=TYTITLE  ,$          ;     xtitle='s (cm)', $,$
+      xtitle='s (cm)', $
       LINESTYLE=LINESTYLE,  $
       XRANGE=XRANGE, YRANGE=TRANGE, $
       XS=1, FONT=FONT,  $
@@ -180,8 +179,7 @@ plot, loop[0].s_alt,T, $
       XGRID=1, YGRID=1, XTICKLEN=1, YTICKLEN=1,$
       XTICKLAYOUT=2,$
       /NODATA    , XLOG=LOG , YLOG=LOG ,$
-      THICK=thick*thick_factor,$
-      _extra=gpp                       ;
+      THICK=thick*thick_factor  ;
 ;Plot the loop center
 ;oplot, [midpt,midpt],[0,1d15], LINESTYLE=5
 ;for i=0ul,n_loops-1ul do begin
@@ -211,14 +209,12 @@ plot, loop[0].s_alt,T, $
 ;endfor
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;    If not keyword_set(no_time) Then $
-;       xyouts, extra.position[2],extra.position[3]*1.01, tstring,$
-;               FONT=FONT,/NORMAL,$
-;               CHARSIZE=CHARSIZE, CHARTHICK=CHARTHICK;
-;
-;xyouts, extra.position[0],extra.position[3]*1.01, $
-;        title,/NORMAL,FONT=FONT,$
-;        CHARSIZE=CHARSIZE, CHARTHICK=CHARTHICK
+xyouts, extra.position[2],extra.position[3]*1.01, tstring,$
+        FONT=FONT,/NORMAL,$
+        CHARSIZE=CHARSIZE, CHARTHICK=CHARTHICK
+xyouts, extra.position[0],extra.position[3]*1.01, $
+        title,/NORMAL,FONT=FONT,$
+        CHARSIZE=CHARSIZE, CHARTHICK=CHARTHICK
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 if keyword_set(verbose) then begin
 	print,'Temperature range (K):         ',minmax(T)
@@ -226,14 +222,14 @@ if keyword_set(verbose) then begin
 	print,'Electron density range (cm^-3):',minmax(n_e)
 	print,'Velocity range (cm s^-1):      ',minmax(v)
 endif
-;if not keyword_set(screen) then begin
-;	device, /CLOSE
-;	set_plot, prev_display
-;endif
+if not keyword_set(screen) then begin
+	device, /CLOSE
+	set_plot, prev_display
+endif
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Reset to the old colors
 tvlct,old_r, old_g, old_b
-;if size(old_win, /TYPE) ne 0 then wset, old_win
+if size(old_win, /TYPE) ne 0 then wset, old_win
 
 END;Of stateplot3.pro
 

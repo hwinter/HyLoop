@@ -43,7 +43,7 @@
 ;	loop=mk_loop_struct(300)
 ;
 ; CURRENT VERSION:
-;    2.2 
+;    2.0: 
 ; MODIFICATION HISTORY:
 ; 	Written by:	Henry deG. Winter III (Trae) 04/26/2006
 ;                HDW III (1.1) Added E_h double array tag.  This version of loop will
@@ -56,30 +56,24 @@
 ;                 and added the NOTES keyword for an array of possible notes. 
 ;    2007-SEP     HDW III: Changed most numerical variables to doubles. (V 2.1)
 ;    2007-NOV-7   HDW III:(V 2.1) Added the SAFETY_GRID and SAFETY_GRID tags.  
-;                  If not passed they are set to 0.)
-;    2012-JAN-9   HDW III:(V 2.2) Added the P_BC tag.  This is a constant
-;    pressure term at the boundary.  
-;    2012-JAN-9   HDW III:(V 2.2) Added the CHROMO_MODEL tag.  This a
-;    string variable telling the various programs which chromospheric
-;    model to use.
+;                  If not passed they are set to 0.
 ;-  
 
 
 
 function mk_loop_struct,N_VOLUMES, $
-                        S_ARRAY=S_ARRAY, $
-                        STATE=STATE,B=B,G=G,AXIS=AXIS, $
-                        RAD=RAD,E_H=E_H,T_MAX=T_MAX,$
-                        N_DEPTH=N_DEPTH, note, $
-                        COPIES=COPIES,AREA=AREA,P_0=P_0, P_BC=P_BC, $
-                        START_FILE=START_FILE,TIME=TIME,$
-                        DEPTH=DEPTH, NOTES=NOTES,$
-                        SAFETY_GRID=SAFETY_GRID, SAFETY_TIME=SAFETY_TIME,$
-                        CHROMO_MODEL=CHROMO_MODEL
+  S_ARRAY=S_ARRAY, $
+  STATE=STATE,B=B,G=G,AXIS=AXIS, $
+  RAD=RAD,E_H=E_H,T_MAX=T_MAX,$
+  N_DEPTH=N_DEPTH, note, $
+  COPIES=COPIES,AREA=AREA, $
+  START_FILE=START_FILE,TIME=TIME,$
+  DEPTH=DEPTH, NOTES=NOTES,$
+  SAFETY_GRID=SAFETY_GRID, SAFETY_TIME=SAFETY_TIME
  
 ;Set so that () is for functions and [] is for array indices
 compile_opt strictarr
-Version=2.2
+Version=2.1
 LOOP=-1
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Check to see what's defined.  If something isn't passed, then set
@@ -102,14 +96,11 @@ if not keyword_set(AXIS) then AXIS=dblarr(3,N_VOLUMES-1)
 if not keyword_set(E_H) then E_H=dblarr(N_VOLUMES-2)
 ;T_MAX is handled further down.
 if not keyword_set(N_DEPTH) then N_DEPTH=0l
-if not keyword_set(P_0) then P_0=0d
-if not keyword_set(P_BC) then P_BC=[0d, 0d]
 if not keyword_set(START_FILE) then START_FILE=''
 if not keyword_set(DEPTH) then DEPTH=0d0
 if not keyword_set(NOTES) then NOTES=STRARR(5)
 if not keyword_set(SAFETY_GRID) then SAFETY_GRID= 0.
 if not keyword_set(SAFETY_TIME) then SAFETY_TIME= 0.
-if not keyword_set(CHROMO_MODEL) then CHROMO_MODEL= 'SINGLE CELL'
 
 case 1 of 
     (not keyword_set(AREA) and not keyword_set(RAD)):begin
@@ -130,27 +121,26 @@ case 1 of
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Explanations of each tag
 tag_notes=[$                  
-          '{l:double; Loop length [cm]',$ 
-          's:dblarr[N-1]; length of cell [cm], defined on surfaces',$
-          's_alt:dblarr[N-1]; lengths inside the volume [cm], defined on volumes',$
-          'axis:dblarr[3,N-1]; 3D axis of the loop [cm],defined on surfaces',$
-          'e:dblarr[N]; Energy in each volume [ergs],defined on volumes ',$
-          'n_e:dblarr;[N] Electron number density in a volume',$
-          'v:dblarr[N-1]; Velocity of plasma [cm s^-1],defined on surfaces',$
-          'b:dblarr;[N-1] Magnetic field on a surface [Gauss],defined on surfaces',$
-          'g:dblarr[N-1]; Gravitational acceleration [cm s^-2], defined on surfaces',$
-          'rad:dblarr[N-1]; Radius of each surface  [cm]',$
-          'A:dblarr[N-1]; area if each surface.',$
-          'e_h:dblarr[N-2]; Volumetric heating rate for each interior volumes (not the ends) [erg s^-1 cm^-3]',$
-          't_max:double; Maximum temperature of loop [K]',$
-          'n_depth:int; Number of cells on each footpoint that were added',$
-          'start_file:string; Name of the file used to start the sim',$
-          'T:dblarrdblarr[N-1];;Temperature of loop [K], defined on volumes',$
-          'Version:INT ; Version number',$
-          'P_BC:double ;Constant Pressure of the boundary Cell',$
-          'CHROMO_MODEL:string ;Name of chromospheric model to be used',$
-          'tag_notes:strarr(n_tags); Explanations of each tag',$
-          'Notes:strarr(?);Whatever you want it to be']      
+           '{l:double; Loop length [cm]',$ 
+           's:dblarr[N-1]; length of cell [cm], defined on surfaces',$
+           's_alt:dblarr[N-1]; lengths inside the volume [cm], defined on volumes',$
+
+           'axis:dblarr[3,N-1]; 3D axis of the loop [cm],defined on surfaces',$
+           'e:dblarr[N]; Energy in each volume [ergs],defined on volumes ',$
+           'n_e:dblarr;[N] Electron number density in a volume',$
+           'v:dblarr[N-1]; Velocity of plasma [cm s^-1],defined on surfaces',$
+           'b:dblarr;[N-1] Magnetic field on a surface [Gauss],defined on surfaces',$
+           'g:dblarr[N-1]; Gravitational acceleration [cm s^-2], defined on surfaces',$
+           'rad:dblarr[N-1]; Radius of each surface  [cm]',$
+           'A:dblarr[N-1]; area if each surface.',$
+           'e_h:dblarr[N-2]; Volumetric heating rate for each interior volumes (not the ends) [erg s^-1 cm^-3]',$
+           't_max:double; Maximum temperature of loop [K]',$
+           'n_depth:int; Number of cells on each footpoint that were added',$
+           'start_file:string; Name of the file used to start the sim',$
+           'T:dblarrdblarr[N-1];;Temperature of loop [K], defined on volumes',$
+           'Version:INT ; Version number',$
+           'tag_notes:strarr(n_tags); Explanations of each tag',$
+           'Notes:strarr(?);Whatever you want it to be']      
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Since this is really confusing, I'll take the time to explain it
@@ -177,6 +167,11 @@ tag_notes=[$
 ;
 ;
 ;-WHEW!
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;          
+;Define Constants
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+kB = 1.38e-16 	;Boltzmann constant (erg/K)             
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;
 if n_elements(E_H) ne N_VOLUMES-2 then E_H=dblarr(N_VOLUMES-2)+e_h
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -202,14 +197,12 @@ if size(t_max,/TYPE) ne (4 OR 5) then $
                t_max:double(t_max),$   ;Maximum temperature of loop [K]
                n_depth:long(n_depth),$ ;Number of cells on each footpoint that were added
                depth:double(depth),$     ;Depth of Chromsphere [cm]
-               P_BC:double(P_BC),$    ;Constant Pressure of the boundary Cell
-               start_file:start_file,$   ;Name of the file used to start the sim
+               start_file:start_file,$ ;Name of the file used to start the sim
                Version:float(Version)  ,$ ;version number
                tag_notes:tag_notes,$
                notes:notes,$
                SAFETY_GRID:float(SAFETY_GRID),$
-               SAFETY_TIME:float(SAFETY_TIME),$
-               CHROMO_MODEL:CHROMO_MODEL}    
+               SAFETY_TIME:float(SAFETY_TIME)}    
      
 
 if keyword_set(COPIES) then $

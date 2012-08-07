@@ -7,7 +7,7 @@ function get_loop_coulomb_log, loop,S_GRID=S_GRID,$
 if not keyword_set(Z) then z=!shrec_charge_z
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-T=get_loop_temp(loop)
+if not keyword_set(T) then T=get_loop_temp(loop)
 
 ;From Choudhuri p. 265
 ;coulomb_log=(1.5d0)*(1d0/z)*$

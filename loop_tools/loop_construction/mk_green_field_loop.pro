@@ -1,12 +1,8 @@
-function mk_green_field_loop, N_CELLS=N_CELLS,$
-                              max_height=max_height,Area_0=Area_0, TEST=TEST, y_init=y_init,$
-;Chromo Keywords
-                              N_DEPTH=N_DEPTH, DEPTH=DEPTH, ADD_CHROMO=ADD_CHROMO,$
-                              CHROMO_MODEL=CHROMO_MODEL
+function mk_green_field_loop, N_CELLS=N_CELLS, N_DEPTH=N_DEPTH,$
+  max_height=max_height,Area_0=Area_0, TEST=TEST
 
 if not keyword_set(N_CELLS) then n_cells=700l ;Number of initial volumes
 ;if not keyword_set(N_DEPTH) then n_depth=25l;Number of initial surfaces in the Chromosphere
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Begin parameter definition section
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -58,12 +54,12 @@ bungey_cells=1d3
 ;computer='dawntreader'
 ;computer='mithra'
 max_time=1d0*60d0*60d0          ;Time to allow loop to come to equilibrium
-rtime=5d0*60d0                      ;Output timestep
-DELTA_T=30d0                     ;reporting  timestep
+rtime=5d0*60d0                  ;Output timestep
+DELTA_T=1.                      ;reporting  timestep
 time=0d0                        ;The simulation start time
 safety=5d0                      ;Number that will be divided by
                                 ;  the C. condition to determine the timestep
-grid_safety=10d                  ;Number that will be divided by
+grid_safety=10d                 ;Number that will be divided by
                                 ;  the minimum characterstic scale length to determine
                                 ;  the grid sizing
 note='Green style current sheet initially given RTV scaling'
@@ -81,6 +77,7 @@ g0 =2.74d4
 ;Solar radius [cm]
 R_Sun=6.96d10
 d_chrom=2d6
+depth=d_chrom;*.7
 ;Height of the Corona above the photosphere[cm]
 h_corona=2d8
 ;Boltzmann constant (erg/K)
@@ -118,7 +115,7 @@ if !d.name eq 'X' then window,evolve_window,TITLE='Evolve Window'
 bungey_priest_field,B_z,b_y,z,y,f,a=1,B_DRC=0.5,$
                     B0=b0,B_total=B_total,$
                     N_ELEM=bungey_cells
-xy_array=bp_field_line_tracer(0, y_init, BT=B_total)
+xy_array=bp_field_line_tracer(BT=B_total)
 B_total=B_total/max(B_total)
 B_total=B_total*B0
 
@@ -239,10 +236,10 @@ g=reform(g)*g0
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-flux =get_p_t_law_flux(length+2d0, alpha,T_Max)
+flux =get_p_t_law_flux(length+2d0*depth, alpha,T_Max)
 
 DEFSYSV, '!constant_heat_flux',flux
-P=get_p_t_law_pressure(length, alpha,$
+P=get_p_t_law_pressure(length+2d0*depth, alpha,$
                                 TMAX=T_MAX)
 T=get_p_t_law_temp_profile(s_alt, alpha, tmax=t_max)
 
@@ -319,30 +316,27 @@ endcase
 state={e:double(e), n_e:double(n_e), $
        v:double(v), time:double(0)}
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
-;Calculate the pressure at the base of the loop.
-P_0=2*n_e[0]*T0*!shrec_kB
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Make the loop structure for PaTC
 LOOP=mk_loop_struct(STATE=state,$
                     S_ARRAY=s,B=new_b,G=g,AXIS=axis,$
                     AREA=A,RAD=rad, $
-                    E_H=e_h,T_MAX=t_max,N_DEPTH=0,$
-                    NOTES=notes,DEPTH=0,$
-                    P_0=P_0)
+                    E_H=e_h,T_MAX=t_max,N_DEPTH=n_depth,$
+                    NOTES=notes,DEPTH=DEPTH,$
+                    start_file=loop_file_name)
+
+LOOP.e_h=get_p_t_law_heat( LOOP, $
+                           tmax=t_max, $
+                           alpha=alpha, $
+                           beta=beta, $
+                           P_0=p) 
+
 ;stop
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Add on the Chromosphere
-if keyword_set(ADD_CHROMO) then begin
-   if not  keyword_set(DEPTH) then DEPTH_in=d_chrom else $
-      DEPTH_in=DEPTH
-   if not  keyword_set(N_DEPTH) then N_DEPTH_in=30 else $
-      DEPTH_in=N_DEPTH
-   LOOP=add_loop_chromo(loop, T0=T0, DEPTH=DEPTH_in, N_DEPTH=N_DEPTH_in,$
-                        CHROMO_MODEL=CHROMO_MODEL)
-   
-endif
+;LOOP=add_loop_chromo(loop, T0=T0, DEPTH=DEPTH, N_DEPTH=N_DEPTH)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 LOOP.e_h=get_p_t_law_heat( LOOP, $
                            tmax=t_max, $
                            alpha=alpha, $

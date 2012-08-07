@@ -1,9 +1,3 @@
-;Restrictions: Requires FSC_color
-;2012-01-20  HDW Added keyword CHROMO_COLOR.  Changed the colors to
-;the FSC_color system.  That will break some code. Also added a color
-;keyword to the c_struct structure
-
-
 pro show_loop_tactical, loop, $
                         XRANGE=XRANGE, YRANGE=YRANGE,  ZRANGE=ZRANGE,$
                         THICK=THICK, AX=AX, AZ=AZ,TITLE=TITLE,$
@@ -15,7 +9,7 @@ pro show_loop_tactical, loop, $
                         _EXTRA=_EXTRA, $
                         BG_GRID=BG_GRID, LINE_COLOR=LINE_COLOR, $
                         C_STRUCT=C_STRUCT, ISOMORPHIC=ISOMORPHIC, $
-                        C_THICK=C_THICK, CHROMO_COLOR=CHROMO_COLOR
+                        C_THICK=C_THICK
 
 
 XTITLE='X s [cm]'
@@ -94,11 +88,10 @@ if INITIAL gt 0 then $
           
      ;,/ISO
 if keyword_set(NOAXIS) then erase
-
 plots,LOOP.axis[0,*], LOOP.axis[1,*],LOOP.axis[2,*], $
       /t3d, line=LOOP_LINE, THICK=THICK*thick_factor, $
       COLOR=LINE_COLOR
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;   
+   
 if keyword_set(FILL) then begin
     if n_elements(fill) eq 1 then fill=fill+dindgen(n_elements(LOOP.axis)-1ul)
     show_loop_skeleton, LOOP.axis, loop.rad,CIRC=CIRC,$
@@ -149,39 +142,14 @@ plots,LOOP.axis[0,*], LOOP.axis[1,*],LOOP.axis[2,*], $
       /t3d, line=LOOP_LINE ,_EXTRA=_EXTRA  
    
 endif
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 if (NO_OPLOT) le 0 then $
   show_loop_skeleton, loop.axis, loop.rad, $
                        /THREED, $
                       LINESTYLE=SURFACE_LINE,$
                       SKIP=C_SKIP,_EXTRA=_EXTRA,$
                       C_COLOR=C_COLOR, $
-                      C_THICK=C_THICK,$
-                      C_STRUCT=C_STRUCT
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-if keyword_set(CHROMO_COLOR) then begin
-   n_rad=n_elements(loop[0].rad)
+                      C_THICK=C_THICK
 
-   case 1 of
-      loop.N_depth le 1 :indicies=[0, n_rad-1]
 
-      else : begin
-         chromo_axis=[loop.axis[0:loop.n_depth-1], loop.axis[n_rad-loop.n_depth+1:n_rad]]
-         indicies=[indgen(loop.n_depth), n_rad-loop.n_depth+indgen(loop.n_depth)]
-      end
-   endcase
-
-   for i=0, n_elements(indicies)-1 do begin
-      
-          plots, c_struct[indicies[i]].circ(0, *), c_struct[indicies[i]].circ(1, *),$
-                 c_struct[indicies[i]].circ(2, *), $
-                 /t3d ,LINESTYLE=LINESTYLE,COLOR=fsc_color(CHROMO_COLOR),$
-                 THICK=C_THICK
-          
-   endfor
-   
-
-endif
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 end

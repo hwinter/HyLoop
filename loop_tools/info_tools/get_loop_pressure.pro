@@ -1,6 +1,6 @@
 function get_loop_pressure, loop
 
-pressure=(2./3.)*loop.state.e
+pressure=0.666666*loop.state.e
 
 return, pressure
 

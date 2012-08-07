@@ -50,7 +50,7 @@
 
 function get_p_t_law_const_flux_heat, LOOP, time, dt, $
   nt_beam, nt_brems, PATC_heating_rate, extra_flux, $
-  DELTA_MOMENTUM,flux, ne_change, NO_CHROMO=NO_CHROMO
+  DELTA_MOMENTUM,flux, ne_change
 
 
 PATC_heating_rate=0d0
@@ -84,23 +84,18 @@ if test3 ne 1 then begin
 endif   else F_alpha=!constant_heat_flux
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+n_cells=n_elements(loop.state.n_e)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 T=get_loop_temp(loop)
 P=get_loop_pressure(loop)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-coronal_cells=get_loop_coronal_cells(loop, count=n_corona)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;The power law which is used a couple of timesloop.s_alt[coronal_cells]
-power_law=(P[coronal_cells]^beta)*(T[coronal_cells]^alpha)
+
+;The power law which is used a couple of times
+power_law=(P[1:n_cells-2]^beta)*(T[1:n_cells-2]^alpha)
 ;Scaling factor
-H=F_alpha/int_tabulated(loop.s_alt[coronal_cells],power_law,/DOUBLE)
+H=F_alpha/int_tabulated(loop.s_alt[1:n_cells-2],power_law,/DOUBLE)
 
-heat=loop.e_h*0
-heat[coronal_cells]=H*(power_law)
-if not keyword_set(NO_CHROMO) then $
-   heat=add_chromo_heat(loop, heat)
+heat=H*(power_law)
 
-if max(heat) eq 0 then stop
-
-
+;stop
 return, heat
 END
