@@ -1,53 +1,14 @@
-function add_loop_chromo1, loop, T0=T0, DEPTH=DEPTH, N_DEPTH=N_DEPTH, $
-  VERSION=VERSION, STARTNAME=STARTNAME,$
-  PERCENT_DIFFERENCE=PERCENT_DIFFERENCE, CHROMO_NAME=CHROMO_NAME
-Version=1.0
-ne_mult=3
-CHROMO_NAME='chromo1'
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;Let's set some keywords!
-;Chromospheric Temperature  [K]
-if not keyword_set(T0) then T0=!shrec_T0
-
-;Depth into the chromosphere  [cm]
-if not keyword_set(DEPTH) then DEPTH=2500*1d5
-
-;Number of cells for the chromosphere.
-if not keyword_set(N_DEPTH) then N_DEPTH=100
-if not keyword_set(PERCENT_DIFFERENCE) then PERCENT_DIFFERENCE=1d-1
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-if size(loop,/TYPE) ne 8 then $
-  message, 'Argument for add_loop_chromo() must be a loop structure.'
-;
+function get_exponential_steps, ds_first, N_DEPTH, depth, $
+                                percent_difference, N_DEPTH_s
 
-n_depth>=3
-
-N_DEPTH_s=N_DEPTH-1ul
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;Get values for the corona.
-n_e_corona=loop.state.n_e
-n_corona_surf=n_elements(loop.s)
-T_corona=get_loop_temp(loop)
-;Pressure at the loop endpoints
-P=2d0*!shrec_kB*[n_e_corona[0]*T_corona[0],$
-          n_e_corona[n_corona_surf-1]*T_corona[n_corona_surf-1]]
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;Get the coronal step_size
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;Add on chromosphere 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-old_s=loop.s+depth
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Determine step size based on exponential scaling
 ;Use a root finder to get an expontially decaying step size
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 recompute_N_DEPTH:
-ds=get_loop_ds(loop)
-ds_first=ds[0]
 ;Compute the percent difference of the last two coronal cells.
 ;This will provide the basis of for the size of the next step
 ;percent_difference=abs(ds[1]-ds[0])/ds_first
@@ -56,17 +17,21 @@ A_0=ds_first*(1d0-percent_difference)
 ;If the number of cells is too small you can never 
 ; make it to depth while maintaining the percent
 ; difference of the the first step.
+
 if A_0*(N_DEPTH_s) le depth then begin
     N_DEPTH_s=long(depth/A_0)+10l
-    N_DEPTH=N_DEPTH_s+1l
+    N_DEPTH_a=N_DEPTH_s+1l
     print,'***************************'
     print,'add_loop_chromo.pro warning!'
     print,'Not enough cells to maintain a smooth distribution.'
     print,'Changing the number of cells to '+$
-          strcompress(string(N_DEPTH), /REMOVE_ALL)+'.'
+          strcompress(string(N_DEPTH_a), /REMOVE_ALL)+'.'
     print,'***************************'
+    if N_DEPTH_a gt N_DEPTH then begin
+        N_DEPTH=N_DEPTH_a
+        goto, recompute_N_DEPTH
+    endif else N_DEPTH=N_DEPTH_a
 endif
-
 
 ind_array=dindgen(N_DEPTH_s)
 ;We are going to use a simple Newton Raphson method.
@@ -100,80 +65,171 @@ repeat begin
     help, d_step1
     help, c1
     print, ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;'
-endrep until  pd_b LT 1D-10
+endrep until  pd_b LT 1D-4
 
-d_step1=d_step1*(depth/total(d_step1))
+return , d_step1
+
+end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-d_step1=reverse(d_step1)
-s1=[0, total(d_step1[0:N_DEPTH_s-2], /CUMULATIVE)]
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-n_ds=n_elements(ds)
-ds_last=ds[n_ds-1]
+function get_constant_steps, ds_first, N_DEPTH, depth, n_depth_S
 
-ind_array=dindgen(N_DEPTH_s)
-;Compute the percent difference of the last two coronal cells.
-;This will provide the basis of for the size of the next step
-;percent_difference=abs(ds[n_ds-1]-ds[n_ds-2])/ds_last
-;goto, skip_second
-A_1=ds_last*(1d0-percent_difference)
-;If the number of cells is too small you can never 
-; make it to depth while maintaining the percent
-; difference of the the first step.
-if A_1*(N_DEPTH_s) le depth then begin
-    N_DEPTH_s=long(depth/A_1)+10l
-    N_DEPTH_a=N_DEPTH_s+1l
-    print,'***************************'
-    print,'add_loop_chromo.pro warning!'
-    print,'Not enough cells to maintain a smooth distribution.'
-    print,'Changing the number of cells to '+$
-          strcompress(string(N_DEPTH), /REMOVE_ALL)+'.'
-    print,'***************************'
-    if N_DEPTH_a gt N_DEPTH then begin
-        N_DEPTH=N_DEPTH_a
-        goto, recompute_N_DEPTH
-    endif else N_DEPTH=N_DEPTH_a
-endif
+  if ds_first*3. gt depth then depth=ds_first*3.
+
+  n_depth=ulong(depth/ds_first)
+  n_depth_S=n_depth-1
+  steps=ds_first*(dblarr(n_depth_S)+1)
+
+  steps[n_depth_S-1]=depth-total(steps[n_depth_S-2], /CUMULATIVE)
+
+  steps_total=total(steps) 
+  if steps_total ne depth then begin
+    steps=(steps/steps_total)*depth
+  endif
+
+  return, steps
 
 
 
+end
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+function get_increasing_steps, ds_first, N_DEPTH, depth, n_depth_S,$
+                               percent_difference
 
-ind_array=dindgen(N_DEPTH_s)
-;We are going to use a simple Newton Raphson method.
-;The expression is simple so we shouldn't fall into
-; any of the traps that are mentioned in NR.
+  if ds_first*3. gt depth then depth=ds_first*3.
+  steps=ds_first
 
-;Initial guess at the constant.
-C2=.5
+  done=0
+  iii=1
+  while not done do begin
+     steps=[steps, iii*percent_difference*ds_first]
+     steps_total=total(steps)
+     case 1 of
+        steps_total gt depth : begin
+           ;steps[iii]=depth-total(steps[0:iii-1])
+           done=1
+        end
+        steps_total gt depth : done =1
 
-pd_b=1d5
-repeat begin
-    
-    d_step2= (A_1)*exp(-C2*ind_array/N_DEPTH_s)
-    ;plot, d_step2
-    
-    y_n=total(d_step2)-(DEPTH)
-    y_prime_n=total((-ind_array/Max(ind_array))*d_step2)
-    
-    pd_b=ABS((total(d_step2)-(DEPTH))/(DEPTH))
-    ;PRINT,'PD_B, C2, total(d_step1)/(DEPTH)', PD_B, C1, total(d_step2)/(DEPTH);;
-    
-    C2_new=C2-(y_n/y_prime_n) 
-;Hope it never gets to the following point!
-    if c2_new lt 0 then c2 =C2+(y_n/y_prime_n)   else c2 =c2_new
-    ;print, 'y_prime_n',y_prime_n,(y_n/y_prime_n)
-    if finite(c2) lt 1 then stop
+        else:
+     
+     endcase
+     iii++
+  endwhile
+  
 
+  steps_total=total(steps) 
+  if steps_total ne depth then begin
+     steps=(steps/steps_total)*depth
+  endif
 
-    help, pd_b
-    help, d_step2
-    help, c2
-    print, ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;'
-endrep until  pd_b LT 1D-10
+  n_depth_S=n_elements(steps)
+  N_DEPTH=n_depth_S+1
+  
+  return, steps
+end
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+function add_loop_chromo_funnel, loop, T0=T0, DEPTH=DEPTH, N_DEPTH=N_DEPTH, $
+                                 VERSION=VERSION, STARTNAME=STARTNAME,$
+                                 PERCENT_DIFFERENCE=PERCENT_DIFFERENCE,$
+                                 CHROMO_NAME=CHROMO_NAME
+  Version=1.0
+  ne_mult=1
 
-d_step2=d_step2*(depth/total(d_step2))
-skip_second:
+  CHROMO_NAME='Funnel Increasing'
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Let's set some keywords!
+;Chromospheric Temperature  [K]
+  if not keyword_set(T0) then T0=!shrec_T0
+
+;Depth into the chromosphere  [cm]
+  if not keyword_set(DEPTH) then DEPTH=2500*1d5
+
+;Number of cells for the chromosphere.
+  if not keyword_set(N_DEPTH) then N_DEPTH=100
+  if not keyword_set(PERCENT_DIFFERENCE) then PERCENT_DIFFERENCE=1d-1
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  if size(loop,/TYPE) ne 8 then $
+     message, 'Argument for add_loop_chromo() must be a loop structure.'
+;
+
+  n_depth>=3
+
+  N_DEPTH_s=N_DEPTH-1ul
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Get values for the corona.
+  n_e_corona=loop.state.n_e
+  n_corona_surf=n_elements(loop.s)
+  T_corona=get_loop_temp(loop)
+;Pressure at the loop endpoints
+  P=2d0*!shrec_kB*[n_e_corona[0]*T_corona[0],$
+                   n_e_corona[n_corona_surf-1]*T_corona[n_corona_surf-1]]
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Get the coronal step_size
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Add on chromosphere 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Left
+  old_s=loop.s+depth
+
+  ds=get_loop_ds(loop)
+  ds_first=ds[0]
+
+  ;d_step1= get_exponential_steps( ds_first,N_DEPTH, depth, $
+  ;                                percent_difference, n_depth_S)
+  ;d_step1=d_step1*(depth/total(d_step1))
+  
+  ;d_step1=get_constant_steps( ds_first, N_DEPTH, depth, n_depth_S)
+  d_step1=get_increasing_steps( ds_first, N_DEPTH, depth, n_depth_S,$
+                                percent_difference)
+  d_step1=reverse(d_step1)
+  n_depth_old=N_DEPTH
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Right
+  n_ds=n_elements(ds)
+  ds_last=ds[n_ds-1]
+  ;d_step2=get_exponential_steps( ds_last,N_DEPTH, depth, $
+  ;                       percent_difference, n_depth_S)
+  ;d_step2=d_step2*(depth/total(d_step2))
+  
+  ;d_step2=get_constant_steps( ds_last, N_DEPTH, depth, n_depth_S)
+  d_step2=get_increasing_steps( ds_last, N_DEPTH, depth, n_depth_S,$
+                                percent_difference)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  depth_counter=0
+  depth_done =0 
+
+  if n_depth_old eq N_DEPTH then depth_done=1
+  while not depth_done do begin
+     
+    ; d_step1= get_exponential_steps( ds_last,N_DEPTH, depth, $
+    ;                                 percent_difference, n_depth_S)
+     ;d_step1=d_step1*(depth/total(d_step1))
+     ;d_step1=get_constant_steps( ds_first, N_DEPTH, depth, n_depth_S)
+     d_step1=get_increasing_steps( ds_first, N_DEPTH, depth, n_depth_S,$
+                        percent_difference)
+     d_step1=reverse(d_step1)
+     n_depth_old=N_DEPTH
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Right
+  n_ds=n_elements(ds)
+  ds_last=ds[n_ds-1]
+  ;d_step2=get_exponential_steps( ds_last,N_DEPTH, depth, $
+  ;                       percent_difference, n_depth_S)
+  ;d_step2=d_step2*(depth/total(d_step2))
+  ;d_step2=get_constant_steps( ds_last, N_DEPTH, depth, n_depth_S)
+  d_step2=get_increasing_steps( ds_last, N_DEPTH, depth, n_depth_S,$
+                                percent_difference)
+  depth_counter++
+  if depth_counter gt 10 then depth_done=1
+  if n_depth_old eq N_DEPTH then depth_done=1
+endwhile
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;d_step2=reverse(d_step1)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -206,7 +262,7 @@ axis[1,*]=y
 axis[2,*]=z
 
 
-new_s=[s1, $
+new_s=[0, total(d_step1[0:N_DEPTH_s-2], /CUMULATIVE), $
        old_s,$
        depth+max(loop.s)+total(d_step2, /cumulative)]
 
@@ -223,16 +279,16 @@ g_add2=!shrec_g0*((!shrec_R_Sun/(!shrec_R_Sun+z_add2))^2d)
 z_add_alt=shrec_get_s_alt(z_add1)
 dz=z_add_alt-loop.axis[2,0]
 p_chromo1=P[0]*(exp((-1d0*!shrec_mp*abs(g_add1)*dz)/(!shrec_kB*T0)))
-area_chromo1=loop.A[0] $
-             *1d0/(exp((-1d0*!shrec_mp*abs(g_add1)*dz)/(!shrec_kB*T0)))
+area_chromo1=loop.A[0] *(P[0]/p_chromo1)
+area_chromo2=reverse(area_chromo1)             
 
 
 
 z_add_alt=shrec_get_s_alt(z_add2)
 dz=z_add_alt-loop.axis[2,n_corona_surf-1]
 p_chromo2=P[1]*(exp((-1d0*!shrec_mp*abs(g_add2)*dz)/(!shrec_kB*T0)))
-area_chromo2=loop.A[n_corona_surf-1] $
-             *1d0/(exp((-1d0*!shrec_mp*abs(g_add2)*dz)/(!shrec_kB*T0)))
+;area_chromo2=loop.A[n_corona_surf-1] $
+;             *1d0/(exp((-1d0*!shrec_mp*abs(g_add2)*dz)/(!shrec_kB*T0)))
 
 ;Remembering that n_p~n_e and P=nkT
 n_e_add1=p_chromo1/(2d0*!shrec_kB*T0)
@@ -269,17 +325,17 @@ e_h=[dblarr(N_DEPTH_s)+loop.e_h[0],$
     loop.e_h,$
      dblarr(N_DEPTH_s)+loop.e_h[n_corona_surf-2]]
 
-A=[dblarr(N_DEPTH_s)+loop.A[0],$
-   loop.A,$
-   dblarr(N_DEPTH_s)+loop.A[n_corona_surf-1]]
-
-;A=[area_chromo1,$
+;A=[dblarr(N_DEPTH_s)+loop.A[0],$
 ;   loop.A,$
-;   area_chromo2]
+;   dblarr(N_DEPTH_s)+loop.A[n_corona_surf-1]]
 
-rad=[dblarr(N_DEPTH_s)+loop.rad[0],$
-   loop.rad,$
-   dblarr(N_DEPTH_s)+loop.rad[n_corona_surf-1]]
+A=[area_chromo1,$
+   loop.A,$
+   area_chromo2]
+
+for iii =0, 20 do A=smooth(a, 3)
+
+rad=[sqrt(a/!dpi)]
 
 
 b=[dblarr(N_DEPTH_s)+(loop.b[0]*loop.A[0]/area_chromo1),$
@@ -338,6 +394,7 @@ for jj=0ul, 100ul do loop.state.n_e=smooth(loop.state.n_e,3)
 ;stop
 
 print, 'Add_loop_chromo All Done'
+;stop
 return, new_loop
 
 END; Of main

@@ -116,7 +116,7 @@ function add_constant_t_apex_pressure_chromo_set_depth, loop, T0=T0, DEPTH=DEPTH
   n_corona_surf=n_elements(loop.s)
   T_corona=get_loop_temp(loop)
 ;Density at the Chromspheric apex.
-  ne_Ch_apex=2d11
+  ne_Ch_apex=2d10
 ;Maximum Chromspheric Density.
   ne_Ch_max=1d15
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
